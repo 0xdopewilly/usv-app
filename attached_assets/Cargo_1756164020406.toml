@@ -1,0 +1,13 @@
+[workspace]
+members = ["programs/usv-token", "programs/usv-trading"]
+resolver = "1"
+
+[workspace.dependencies]
+anchor-lang = "0.29.0"
+anchor-spl = "0.29.0"
+spl-token = "4.0.0"
+
+[profile.release]
+overflow-checks = true
+lto = "fat"
+codegen-units = 1

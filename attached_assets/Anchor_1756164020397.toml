@@ -1,0 +1,30 @@
+[toolchain]
+anchor_version = "0.29.0"
+
+[features]
+seeds = false
+skip-lint = false
+
+[programs.devnet]
+usv_token = "BAagt8iyDDDConY335Dd49vvMww18L6mqd8sx4SvvxGX"
+usv_trading = "DT43tfD1z2RvbocvkU2dc2a3XNrSpk8UKcxAtQ8xe5VP"
+
+[programs.localnet]
+usv_token = "CT6rTgPondBdBqu3ZWasoikMY3NFhWRjW8roL8HPLvxF"
+usv_trading = "9WDg4HW7ZuQQshcP6v6gGZsTghie2W3PoFbAwNVEoqTr"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "Localnet"
+wallet = "/home/bs/.config/solana/main-wallet.json"
+
+[workspace]
+members = ["programs/usv-token", "programs/usv-trading"]
+
+[scripts]
+build = "anchor build"
+deploy = "anchor deploy"
+migrate = "anchor migrate"
+test = "npx mocha tests/**/*.js --timeout 1000000"

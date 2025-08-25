@@ -1,0 +1,24 @@
+[package]
+name = "usv-token"
+version = "1.0.0"
+description = "Ultra Smooth Vape Token - Main Contract"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "usv_token"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+anchor-lang = { workspace = true, features = ["init-if-needed"] }
+anchor-spl = { workspace = true, features = ["token"] }
+spl-token = { workspace = true }
+sha2 = "0.10.0"
+bs58 = "0.5.0"

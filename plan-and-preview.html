@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USV Token PWA - Complete Plan & Visual Preview</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            color: white;
+            overflow-x: auto;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .plan-section {
+            width: 50%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .preview-section {
+            width: 50%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .phone-frame {
+            width: 375px;
+            height: 700px;
+            background: #000;
+            border-radius: 25px;
+            padding: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            position: relative;
+        }
+        
+        .screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 18px;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+        }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            background: rgba(0,0,0,0.1);
+        }
+        
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .page.active {
+            display: flex;
+        }
+        
+        /* Plan Styling */
+        .plan-header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .plan-title {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .plan-subtitle {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+        
+        .phase {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .phase-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .phase-duration {
+            font-size: 14px;
+            background: rgba(102, 126, 234, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #667eea;
+        }
+        
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .task-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        
+        .task-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .task-status.completed {
+            background: #2ed573;
+        }
+        
+        .task-status.in-progress {
+            background: #ffa502;
+        }
+        
+        .task-text {
+            flex: 1;
+        }
+        
+        .tech-stack {
+            background: rgba(118, 75, 162, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .tech-stack h4 {
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+        
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .tech-tag {
+            background: rgba(118, 75, 162, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #764ba2;
+        }
+        
+        .timeline {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 8px 0;
+        }
+        
+        .timeline-date {
+            font-size: 12px;
+            background: #667eea;
+            padding: 4px 8px;
+            border-radius: 4px;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        /* Vape Animation Background */
+        .vape-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(106,17,203,0.1) 0%, rgba(37,117,252,0.05) 50%, transparent 70%);
+            animation: smokeFloat 8s ease-in-out infinite;
+        }
+        
+        .vape-bg::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: smokePuff 6s ease-in-out infinite;
+        }
+        
+        @keyframes smokeFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(1deg); }
+            50% { transform: translateY(-20px) rotate(-1deg); }
+            75% { transform: translateY(-10px) rotate(0.5deg); }
+        }
+        
+        @keyframes smokePuff {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+        
+        /* Loading Screen */
+        .loading-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            animation: logoGlow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes logoGlow {
+            from { box-shadow: 0 0 20px rgba(106,17,203,0.5); }
+            to { box-shadow: 0 0 40px rgba(37,117,252,0.8); }
+        }
+        
+        .progress-bar {
+            position: absolute;
+            bottom: 50px;
+            left: 50px;
+            right: 50px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            width: 0%;
+            animation: progressLoad 3s ease-out infinite;
+        }
+        
+        @keyframes progressLoad {
+            to { width: 100%; }
+        }
+        
+        /* Page Controls */
+        .page-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .page-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .page-btn.active {
+            background: #667eea;
+        }
+        
+        .page-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 16px 32px;
+            border-radius: 25px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 8px 0;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        /* Auth Pages */
+        .auth-container {
+            padding: 60px 40px;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        /* Home Screen */
+        .balance-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 40px auto;
+            box-shadow: 0 0 40px rgba(37,117,252,0.3);
+        }
+        
+        .balance-amount {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.9);
+            padding: 12px 0;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            opacity: 0.6;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            padding: 8px;
+        }
+        
+        .nav-item.active {
+            opacity: 1;
+            color: #2575fc;
+        }
+        
+        .nav-icon {
+            font-size: 20px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .feature-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .feature-desc {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .metrics {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .metrics h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+        
+        .warning-box {
+            background: rgba(255, 165, 2, 0.1);
+            border: 1px solid rgba(255, 165, 2, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .warning-box h4 {
+            color: #ffa502;
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .plan-section, .preview-section {
+                width: 100%;
+            }
+            
+            .preview-section {
+                min-height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- PLAN SECTION -->
+        <div class="plan-section">
+            <div class="plan-header">
+                <h1 class="plan-title">USV Token PWA</h1>
+                <p class="plan-subtitle">Complete Development Plan & Architecture</p>
+            </div>
+            
+            <div class="metrics">
+                <h4>📊 Project Overview</h4>
+                <div class="metric-item">
+                    <span>Total Pages:</span>
+                    <span><strong>18 Screens</strong></span>
+                </div>
+                <div class="metric-item">
+                    <span>Development Time:</span>
+                    <span><strong>5-7 Weeks</strong></span>
+                </div>
+                <div class="metric-item">
+                    <span>Tech Stack:</span>
+                    <span><strong>React PWA</strong></span>
+                </div>
+                <div class="metric-item">
+                    <span>Deployment:</span>
+                    <span><strong>PWA + App Stores</strong></span>
+                </div>
+            </div>
+            
+            <div class="tech-stack">
+                <h4>🛠️ Technology Stack</h4>
+                <div class="tech-list">
+                    <span class="tech-tag">React 18</span>
+                    <span class="tech-tag">TypeScript</span>
+                    <span class="tech-tag">Vite PWA</span>
+                    <span class="tech-tag">Tailwind CSS</span>
+                    <span class="tech-tag">Solana Web3.js</span>
+                    <span class="tech-tag">Phantom Wallet</span>
+                    <span class="tech-tag">Camera API</span>
+                    <span class="tech-tag">Service Workers</span>
+                    <span class="tech-tag">Push Notifications</span>
+                    <span class="tech-tag">IndexedDB</span>
+                    <span class="tech-tag">Google Maps</span>
+                    <span class="tech-tag">QR Scanner</span>
+                </div>
+            </div>
+
+            <!-- PHASE 1 -->
+            <div class="phase">
+                <div class="phase-title">
+                    🏗️ Phase 1: Foundation Setup
+                    <span class="phase-duration">Week 1</span>
+                </div>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="task-status completed">✓</div>
+                        <div class="task-text">Setup React PWA with Vite</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status completed">✓</div>
+                        <div class="task-text">Configure TypeScript & Tailwind CSS</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status in-progress">⚠</div>
+                        <div class="task-text">Create project structure & routing</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Setup PWA manifest & service worker</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Configure offline capabilities</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- PHASE 2 -->
+            <div class="phase">
+                <div class="phase-title">
+                    🔐 Phase 2: Authentication System
+                    <span class="phase-duration">Week 2</span>
+                </div>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Build loading screen with animations</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Create signup/login selection pages</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Implement Apple ID & Email auth</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Add CAPTCHA verification</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Setup form validation & error handling</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Implement vape-themed animations</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- PHASE 3 -->
+            <div class="phase">
+                <div class="phase-title">
+                    💰 Phase 3: Core Wallet Features
+                    <span class="phase-duration">Week 3</span>
+                </div>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Build main home screen with balance circle</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Create wallet overview page</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Implement deposit/withdraw functionality</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Add security verification (2FA)</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Build token details page</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Integrate Phantom wallet connection</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- PHASE 4 -->
+            <div class="phase">
+                <div class="phase-title">
+                    📷 Phase 4: QR Scanner & Camera
+                    <span class="phase-duration">Week 4</span>
+                </div>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Implement camera access permissions</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Build QR scanner with overlay animations</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Create QR code detection logic</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Integrate claim token API calls</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Add camera controls (flash, focus)</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- PHASE 5 -->
+            <div class="phase">
+                <div class="phase-title">
+                    🖼️ Phase 5: NFT Portfolio & Trading
+                    <span class="phase-duration">Week 5</span>
+                </div>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Build NFT portfolio grid view</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Create NFT details page</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Implement NFT transfer/trade functions</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Add NFT staking capabilities</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Integrate marketplace UI</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- PHASE 6 -->
+            <div class="phase">
+                <div class="phase-title">
+                    ⚙️ Phase 6: Settings & Features
+                    <span class="phase-duration">Week 6</span>
+                </div>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Build settings menu</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Add language selection</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Implement address book</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Setup push notifications</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Add app icon customization</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Configure security settings</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- PHASE 7 -->
+            <div class="phase">
+                <div class="phase-title">
+                    🚀 Phase 7: Polish & Deployment
+                    <span class="phase-duration">Week 7</span>
+                </div>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Add store locator with maps</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Implement analytics dashboards</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Optimize SEO & performance</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Add empty states & error handling</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Test on multiple devices</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-status">○</div>
+                        <div class="task-text">Deploy PWA & setup app store</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-title">PWA Features</div>
+                    <div class="feature-desc">Offline mode, push notifications, home screen install</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <div class="feature-title">Security</div>
+                    <div class="feature-desc">Face ID, 2FA, secure wallet connections</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📷</div>
+                    <div class="feature-title">Camera Integration</div>
+                    <div class="feature-desc">QR scanning, product verification</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <div class="feature-title">NFT Support</div>
+                    <div class="feature-desc">Portfolio, trading, staking</div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h4>⚠️ PWA Advantages Over Native</h4>
+                <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li>No app store approval process</li>
+                    <li>Instant updates without user action</li>
+                    <li>Works on ALL devices immediately</li>
+                    <li>Much faster development cycle</li>
+                    <li>Lower development costs</li>
+                    <li>Same features as native (camera, notifications, etc.)</li>
+                </ul>
+            </div>
+
+            <div class="timeline">
+                <h4>📅 Development Timeline</h4>
+                <div class="timeline-item">
+                    <div class="timeline-date">Week 1</div>
+                    <div>Setup & Foundation</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Week 2</div>
+                    <div>Authentication System</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Week 3</div>
+                    <div>Wallet Features</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Week 4</div>
+                    <div>QR Scanner & Camera</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Week 5</div>
+                    <div>NFT Portfolio</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Week 6</div>
+                    <div>Settings & Advanced Features</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Week 7</div>
+                    <div>Polish & Deployment</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREVIEW SECTION -->
+        <div class="preview-section">
+            <div class="phone-frame">
+                <div class="screen">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 📶 🔋</span>
+                    </div>
+                    
+                    <!-- Page 1: Loading Screen -->
+                    <div class="page active" id="page1">
+                        <div class="loading-screen">
+                            <div class="logo">U</div>
+                            <h2>USV Token</h2>
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 2: Signup/Login Selection -->
+                    <div class="page" id="page2">
+                        <div class="vape-bg"></div>
+                        <div class="auth-container">
+                            <div class="logo" style="margin: 0 auto 60px;">U</div>
+                            <h2 style="margin-bottom: 40px;">Welcome to USV Token</h2>
+                            <button class="btn btn-primary">Sign Up</button>
+                            <button class="btn btn-secondary">Login</button>
+                        </div>
+                    </div>
+
+                    <!-- Page 9: Main Window (Home Screen) -->
+                    <div class="page" id="page9">
+                        <div style="text-align: center; padding: 20px;">
+                            <div class="logo" style="width: 60px; height: 60px; font-size: 24px; margin: 20px auto;">U</div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
+                            <div class="balance-circle">
+                                <div class="balance-amount">1,247 USV</div>
+                                <div class="balance-label">Your Balance</div>
+                            </div>
+                            <button class="btn" style="max-width: 200px;">🗺️ Vape Map</button>
+                        </div>
+                        <div class="bottom-nav">
+                            <div class="nav-item active">
+                                <div class="nav-icon">🏠</div>
+                                <div>Home</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">💰</div>
+                                <div>Wallet</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">📷</div>
+                                <div>QR Scan</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">🖼️</div>
+                                <div>NFT</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">⚙️</div>
+                                <div>Settings</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Page 15: QR Scanner -->
+                    <div class="page" id="page15">
+                        <div style="padding: 20px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                            <h2 style="margin-bottom: 30px;">📷 QR Scanner</h2>
+                            <div style="width: 250px; height: 250px; background: #000; border-radius: 12px; margin: 20px auto; position: relative; overflow: hidden;">
+                                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, #333 25%, transparent 25%), linear-gradient(-45deg, #333 25%, transparent 25%); background-size: 20px 20px; opacity: 0.3;"></div>
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 150px; height: 150px; border: 2px solid #2575fc; border-radius: 8px; animation: pulse 2s infinite;"></div>
+                            </div>
+                            <div>
+                                <h3 style="margin-bottom: 8px;">Point camera at QR code</h3>
+                                <p style="opacity: 0.7; font-size: 14px;">Scan the code on your vape product</p>
+                            </div>
+                        </div>
+                        <div class="bottom-nav">
+                            <div class="nav-item">
+                                <div class="nav-icon">🏠</div>
+                                <div>Home</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">💰</div>
+                                <div>Wallet</div>
+                            </div>
+                            <div class="nav-item active">
+                                <div class="nav-icon">📷</div>
+                                <div>QR Scan</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">🖼️</div>
+                                <div>NFT</div>
+                            </div>
+                            <div class="nav-item">
+                                <div class="nav-icon">⚙️</div>
+                                <div>Settings</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page Controls -->
+                <div class="page-controls">
+                    <button class="page-btn active" onclick="showPage(1)">Loading</button>
+                    <button class="page-btn" onclick="showPage(2)">Auth</button>
+                    <button class="page-btn" onclick="showPage(9)">Home</button>
+                    <button class="page-btn" onclick="showPage(15)">Scanner</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        
+        function showPage(pageNum) {
+            // Hide current page
+            document.getElementById(`page${currentPage}`).classList.remove('active');
+            
+            // Show new page
+            if (document.getElementById(`page${pageNum}`)) {
+                document.getElementById(`page${pageNum}`).classList.add('active');
+                
+                // Update page controls
+                document.querySelectorAll('.page-btn').forEach(btn => btn.classList.remove('active'));
+                event.target.classList.add('active');
+                
+                currentPage = pageNum;
+            }
+        }
+        
+        // Auto-cycle through preview pages
+        setInterval(() => {
+            const pages = [1, 2, 9, 15];
+            const currentIndex = pages.indexOf(currentPage);
+            const nextIndex = (currentIndex + 1) % pages.length;
+            showPage(pages[nextIndex]);
+            
+            // Update button states
+            document.querySelectorAll('.page-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.page-btn')[nextIndex].classList.add('active');
+        }, 4000);
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% { border-color: #2575fc; transform: translate(-50%, -50%) scale(1); }
+                50% { border-color: #6a11cb; transform: translate(-50%, -50%) scale(1.05); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

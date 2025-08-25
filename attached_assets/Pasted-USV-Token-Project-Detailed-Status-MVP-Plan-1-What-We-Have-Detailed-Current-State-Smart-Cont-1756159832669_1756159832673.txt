@@ -1,0 +1,97 @@
+USV Token Project – Detailed Status & MVP Plan
+1. What We Have (Detailed Current State)
+Smart Contract (Anchor, Solana):
+- Program: usv-token
+  • Token mint initialized with 1,000,000,000 USV (6 decimals).
+  • QR batch + claim system implemented with PDA (`QRBatch`, `QRClaim`).
+  • `claim_tokens` instruction prevents double claim using PDA seeds.
+  • `transfer_to_partner` with min 1,000 USV.
+  • Pause/unpause functionality.
+  • Stats retrieval.
+  • Comprehensive tests for init, QR batch, claim, partner transfer, pause, stats.
+
+- Program: usv-trading (scaffold)
+  • Functions for initialize_trading, buy_tokens_fixed_price, update_fixed_price, toggle_trading.
+  • Uses mock pricing. No integration with DEX/Oracles.
+
+Backend API (Node.js + Express + MongoDB):
+- Endpoints:
+  • Auth (email/password with JWT).
+  • Partners and stores CRUD.
+  • QR generation, claim validation, claim endpoint.
+  • Claim flow works by SPL transfer from server wallet (not Anchor call).
+  • Notification emails.
+  • Rate limiting, CORS, error handling, request logging, healthcheck.
+- Utilities:
+  • solana.js handles SPL transfers, wallet balances, placeholder price function.
+
+Mobile App (React Native/Expo):
+- Basic architecture and some UI components.
+- No Phantom wallet connect.
+- No QR scan or claim flow integrated.
+
+Website (WordPress):
+- About 30% of frontend design completed.
+- No backend API integration.
+2. What We Need to Build for MVP (Vegas Demo)
+Backend:
+- Replace SPL transfer in claim with on-chain Anchor `claim_tokens`.
+- Integrate Anchor client in backend utils.
+- Add Phantom wallet authentication:
+  • /auth/challenge → returns nonce and message.
+  • /auth/verify → user signs nonce, backend verifies, issues JWT.
+
+Mobile App:
+- Add Phantom connect (using Mobile Wallet Adapter).
+- Add QR scanner (expo-camera).
+- Claim flow: scan QR → send to backend → backend calls Anchor.
+- Display transaction confirmation and updated token balance.
+- Add dashboard for balance + claim history.
+
+Website (optional for demo):
+- Integrate simple map view (Google Maps/Leaflet).
+- Fetch and display store inventory and claim statistics.
+- Basic user login + claim section.
+3. Integration Flow – How Components Connect
+1. User opens the mobile app and connects Phantom wallet.
+2. User scans a QR code printed on a product.
+3. Mobile app sends `{ qr_code, wallet_pubkey, signature }` to backend `/claim`.
+4. Backend validates QR:
+   - Checks if QR is valid and unused.
+   - Checks HMAC signature for authenticity.
+   - Enforces idempotency.
+5. Backend calls Anchor `claim_tokens` instruction with correct PDAs:
+   - usv_state, mint, vault, vaultAuthority, user ATA, qr_claim PDA.
+6. On success:
+   - MongoDB updates the QR record to 'used'.
+   - Claim record inserted with tx hash.
+   - Backend returns tx id to app.
+7. Mobile app fetches updated token balance and displays confirmation to the user.
+4. Realistic Timeline for MVP
+Week 1:
+- Backend: integrate Anchor client.
+- Replace SPL transfer with `claim_tokens`.
+- Add environment variables for Anchor provider, program ID, wallet.
+
+Week 2:
+- Implement Phantom wallet authentication (challenge/verify endpoints).
+- Update backend to issue JWT scoped to wallet.
+- Begin mobile wallet connect integration.
+
+Week 3:
+- Mobile: implement QR scanner and claim flow.
+- Connect mobile to backend claim endpoint.
+- Display user balance using @solana/web3.js.
+
+Week 4:
+- Polish error handling, logging, telemetry.
+- Integration tests for QR claim flow (valid, invalid, double claim).
+- Manual tests with mobile device on devnet.
+
+➡️ Total: ~2–3 weeks of focused dev time with 2 developers.
+5. Stretch Goals (Post-Demo)
+- Integrate buy_tokens_fixed_price into backend + simple admin interface.
+- Implement staking contract and user interface.
+- Enhance WordPress site with live API integration.
+- Add analytics dashboards for claims, stores, staking KPIs.
+- Deploy performance and chaos testing.
