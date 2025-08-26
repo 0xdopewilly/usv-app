@@ -29,10 +29,11 @@ export default function QRScan() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { 
-          facingMode: 'environment', // Use back camera
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }
+          facingMode: { ideal: 'environment' }, // Use back camera if available
+          width: { ideal: 1280, min: 640 },
+          height: { ideal: 720, min: 480 }
+        },
+        audio: false
       });
       
       setHasPermission(true);

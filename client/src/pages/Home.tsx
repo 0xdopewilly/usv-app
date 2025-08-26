@@ -42,6 +42,27 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 relative pb-20">
       <BottomNavigation />
       
+      {/* Floating Connect Wallet Button */}
+      <motion.div
+        initial={{ scale: 0, rotate: -180 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ duration: 1, type: "spring", bounce: 0.5 }}
+        className="fixed top-6 right-6 z-50"
+      >
+        <motion.div
+          animate={{ 
+            y: [0, -8, 0],
+            boxShadow: [
+              "0 0 20px rgba(139, 92, 246, 0.3)",
+              "0 0 40px rgba(139, 92, 246, 0.6)",
+              "0 0 20px rgba(139, 92, 246, 0.3)"
+            ]
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <ConnectWallet onConnected={(publicKey) => console.log('Wallet connected:', publicKey)} className="w-16 h-16" />
+        </motion.div>
+      </motion.div>
 
       {/* Header with Profile */}
       <motion.div 
@@ -68,15 +89,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Connect Wallet Section */}
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-8"
-        >
-          <ConnectWallet onConnected={(publicKey) => console.log('Wallet connected:', publicKey)} />
-        </motion.div>
       </motion.div>
 
       {/* Main Balance */}
