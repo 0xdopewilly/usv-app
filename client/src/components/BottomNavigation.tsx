@@ -6,11 +6,11 @@ export default function BottomNavigation() {
   const [location, setLocation] = useLocation();
 
   const navItems = [
-    { path: '/home', icon: () => <div className="w-6 h-6 text-current font-bold flex items-center justify-center">W</div>, label: 'Home' },
-    { path: '/wallet', icon: Calendar, label: 'Wallet' },
-    { path: '/qr-scan', icon: QrCode, label: 'Scan', isCenter: true },
-    { path: '/nft-portfolio', icon: Image, label: 'NFTs' },
-    { path: '/settings', icon: Settings, label: 'Settings' },
+    { path: '/home', icon: () => <div className="w-6 h-6 text-current font-bold flex items-center justify-center text-lg">W</div>, label: '' },
+    { path: '/wallet', icon: Calendar, label: '' },
+    { path: '/qr-scan', icon: QrCode, label: '', isCenter: true },
+    { path: '/nft-portfolio', icon: Image, label: '' },
+    { path: '/settings', icon: Settings, label: '' },
   ];
 
   const shouldShowNavigation = navItems.some(item => location === item.path);
@@ -34,15 +34,14 @@ export default function BottomNavigation() {
               onClick={() => setLocation(item.path)}
               className={`flex flex-col items-center py-2 px-4 h-auto relative ${
                 item.isCenter 
-                  ? 'bg-purple-600 rounded-full w-14 h-14 text-white' 
+                  ? 'bg-pink-600 rounded-2xl w-14 h-14 text-white shadow-lg shadow-pink-600/30' 
                   : isActive 
                     ? 'text-purple-400' 
                     : 'text-gray-400'
               }`}
-              data-testid={`nav-${item.label.toLowerCase()}`}
+              data-testid={`nav-${item.path.replace('/', '')}`}
             >
-              {typeof Icon === 'function' ? <Icon /> : <Icon className="w-5 h-5" />}
-              {!item.isCenter && <span className="text-xs mt-1">{item.label}</span>}
+              {typeof Icon === 'function' ? <Icon /> : <Icon className={item.isCenter ? "w-6 h-6" : "w-5 h-5"} />}
             </Button>
           );
         })}

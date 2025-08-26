@@ -1,87 +1,76 @@
-import { useEffect } from 'react';
-import { useLocation } from 'wouter';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import SmokeAnimation from '@/components/SmokeAnimation';
+import { useLocation } from 'wouter';
 
 export default function LoadingScreen() {
+  const [progress, setProgress] = useState(0);
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    // Clear any stale localStorage data that might cause issues
-    const token = localStorage.getItem('token');
-    if (token) {
-      // Check if we have a user in localStorage but it's invalid
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        if (payload.exp && payload.exp * 1000 < Date.now()) {
-          // Token expired, clear it
-          localStorage.removeItem('token');
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setLocation('/auth-selection');
+          }, 500);
+          return 100;
         }
-      } catch {
-        // Invalid token, clear it
-        localStorage.removeItem('token');
-      }
-    }
+        return prev + 2;
+      });
+    }, 50);
 
-    const timer = setTimeout(() => {
-      setLocation('/auth');
-    }, 3000);
-
-    return () => clearTimeout(timer);
+    return () => clearInterval(interval);
   }, [setLocation]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-dark-primary">
-      <SmokeAnimation />
-      
-      {/* USV Logo */}
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 flex flex-col items-center justify-center relative overflow-hidden">
+      {/* Logo */}
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
+        initial={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="text-center mb-20 z-10"
+        transition={{ duration: 1, ease: "easeOut" }}
+        className="text-center mb-16 z-10"
       >
-        <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-electric-blue to-crypto-gold rounded-xl flex items-center justify-center">
-          <span className="text-3xl font-bold text-white">USV</span>
+        <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-2xl shadow-purple-500/30">
+          <span className="text-purple-600 font-bold text-4xl">USV</span>
         </div>
-        <h1 className="text-2xl font-semibold text-gray-300">USV Token</h1>
-        <p className="text-gray-400 mt-2">Ultra Smooth Vape Ecosystem</p>
+        <motion.h1
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="text-white text-3xl font-bold mb-2"
+        >
+          Ultra Smooth Vape
+        </motion.h1>
+        <motion.p
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, delay: 0.7 }}
+          className="text-white/80 text-lg"
+        >
+          Powered by Solana
+        </motion.p>
       </motion.div>
-      
+
       {/* Progress Bar */}
-      <div className="absolute bottom-20 left-8 right-8 z-10">
-        <div className="w-full bg-dark-accent rounded-full h-2 mb-4">
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 1 }}
+        className="w-80 z-10"
+      >
+        <div className="bg-white/20 rounded-full h-2 mb-4 overflow-hidden">
           <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: '100%' }}
-            transition={{ duration: 3, ease: 'easeInOut' }}
-            className="bg-gradient-to-r from-electric-blue to-crypto-gold h-2 rounded-full"
+            className="bg-gradient-to-r from-pink-500 to-purple-500 h-full rounded-full"
+            style={{ width: `${progress}%` }}
+            transition={{ duration: 0.1 }}
           />
         </div>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-center text-gray-400"
-        >
-          Loading...
-        </motion.p>
-        
-        {/* Debug: Clear Storage Button */}
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          onClick={() => {
-            localStorage.clear();
-            sessionStorage.clear();
-            setLocation('/auth');
-          }}
-          className="mt-4 mx-auto block text-xs text-gray-500 hover:text-gray-300 underline"
-        >
-          Having issues? Clear cache & restart
-        </motion.button>
-      </div>
+        <div className="text-center">
+          <span className="text-white/60 text-sm">Loading... {progress}%</span>
+        </div>
+      </motion.div>
     </div>
   );
 }

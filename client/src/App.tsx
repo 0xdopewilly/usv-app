@@ -54,9 +54,9 @@ function App() {
                 <Route path="/deposit" component={Deposit} />
                 <Route path="/withdraw" component={Withdraw} />
                 <Route path="/security" component={SecurityVerification} />
-                <Route path="/scan" component={QRScan} />
-                <Route path="/nfts" component={NFTPortfolio} />
-                <Route path="/nfts/:id" component={NFTDetail} />
+                <Route path="/qr-scan" component={QRScan} />
+                <Route path="/nft-portfolio" component={NFTPortfolio} />
+                <Route path="/nft/:id" component={NFTDetail} />
                 <Route path="/settings" component={Settings} />
                 <Route component={NotFoundPage} />
               </Switch>

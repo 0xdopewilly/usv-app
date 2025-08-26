@@ -1,222 +1,239 @@
-import { useEffect } from 'react';
-import { useLocation } from 'wouter';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, QrCode } from 'lucide-react';
-import { useAuth } from '@/lib/auth';
-import { useQuery } from '@tanstack/react-query';
-import BottomNavigation from '@/components/BottomNavigation';
+import { MoreHorizontal } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
+import { useLocation } from 'wouter';
+import BottomNavigation from '@/components/BottomNavigation';
 
-const mockChartData = [
-  { value: 4.100 }, { value: 4.150 }, { value: 4.180 }, { value: 4.120 }, 
-  { value: 4.200 }, { value: 4.215 }, { value: 4.180 }, { value: 4.215 }
+const chartData = [
+  { value: 4100 },
+  { value: 4050 },
+  { value: 4180 },
+  { value: 4120 },
+  { value: 4215 }
 ];
 
-const usvChartData = [
-  { value: 145.200 }, { value: 146.100 }, { value: 147.853 }, { value: 146.500 }, 
-  { value: 147.200 }, { value: 147.853 }, { value: 146.800 }, { value: 147.853 }
-];
-
-const solChartData = [
-  { value: 5.500 }, { value: 5.600 }, { value: 5.748 }, { value: 5.650 }, 
-  { value: 5.700 }, { value: 5.748 }, { value: 5.680 }, { value: 5.748 }
+const solanaChartData = [
+  { value: 5600 },
+  { value: 5720 },
+  { value: 5680 },
+  { value: 5748 }
 ];
 
 export default function Home() {
-  const { user, isAuthenticated, isLoading } = useAuth();
   const [, setLocation] = useLocation();
 
-  // Redirect to auth if not authenticated
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      setLocation('/auth');
-    }
-  }, [isAuthenticated, isLoading, setLocation]);
-
-  // Show loading while checking auth
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-900/20 to-gray-900 flex items-center justify-center">
-        <div className="text-white">Loading...</div>
-      </div>
-    );
-  }
-
-  // Don't render if not authenticated (will redirect)
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  const handleWalletClick = () => {
-    setLocation('/wallet');
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900/20 to-gray-900 relative pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 relative pb-20">
       <BottomNavigation />
       
-      {/* Header */}
-      <motion.div
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="pt-12 px-6 pb-4 flex items-center justify-between"
-      >
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" 
-              alt="Profile" 
-              className="w-full h-full object-cover"
-            />
+      {/* Status Bar */}
+      <div className="flex justify-between items-center pt-12 px-6 text-white text-sm">
+        <span className="font-medium">09:46</span>
+        <div className="flex items-center space-x-1">
+          <div className="flex space-x-1">
+            <div className="w-1 h-1 bg-white rounded-full"></div>
+            <div className="w-1 h-1 bg-white rounded-full"></div>
+            <div className="w-1 h-1 bg-white rounded-full"></div>
+            <div className="w-1 h-1 bg-white/50 rounded-full"></div>
           </div>
-          <div>
-            <p className="text-gray-400 text-sm">Welcome back,</p>
-            <p className="text-white font-medium">{user?.fullName?.split(' ')[0] || 'Amanda'}</p>
+          <div className="flex items-center space-x-1 ml-2">
+            <div className="w-6 h-3 border border-white rounded-sm">
+              <div className="w-4 h-1 bg-white rounded-sm m-0.5"></div>
+            </div>
           </div>
         </div>
-        <QrCode className="w-6 h-6 text-white" onClick={() => setLocation('/qr-scan')} />
+      </div>
+
+      {/* Header */}
+      <motion.div 
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="px-6 py-4"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 rounded-full overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=100&h=100&fit=crop&crop=face" 
+                alt="Amanda"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-white/80 text-sm">Welcome back,</p>
+              <p className="text-white font-semibold text-lg">Amanda</p>
+            </div>
+          </div>
+          <MoreHorizontal className="w-6 h-6 text-white" />
+        </div>
       </motion.div>
 
-      {/* Total Portfolio Value */}
-      <motion.div
+      {/* Main Balance */}
+      <motion.div 
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="px-6 mb-8"
+        transition={{ delay: 0.2 }}
+        className="px-6 py-6"
       >
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-2">$4.215</h1>
+          <h1 className="text-white text-5xl font-bold mb-2">$4,215</h1>
           <div className="flex items-center justify-center space-x-4">
-            <div className="flex items-center text-green-400">
-              <TrendingUp className="w-4 h-4 mr-1" />
-              <span className="text-sm">6.3%</span>
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 bg-green-400 rounded-full flex items-center justify-center">
+                <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+              </div>
+              <span className="text-green-400 text-sm font-medium">6.3%</span>
             </div>
-            <div className="flex items-center text-gray-400">
-              <span className="text-sm">0.2158₿</span>
+            <div className="flex items-center space-x-1">
+              <div className="w-4 h-4 bg-white/20 rounded flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded"></div>
+              </div>
+              <span className="text-white/80 text-sm">0.21585</span>
             </div>
           </div>
         </div>
       </motion.div>
 
       {/* Asset Cards */}
-      <motion.div
+      <motion.div 
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
+        transition={{ delay: 0.4 }}
         className="px-6 mb-8"
       >
         <div className="grid grid-cols-2 gap-4">
           {/* USV Token Card */}
-          <div 
-            className="bg-gradient-to-br from-purple-800/30 to-purple-900/20 rounded-2xl p-4 border border-purple-700/30 cursor-pointer"
-            onClick={handleWalletClick}
+          <motion.div
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setLocation('/wallet')}
+            className="bg-black/30 backdrop-blur rounded-3xl p-4 cursor-pointer"
           >
-            <div className="flex items-center mb-3">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-3">
-                <span className="text-purple-600 font-bold text-sm">USV</span>
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                <span className="text-purple-600 font-bold text-xs">USV</span>
               </div>
               <div>
                 <p className="text-white text-sm font-medium">Ultra Smooth Vape</p>
-                <p className="text-gray-400 text-xs">USV</p>
+                <p className="text-white/60 text-xs">USV</p>
               </div>
             </div>
+            
+            {/* Mini Chart */}
             <div className="h-12 mb-3">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={usvChartData}>
+                <LineChart data={chartData}>
                   <Line 
                     type="monotone" 
                     dataKey="value" 
-                    stroke="#a855f7" 
-                    strokeWidth={2}
+                    stroke="#fff" 
+                    strokeWidth={1.5}
                     dot={false}
                   />
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            <div>
-              <p className="text-gray-400 text-xs">Balance</p>
-              <p className="text-white font-bold">$147,853</p>
-              <p className="text-green-400 text-xs">+ 12.3%</p>
+            
+            <div className="flex justify-between items-end">
+              <div>
+                <p className="text-white/60 text-xs">Balance</p>
+                <p className="text-white font-bold">$147,853</p>
+              </div>
+              <span className="text-green-400 text-xs font-medium">+12.3%</span>
             </div>
-          </div>
+          </motion.div>
 
           {/* Solana Card */}
-          <div className="bg-gradient-to-br from-blue-800/30 to-blue-900/20 rounded-2xl p-4 border border-blue-700/30">
-            <div className="flex items-center mb-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-blue-400 rounded-full flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-xs">SOL</span>
+          <motion.div
+            whileTap={{ scale: 0.95 }}
+            className="bg-black/30 backdrop-blur rounded-3xl p-4 cursor-pointer"
+          >
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full flex items-center justify-center">
+                <div className="w-4 h-4 bg-white rounded-full"></div>
               </div>
               <div>
                 <p className="text-white text-sm font-medium">Solana</p>
-                <p className="text-gray-400 text-xs">SOL</p>
+                <p className="text-white/60 text-xs">SOL</p>
               </div>
             </div>
+            
+            {/* Mini Chart */}
             <div className="h-12 mb-3">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={solChartData}>
+                <LineChart data={solanaChartData}>
                   <Line 
                     type="monotone" 
                     dataKey="value" 
-                    stroke="#3b82f6" 
-                    strokeWidth={2}
+                    stroke="#fff" 
+                    strokeWidth={1.5}
                     dot={false}
                   />
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            <div>
-              <p className="text-gray-400 text-xs">Balance</p>
-              <p className="text-white font-bold">$5,748</p>
-              <p className="text-green-400 text-xs">+ 4.9%</p>
+            
+            <div className="flex justify-between items-end">
+              <div>
+                <p className="text-white/60 text-xs">Balance</p>
+                <p className="text-white font-bold">$5,748</p>
+              </div>
+              <span className="text-green-400 text-xs font-medium">+1.2%</span>
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
 
       {/* Your Assets Section */}
-      <motion.div
+      <motion.div 
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
+        transition={{ delay: 0.6 }}
         className="px-6"
       >
-        <h3 className="text-white text-lg font-semibold mb-4">Your Asset</h3>
+        <h2 className="text-white text-xl font-semibold mb-4">Your Asset</h2>
         
         <div className="space-y-3">
           {/* USV Token Row */}
-          <div className="flex items-center justify-between bg-gray-800/30 rounded-xl p-4 border border-gray-700/30">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
+          <motion.div
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setLocation('/wallet')}
+            className="flex items-center justify-between bg-black/20 backdrop-blur rounded-2xl p-4 cursor-pointer"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
                 <span className="text-purple-600 font-bold text-sm">USV</span>
               </div>
               <div>
                 <p className="text-white font-medium">Ultra Smooth Token</p>
-                <p className="text-gray-400 text-sm">USV</p>
+                <p className="text-white/60 text-sm">USV</p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-white font-bold">$0.2125</p>
-              <p className="text-green-400 text-sm">+ 12.3%</p>
+              <p className="text-green-400 text-sm">+12.3%</p>
             </div>
-          </div>
+          </motion.div>
 
           {/* Solana Row */}
-          <div className="flex items-center justify-between bg-gray-800/30 rounded-xl p-4 border border-gray-700/30">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-blue-400 rounded-full flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-xs">SOL</span>
+          <motion.div
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center justify-between bg-black/20 backdrop-blur rounded-2xl p-4 cursor-pointer"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full flex items-center justify-center">
+                <div className="w-5 h-5 bg-white rounded-full"></div>
               </div>
               <div>
                 <p className="text-white font-medium">Solana</p>
-                <p className="text-gray-400 text-sm">SOL</p>
+                <p className="text-white/60 text-sm">SOL</p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-white font-bold">$161.25</p>
-              <p className="text-green-400 text-sm">+ 4.9%</p>
+              <p className="text-green-400 text-sm">+4.9%</p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
     </div>

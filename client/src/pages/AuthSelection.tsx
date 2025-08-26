@@ -1,49 +1,66 @@
-import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
+import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
-import SmokeAnimation from '@/components/SmokeAnimation';
 
 export default function AuthSelection() {
   const [, setLocation] = useLocation();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-8 bg-dark-primary">
-      <SmokeAnimation />
-      
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-pink-800 flex flex-col items-center justify-center relative overflow-hidden">
+      {/* Content */}
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-12 z-10"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        className="text-center z-10 w-full max-w-sm px-6"
       >
-        <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-electric-blue to-crypto-gold rounded-xl flex items-center justify-center">
-          <span className="text-2xl font-bold text-white">USV</span>
+        {/* Logo */}
+        <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-8 mx-auto shadow-2xl shadow-purple-500/30">
+          <span className="text-purple-600 font-bold text-2xl">USV</span>
         </div>
-        <h1 className="text-3xl font-bold mb-2 text-white">Welcome</h1>
-        <p className="text-gray-400">Join the USV Token ecosystem</p>
-      </motion.div>
-      
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="w-full max-w-sm space-y-4 z-10"
-      >
-        <Button
-          onClick={() => setLocation('/signup')}
-          className="w-full bg-gradient-to-r from-electric-blue to-crypto-gold text-white py-4 h-auto text-lg font-semibold glow-button"
-          data-testid="button-signup"
+
+        <motion.h1
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          className="text-white text-3xl font-bold mb-2"
         >
-          Sign Up
-        </Button>
-        <Button
-          onClick={() => setLocation('/login')}
-          variant="outline"
-          className="w-full border-2 border-electric-blue text-electric-blue py-4 h-auto text-lg font-semibold hover:bg-electric-blue hover:text-white transition-all"
-          data-testid="button-login"
+          Welcome to USV
+        </motion.h1>
+
+        <motion.p
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="text-white/80 text-lg mb-12"
         >
-          Log In
-        </Button>
+          Ultra Smooth Vape Ecosystem
+        </motion.p>
+
+        {/* Action Buttons */}
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 1, delay: 0.7 }}
+          className="space-y-4"
+        >
+          <Button
+            onClick={() => setLocation('/signup')}
+            className="w-full bg-white text-purple-600 hover:bg-gray-100 rounded-2xl py-4 text-lg font-semibold shadow-lg"
+            data-testid="button-signup"
+          >
+            Sign Up
+          </Button>
+
+          <Button
+            onClick={() => setLocation('/login')}
+            variant="outline"
+            className="w-full border-white/30 text-white hover:bg-white/10 rounded-2xl py-4 text-lg font-semibold"
+            data-testid="button-login"
+          >
+            Log In
+          </Button>
+        </motion.div>
       </motion.div>
     </div>
   );

@@ -1,0 +1,143 @@
+Page 1: Loading Screen
+
+ • Elements:
+ • Logo centered.
+ • Progress Bar at the bottom.
+ • Background: Clean, simple background to highlight the logo and progress bar.
+
+Page 2: Signup/Login Selection
+
+ • Background: Animated vape/smoke effect.
+ • Elements:
+ • Signup Button: Prominent button for signing up (redirects to Signup Page).
+ • Login Button: Prominent button for login (redirects to Login Page).
+ • Animated Effects: Soft glowing and expansion when hovered over or tapped.
+
+Page 3: Signup - Apple ID/Email Selection
+
+ • Elements:
+ • Apple ID Signup Button: Option to sign up using Apple ID.
+ • Email Signup Button: Opens a new page for email signup form.
+ • Background: Continuation of vape-themed smoke animation.
+
+Page 4: Signup - Email Form
+
+ • Elements:
+ • Form Fields:
+ • Name, Email, Password (with ‘show password’ option).
+ • Create Account Button: Final step to create an account.
+ • Terms & Conditions: Checkbox to agree to terms.
+ • Error Message: Red text under the form if signup fails.
+
+Page 5: CAPTCHA Verification (for Signup)
+
+ • Elements:
+ • CAPTCHA verification (image or reCAPTCHA checkbox).
+ • Submit Button to verify.
+ • Error Handling: If CAPTCHA fails, show error message.
+
+Page 6: Login - Apple ID/Email Selection
+
+ • Elements:
+ • Apple ID Login Button.
+ • Email Login Button: Opens login form page.
+
+Page 7: Login - Email Form
+
+ • Elements:
+ • Form Fields:
+ • Email, Password (with ‘show password’ option).
+ • Login Button.
+ • Forgot Password Link: Opens password recovery page.
+ • Error Handling: Red error message for invalid credentials.
+
+Page 8: CAPTCHA Verification (for Login)
+
+ • Elements:
+ • CAPTCHA verification (image or reCAPTCHA checkbox).
+ • Submit Button to verify.
+ • Error Handling: If CAPTCHA fails, show error message.
+
+Page 9: Main Window (Home Screen)
+
+ • Top Section:
+ • SSV Logo centered at the top.
+ • Middle Section:
+ • Circular Balance Display: Shows user’s token balance in the middle of the screen.
+ • Vape Map Button below the balance.
+ • Bottom Navigation Menu:
+ • Home, Wallet, QR Scan, NFT Portfolio, Settings icons.
+
+Page 10: Wallet Overview
+
+ • Top Section:
+ • QR Code Icon: Opens QR scanner.
+ • Balance Section:
+ • Balance Display: Shows total balance.
+ • Withdraw Button, Deposit Button below the balance.
+ • Staking & Tokens Section:
+ • Show staking balance and tokens, including the total in USD.
+ • Assets Section:
+ • Token list, quick actions (tap to view details).
+
+Page 11: Deposit Menu
+
+ • Elements:
+ • Wallet Address: Shown as both QR code and text.
+ • Copy Button to copy the wallet address.
+
+Page 12: Withdraw Menu
+
+ • Elements:
+ • Address Input Field: Enter recipient address.
+ • Amount Input: Enter the amount to send.
+ • Send Button to confirm.
+
+Page 13: Security Verification (for Withdrawal)
+
+ • Elements:
+ • AF2 Code or email code input.
+ • Submit Button: To verify the transaction.
+ • Error Handling: Red error message if the code is incorrect.
+ • Success Message: Green success message once the code is verified.
+
+Page 14: Token Details
+
+ • Elements:
+ • Balance Breakdown:
+ • Total balance, available balance, staking balance.
+ • Transactions List.
+ • Price Stats.
+ • About Token Info.
+
+Page 15: QR Scan (Camera Access)
+
+ • Camera View:
+ • Centered scanner box with animation.
+ • Back Button: To return to the previous page.
+
+Page 16: NFT Portfolio Overview
+
+ • Elements:
+ • Display user’s NFT collection in grid view or carousel.
+ • Tap to View NFT Details.
+
+Page 17: NFT Details
+
+ • Elements:
+ • NFT Image displayed prominently.
+ • Transfer Button.
+ • Trade Button.
+ • Stake Button.
+
+Page 18: Settings Menu
+
+ • Elements:
+ • Language Selection Tab: Choose from available languages (English, German, Spanish).
+ • Address Book: Manage saved addresses.
+ • Notification Settings: Enable or disable notifications.
+ • App Icon Customization: Choose preferred app icon.
+ • Security Settings:
+ • Use Face ID.
+ • Require Authentication for certain actions.
+ • Activate 2AF (Two-Factor Authentication).
