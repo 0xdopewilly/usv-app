@@ -7,6 +7,22 @@ export default function LoadingScreen() {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
+    // Clear any stale localStorage data that might cause issues
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Check if we have a user in localStorage but it's invalid
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.exp && payload.exp * 1000 < Date.now()) {
+          // Token expired, clear it
+          localStorage.removeItem('token');
+        }
+      } catch {
+        // Invalid token, clear it
+        localStorage.removeItem('token');
+      }
+    }
+
     const timer = setTimeout(() => {
       setLocation('/auth');
     }, 3000);
@@ -50,6 +66,21 @@ export default function LoadingScreen() {
         >
           Loading...
         </motion.p>
+        
+        {/* Debug: Clear Storage Button */}
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          onClick={() => {
+            localStorage.clear();
+            sessionStorage.clear();
+            setLocation('/auth');
+          }}
+          className="mt-4 mx-auto block text-xs text-gray-500 hover:text-gray-300 underline"
+        >
+          Having issues? Clear cache & restart
+        </motion.button>
       </div>
     </div>
   );
