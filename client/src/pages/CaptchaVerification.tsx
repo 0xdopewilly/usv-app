@@ -26,19 +26,23 @@ export default function CaptchaVerification() {
     setIsLoading(true);
     
     try {
-      await apiRequest('/api/verify/captcha', {
-        method: 'POST',
-        body: JSON.stringify({ token: 'captcha-token' }),
-        headers: { 'Content-Type': 'application/json' },
-      });
+      console.log('Starting captcha verification...');
+      
+      const response = await apiRequest('POST', '/api/verify/captcha', { token: 'captcha-token' });
+      
+      const data = await response.json();
+      console.log('Captcha verification response:', data);
       
       toast({
         title: "Verification Complete",
         description: "Account created successfully!",
       });
       
-      setLocation('/home');
+      setTimeout(() => {
+        setLocation('/home');
+      }, 1000);
     } catch (error) {
+      console.error('Captcha verification error:', error);
       toast({
         title: "Verification Failed",
         description: "Please try again",
