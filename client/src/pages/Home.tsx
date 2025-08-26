@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -7,12 +9,34 @@ import { useQuery } from '@tanstack/react-query';
 import BottomNavigation from '@/components/BottomNavigation';
 
 export default function Home() {
-  const { user } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  // Redirect to auth if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      setLocation('/auth');
+    }
+  }, [isAuthenticated, isLoading, setLocation]);
   
   const { data: transactions = [] } = useQuery({
     queryKey: ['/api/transactions'],
     enabled: !!user,
   });
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-dark-primary flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
+  // Don't render if not authenticated (will redirect)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-dark-primary relative pb-20">
