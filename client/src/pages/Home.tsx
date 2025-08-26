@@ -1,12 +1,26 @@
 import { useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { MapPin, Plus } from 'lucide-react';
+import { TrendingUp, TrendingDown, QrCode } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useQuery } from '@tanstack/react-query';
 import BottomNavigation from '@/components/BottomNavigation';
+import { LineChart, Line, ResponsiveContainer } from 'recharts';
+
+const mockChartData = [
+  { value: 4.100 }, { value: 4.150 }, { value: 4.180 }, { value: 4.120 }, 
+  { value: 4.200 }, { value: 4.215 }, { value: 4.180 }, { value: 4.215 }
+];
+
+const usvChartData = [
+  { value: 145.200 }, { value: 146.100 }, { value: 147.853 }, { value: 146.500 }, 
+  { value: 147.200 }, { value: 147.853 }, { value: 146.800 }, { value: 147.853 }
+];
+
+const solChartData = [
+  { value: 5.500 }, { value: 5.600 }, { value: 5.748 }, { value: 5.650 }, 
+  { value: 5.700 }, { value: 5.748 }, { value: 5.680 }, { value: 5.748 }
+];
 
 export default function Home() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -18,16 +32,11 @@ export default function Home() {
       setLocation('/auth');
     }
   }, [isAuthenticated, isLoading, setLocation]);
-  
-  const { data: transactions = [] } = useQuery({
-    queryKey: ['/api/transactions'],
-    enabled: !!user,
-  });
 
   // Show loading while checking auth
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-dark-primary flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-purple-900/20 to-gray-900 flex items-center justify-center">
         <div className="text-white">Loading...</div>
       </div>
     );
@@ -38,8 +47,12 @@ export default function Home() {
     return null;
   }
 
+  const handleWalletClick = () => {
+    setLocation('/wallet');
+  };
+
   return (
-    <div className="min-h-screen bg-dark-primary relative pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-purple-900/20 to-gray-900 relative pb-20">
       <BottomNavigation />
       
       {/* Header */}
@@ -47,100 +60,164 @@ export default function Home() {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="pt-12 pb-6 text-center safe-top"
+        className="pt-12 px-6 pb-4 flex items-center justify-between"
       >
-        <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-electric-blue to-crypto-gold rounded-xl flex items-center justify-center">
-          <span className="text-xl font-bold text-white">USV</span>
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-full overflow-hidden">
+            <img 
+              src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" 
+              alt="Profile" 
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <p className="text-gray-400 text-sm">Welcome back,</p>
+            <p className="text-white font-medium">{user?.fullName?.split(' ')[0] || 'Amanda'}</p>
+          </div>
         </div>
-        <h1 className="text-xl font-semibold text-gray-300">USV Token</h1>
-        <p className="text-gray-400 text-sm">Welcome back, {user?.fullName?.split(' ')[0]}</p>
+        <QrCode className="w-6 h-6 text-white" onClick={() => setLocation('/qr-scan')} />
       </motion.div>
-      
-      {/* Balance Display */}
+
+      {/* Total Portfolio Value */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="flex justify-center py-8"
+        className="px-6 mb-8"
       >
-        <div className="w-48 h-48 bg-gradient-to-br from-dark-secondary to-dark-accent rounded-full flex flex-col items-center justify-center balance-circle">
-          <div className="text-center">
-            <p className="text-gray-400 text-sm mb-2">Total Balance</p>
-            <p className="text-3xl font-bold text-white" data-testid="text-balance">
-              {user?.balance?.toFixed(2) || '0.00'}
-            </p>
-            <p className="text-lg text-crypto-gold">USV</p>
-            <p className="text-gray-400 text-sm mt-2" data-testid="text-balance-usd">
-              ≈ ${((user?.balance || 0) * 2.0).toFixed(2)}
-            </p>
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-white mb-2">$4.215</h1>
+          <div className="flex items-center justify-center space-x-4">
+            <div className="flex items-center text-green-400">
+              <TrendingUp className="w-4 h-4 mr-1" />
+              <span className="text-sm">6.3%</span>
+            </div>
+            <div className="flex items-center text-gray-400">
+              <span className="text-sm">0.2158₿</span>
+            </div>
           </div>
         </div>
       </motion.div>
-      
-      {/* Vape Map Button */}
+
+      {/* Asset Cards */}
       <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.4 }}
-        className="px-8 mb-8"
+        className="px-6 mb-8"
       >
-        <Button className="w-full bg-gradient-to-r from-electric-blue to-crypto-gold text-white py-4 h-auto text-lg font-semibold glow-button flex items-center justify-center space-x-3" data-testid="button-find-stores">
-          <MapPin className="w-5 h-5" />
-          <span>Find Vape Stores</span>
-        </Button>
+        <div className="grid grid-cols-2 gap-4">
+          {/* USV Token Card */}
+          <div 
+            className="bg-gradient-to-br from-purple-800/30 to-purple-900/20 rounded-2xl p-4 border border-purple-700/30 cursor-pointer"
+            onClick={handleWalletClick}
+          >
+            <div className="flex items-center mb-3">
+              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center mr-3">
+                <span className="text-purple-600 font-bold text-sm">USV</span>
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">Ultra Smooth Vape</p>
+                <p className="text-gray-400 text-xs">USV</p>
+              </div>
+            </div>
+            <div className="h-12 mb-3">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={usvChartData}>
+                  <Line 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#a855f7" 
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs">Balance</p>
+              <p className="text-white font-bold">$147,853</p>
+              <p className="text-green-400 text-xs">+ 12.3%</p>
+            </div>
+          </div>
+
+          {/* Solana Card */}
+          <div className="bg-gradient-to-br from-blue-800/30 to-blue-900/20 rounded-2xl p-4 border border-blue-700/30">
+            <div className="flex items-center mb-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-blue-400 rounded-full flex items-center justify-center mr-3">
+                <span className="text-white font-bold text-xs">SOL</span>
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">Solana</p>
+                <p className="text-gray-400 text-xs">SOL</p>
+              </div>
+            </div>
+            <div className="h-12 mb-3">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={solChartData}>
+                  <Line 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#3b82f6" 
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div>
+              <p className="text-gray-400 text-xs">Balance</p>
+              <p className="text-white font-bold">$5,748</p>
+              <p className="text-green-400 text-xs">+ 4.9%</p>
+            </div>
+          </div>
+        </div>
       </motion.div>
-      
-      {/* Recent Activity */}
+
+      {/* Your Assets Section */}
       <motion.div
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.6 }}
-        className="px-8 mb-20"
+        className="px-6"
       >
-        <h3 className="text-lg font-semibold mb-4 text-white">Recent Activity</h3>
+        <h3 className="text-white text-lg font-semibold mb-4">Your Asset</h3>
         
-        {!Array.isArray(transactions) || transactions.length === 0 ? (
-          <Card className="p-6 bg-dark-secondary border-dark-accent text-center">
-            <p className="text-gray-400 mb-4">No transactions yet</p>
-            <p className="text-sm text-gray-500">
-              Scan QR codes at partner vape stores to earn USV tokens
-            </p>
-          </Card>
-        ) : (
-          <div className="space-y-3">
-            {Array.isArray(transactions) && transactions.slice(0, 5).map((transaction: any, index: number) => (
-              <Card key={transaction.id || index} className="p-4 bg-dark-secondary border-dark-accent">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      transaction.type === 'claim' ? 'bg-success-green' : 
-                      transaction.type === 'deposit' ? 'bg-electric-blue' : 'bg-error-red'
-                    }`}>
-                      <Plus className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-white capitalize">{transaction.type}</p>
-                      <p className="text-gray-400 text-sm">
-                        {new Date(transaction.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className={`font-medium ${
-                      transaction.type === 'withdraw' ? 'text-error-red' : 'text-success-green'
-                    }`}>
-                      {transaction.type === 'withdraw' ? '-' : '+'}
-                      {transaction.amount.toFixed(2)} USV
-                    </p>
-                    <p className="text-gray-400 text-sm">
-                      ≈ ${(transaction.amount * 2.0).toFixed(2)}
-                    </p>
-                  </div>
-                </div>
-              </Card>
-            ))}
+        <div className="space-y-3">
+          {/* USV Token Row */}
+          <div className="flex items-center justify-between bg-gray-800/30 rounded-xl p-4 border border-gray-700/30">
+            <div className="flex items-center">
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
+                <span className="text-purple-600 font-bold text-sm">USV</span>
+              </div>
+              <div>
+                <p className="text-white font-medium">Ultra Smooth Token</p>
+                <p className="text-gray-400 text-sm">USV</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-white font-bold">$0.2125</p>
+              <p className="text-green-400 text-sm">+ 12.3%</p>
+            </div>
           </div>
-        )}
+
+          {/* Solana Row */}
+          <div className="flex items-center justify-between bg-gray-800/30 rounded-xl p-4 border border-gray-700/30">
+            <div className="flex items-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-blue-400 rounded-full flex items-center justify-center mr-3">
+                <span className="text-white font-bold text-xs">SOL</span>
+              </div>
+              <div>
+                <p className="text-white font-medium">Solana</p>
+                <p className="text-gray-400 text-sm">SOL</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-white font-bold">$161.25</p>
+              <p className="text-green-400 text-sm">+ 4.9%</p>
+            </div>
+          </div>
+        </div>
       </motion.div>
     </div>
   );

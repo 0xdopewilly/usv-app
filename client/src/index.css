@@ -4,12 +4,13 @@
 @tailwind utilities;
 
 :root {
-  /* USV Brand Colors */
-  --dark-primary: hsl(222, 84%, 4.9%);
-  --dark-secondary: hsl(217, 32.6%, 17.5%);
-  --dark-accent: hsl(215, 27.9%, 33.1%);
-  --electric-blue: hsl(221, 83.2%, 53.3%);
-  --crypto-gold: hsl(45, 93.4%, 47.5%);
+  /* New Purple Gradient Theme */
+  --dark-primary: hsl(235, 25%, 8%);
+  --dark-secondary: hsl(235, 20%, 12%);
+  --dark-accent: hsl(235, 15%, 18%);
+  --purple-primary: hsl(300, 45%, 50%);
+  --purple-secondary: hsl(280, 55%, 45%);
+  --purple-accent: hsl(260, 60%, 40%);
   --success-green: hsl(142, 76%, 36.3%);
   --error-red: hsl(0, 72.2%, 50.6%);
   
@@ -25,11 +26,12 @@
   
   /* Border Colors */
   --border: var(--dark-accent);
-  --border-muted: hsl(215, 27.9%, 25%);
+  --border-muted: hsl(235, 15%, 25%);
   
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, var(--electric-blue), var(--crypto-gold));
-  --gradient-smoke: linear-gradient(45deg, hsla(221, 83.2%, 53.3%, 0.1), hsla(45, 93.4%, 47.5%, 0.1));
+  --gradient-primary: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+  --gradient-purple-dark: linear-gradient(180deg, hsl(300, 45%, 25%) 0%, hsl(235, 25%, 8%) 100%);
+  --gradient-card: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(139, 92, 246, 0.05));
 }
 
 .dark {
@@ -45,9 +47,10 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--background);
+  background: var(--gradient-purple-dark);
   color: var(--text-primary);
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
 /* Smoke Animation Effects */
