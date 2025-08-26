@@ -20,8 +20,8 @@ export default function BottomNavigation() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-black/60 backdrop-blur-lg z-50 safe-bottom">
-      <div className="flex items-center justify-around py-2">
+    <div className="fixed bottom-0 left-0 right-0 bg-gray-800/90 backdrop-blur-xl z-50 safe-bottom rounded-t-3xl mx-4 mb-4">
+      <div className="flex items-center justify-around py-4">
         {navItems.map((item) => {
           const IconComponent = item.icon;
           const isActive = location === item.path;
@@ -34,14 +34,14 @@ export default function BottomNavigation() {
               onClick={() => setLocation(item.path)}
               className={`flex flex-col items-center py-2 px-3 h-auto relative ${
                 item.isCenter 
-                  ? 'bg-pink-500 rounded-2xl w-12 h-12 text-white shadow-lg shadow-pink-500/40' 
+                  ? 'bg-pink-500 rounded-2xl w-14 h-14 text-white shadow-lg shadow-pink-500/40' 
                   : isActive 
                     ? 'text-white' 
                     : 'text-gray-400'
               }`}
               data-testid={`nav-${item.path.replace('/', '')}`}
             >
-              {typeof IconComponent === 'function' ? <IconComponent /> : <IconComponent className={item.isCenter ? "w-5 h-5" : "w-4 h-4"} />}
+              {typeof IconComponent === 'function' ? <IconComponent /> : <IconComponent className={item.isCenter ? "w-6 h-6" : "w-5 h-5"} />}
             </Button>
           );
         })}

@@ -1,27 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MoreHorizontal } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
 import BottomNavigation from '@/components/BottomNavigation';
 
-const chartData = [
-  { value: 4100 },
-  { value: 4050 },
-  { value: 4180 },
-  { value: 4120 },
-  { value: 4215 }
-];
+// Real-time chart data that updates
+const generateRealtimeData = () => {
+  const basePrice = 4215;
+  return Array.from({ length: 20 }, (_, i) => ({
+    time: i,
+    value: basePrice + Math.sin(i * 0.3) * 50 + Math.random() * 30 - 15
+  }));
+};
 
-const solanaChartData = [
-  { value: 5600 },
-  { value: 5720 },
-  { value: 5680 },
-  { value: 5748 }
-];
+const generateSolanaData = () => {
+  const basePrice = 161.25;
+  return Array.from({ length: 20 }, (_, i) => ({
+    time: i,
+    value: basePrice + Math.cos(i * 0.4) * 8 + Math.random() * 6 - 3
+  }));
+};
 
 export default function Home() {
   const [, setLocation] = useLocation();
+  const [chartData, setChartData] = useState(generateRealtimeData());
+  const [solanaChartData, setSolanaChartData] = useState(generateSolanaData());
+
+  // Update charts every 3 seconds for real-time effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setChartData(generateRealtimeData());
+      setSolanaChartData(generateSolanaData());
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 relative pb-20">
@@ -102,15 +116,15 @@ export default function Home() {
               </div>
             </div>
             
-            {/* Mini Chart */}
-            <div className="h-10 mb-3">
+            {/* Real-time Chart */}
+            <div className="h-12 mb-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
                   <Line 
                     type="monotone" 
                     dataKey="value" 
                     stroke="#fff" 
-                    strokeWidth={1.5}
+                    strokeWidth={2}
                     dot={false}
                   />
                 </LineChart>
@@ -142,15 +156,15 @@ export default function Home() {
               </div>
             </div>
             
-            {/* Mini Chart */}
-            <div className="h-10 mb-3">
+            {/* Real-time Chart */}
+            <div className="h-12 mb-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={solanaChartData}>
                   <Line 
                     type="monotone" 
                     dataKey="value" 
                     stroke="#fff" 
-                    strokeWidth={1.5}
+                    strokeWidth={2}
                     dot={false}
                   />
                 </LineChart>
