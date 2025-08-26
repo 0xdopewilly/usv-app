@@ -22,6 +22,12 @@ import QRScan from "@/pages/QRScan";
 import NFTPortfolio from "@/pages/NFTPortfolio";
 import NFTDetail from "@/pages/NFTDetail";
 import Settings from "@/pages/Settings";
+import TradingInterface from "@/pages/TradingInterface";
+import StoreLocator from "@/pages/StoreLocator";
+import ProductCatalog from "@/pages/ProductCatalog";
+import Analytics from "@/pages/Analytics";
+import UserProfile from "@/pages/UserProfile";
+import NotificationCenter from "@/pages/NotificationCenter";
 import NotFoundPage from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -58,6 +64,12 @@ function App() {
                 <Route path="/nft-portfolio" component={NFTPortfolio} />
                 <Route path="/nft/:id" component={NFTDetail} />
                 <Route path="/settings" component={Settings} />
+                <Route path="/trading" component={TradingInterface} />
+                <Route path="/stores" component={StoreLocator} />
+                <Route path="/catalog" component={ProductCatalog} />
+                <Route path="/analytics" component={Analytics} />
+                <Route path="/profile" component={UserProfile} />
+                <Route path="/notifications" component={NotificationCenter} />
                 <Route component={NotFoundPage} />
               </Switch>
             </Router>

@@ -90,6 +90,44 @@ export const vapeStoreSchema = z.object({
   longitude: z.number(),
   isPartner: z.boolean().default(false),
   qrCodes: z.array(z.string()).default([]),
+  phone: z.string().optional(),
+  hours: z.string().optional(),
+  rating: z.number().min(0).max(5).default(4.5),
+  createdAt: z.string().datetime(),
+});
+
+// Product Catalog schema
+export const productSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  price: z.number(),
+  category: z.enum(["pods", "devices", "accessories", "ejuice"]),
+  image: z.string(),
+  inStock: z.boolean().default(true),
+  tokenReward: z.number().default(25),
+  createdAt: z.string().datetime(),
+});
+
+// Analytics schema
+export const analyticsSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  action: z.enum(["claim", "stake", "unstake", "scan", "trade"]),
+  amount: z.number().optional(),
+  metadata: z.record(z.any()).optional(),
+  timestamp: z.string().datetime(),
+});
+
+// Notification schema
+export const notificationSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  title: z.string(),
+  message: z.string(),
+  type: z.enum(["reward", "trade", "security", "general"]),
+  isRead: z.boolean().default(false),
+  actionUrl: z.string().optional(),
   createdAt: z.string().datetime(),
 });
 
@@ -118,3 +156,30 @@ export const withdrawSchema = z.object({
   toAddress: z.string().min(32),
   amount: z.number().positive(),
 });
+
+// Trading schema
+export const tradeOrderSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  type: z.enum(["buy", "sell"]),
+  amount: z.number().positive(),
+  price: z.number().positive(),
+  status: z.enum(["pending", "filled", "cancelled"]),
+  createdAt: z.string().datetime(),
+});
+
+export const createInsertProductSchema = productSchema.omit({ id: true, createdAt: true });
+export type InsertProduct = z.infer<typeof createInsertProductSchema>;
+export type Product = z.infer<typeof productSchema>;
+
+export const createInsertAnalyticsSchema = analyticsSchema.omit({ id: true });
+export type InsertAnalytics = z.infer<typeof createInsertAnalyticsSchema>;
+export type Analytics = z.infer<typeof analyticsSchema>;
+
+export const createInsertNotificationSchema = notificationSchema.omit({ id: true, createdAt: true });
+export type InsertNotification = z.infer<typeof createInsertNotificationSchema>;
+export type Notification = z.infer<typeof notificationSchema>;
+
+export const createInsertTradeOrderSchema = tradeOrderSchema.omit({ id: true, createdAt: true });
+export type InsertTradeOrder = z.infer<typeof createInsertTradeOrderSchema>;
+export type TradeOrder = z.infer<typeof tradeOrderSchema>;

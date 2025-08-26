@@ -1,13 +1,13 @@
 import { useLocation } from 'wouter';
-import { Calendar, QrCode, Image, Settings } from 'lucide-react';
+import { Home, QrCode, Image, Settings, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function BottomNavigation() {
   const [location, setLocation] = useLocation();
 
   const navItems = [
-    { path: '/', icon: () => <div className="w-5 h-5 text-current font-bold flex items-center justify-center">W</div>, label: '' },
-    { path: '/wallet', icon: Calendar, label: '' },
+    { path: '/', icon: Home, label: '' },
+    { path: '/trading', icon: TrendingUp, label: '' },
     { path: '/qr-scan', icon: QrCode, label: '', isCenter: true },
     { path: '/nft-portfolio', icon: Image, label: '' },
     { path: '/settings', icon: Settings, label: '' },
