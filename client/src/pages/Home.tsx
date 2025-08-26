@@ -27,27 +27,12 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-purple-900 via-purple-800 to-purple-700 relative pb-20">
       <BottomNavigation />
       
-      {/* Status Bar */}
-      <div className="flex justify-between items-center pt-3 px-6 text-white text-sm font-medium">
-        <span>09:46</span>
-        <div className="flex items-center space-x-2">
-          <div className="flex space-x-1">
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white/50 rounded-full"></div>
-          </div>
-          <div className="text-xs">📶</div>
-          <div className="text-xs">📶</div>
-          <div className="text-xs">🔋</div>
-        </div>
-      </div>
 
       {/* Header with Profile */}
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="px-6 pt-8 pb-4"
+        className="px-6 pt-12 pb-4"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
