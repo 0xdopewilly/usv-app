@@ -11,6 +11,7 @@ export default function Home() {
   
   const { data: transactions = [] } = useQuery({
     queryKey: ['/api/transactions'],
+    enabled: !!user,
   });
 
   return (
@@ -74,7 +75,7 @@ export default function Home() {
       >
         <h3 className="text-lg font-semibold mb-4 text-white">Recent Activity</h3>
         
-        {transactions.length === 0 ? (
+        {!Array.isArray(transactions) || transactions.length === 0 ? (
           <Card className="p-6 bg-dark-secondary border-dark-accent text-center">
             <p className="text-gray-400 mb-4">No transactions yet</p>
             <p className="text-sm text-gray-500">
@@ -83,7 +84,7 @@ export default function Home() {
           </Card>
         ) : (
           <div className="space-y-3">
-            {transactions.slice(0, 5).map((transaction: any, index: number) => (
+            {Array.isArray(transactions) && transactions.slice(0, 5).map((transaction: any, index: number) => (
               <Card key={transaction.id || index} className="p-4 bg-dark-secondary border-dark-accent">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
