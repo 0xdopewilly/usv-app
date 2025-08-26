@@ -69,9 +69,14 @@ export default function Home() {
         </div>
 
         {/* Connect Wallet Section */}
-        <div className="mb-8">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="mb-8"
+        >
           <ConnectWallet onConnected={(publicKey) => console.log('Wallet connected:', publicKey)} />
-        </div>
+        </motion.div>
       </motion.div>
 
       {/* Main Balance */}

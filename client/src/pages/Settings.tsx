@@ -78,7 +78,7 @@ export default function Settings() {
   ];
 
   return (
-    <div className="min-h-screen bg-dark-primary relative pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black relative pb-20">
       <BottomNavigation />
       
       {/* Header */}
@@ -99,13 +99,13 @@ export default function Settings() {
         className="px-6 space-y-6"
       >
         {/* Profile Section */}
-        <Card className="bg-dark-secondary border-dark-accent overflow-hidden">
+        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Profile</h3>
           </div>
           <div className="p-4">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-electric-blue to-crypto-gold rounded-full flex items-center justify-center">
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-2xl flex items-center justify-center">
                 <span className="text-white font-bold">{user?.fullName?.charAt(0) || 'U'}</span>
               </div>
               <div>
@@ -121,7 +121,7 @@ export default function Settings() {
         </Card>
 
         {/* Language Selection */}
-        <Card className="bg-dark-secondary border-dark-accent overflow-hidden">
+        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Language</h3>
           </div>
@@ -130,7 +130,7 @@ export default function Settings() {
               value={localSettings.preferredLanguage}
               onValueChange={handleLanguageChange}
             >
-              <SelectTrigger className="w-full bg-dark-accent text-white border-0 focus:ring-2 focus:ring-electric-blue">
+              <SelectTrigger className="w-full bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 text-white rounded-2xl focus:ring-2 focus:ring-cyan-400">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-dark-accent border-gray-600">
@@ -144,7 +144,7 @@ export default function Settings() {
         </Card>
         
         {/* Address Book */}
-        <Card className="bg-dark-secondary border-dark-accent overflow-hidden">
+        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Address Book</h3>
           </div>
@@ -159,7 +159,7 @@ export default function Settings() {
         </Card>
         
         {/* Notifications */}
-        <Card className="bg-dark-secondary border-dark-accent overflow-hidden">
+        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Notifications</h3>
           </div>
@@ -172,7 +172,7 @@ export default function Settings() {
                 id="push-notifications"
                 checked={localSettings.pushNotifications}
                 onCheckedChange={(checked) => handleToggle('pushNotifications', checked)}
-                className="data-[state=checked]:bg-electric-blue"
+                className="data-[state=checked]:bg-cyan-400"
                 data-testid="switch-push-notifications"
               />
             </div>
@@ -184,7 +184,7 @@ export default function Settings() {
                 id="email-notifications"
                 checked={localSettings.emailNotifications}
                 onCheckedChange={(checked) => handleToggle('emailNotifications', checked)}
-                className="data-[state=checked]:bg-electric-blue"
+                className="data-[state=checked]:bg-cyan-400"
                 data-testid="switch-email-notifications"
               />
             </div>
@@ -192,7 +192,7 @@ export default function Settings() {
         </Card>
         
         {/* App Customization */}
-        <Card className="bg-dark-secondary border-dark-accent overflow-hidden">
+        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">App Icon</h3>
           </div>
@@ -217,7 +217,7 @@ export default function Settings() {
         </Card>
         
         {/* Security Settings */}
-        <Card className="bg-dark-secondary border-dark-accent overflow-hidden">
+        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Security</h3>
           </div>
@@ -230,7 +230,7 @@ export default function Settings() {
                 id="face-id"
                 checked={localSettings.faceIdEnabled}
                 onCheckedChange={(checked) => handleToggle('faceIdEnabled', checked)}
-                className="data-[state=checked]:bg-electric-blue"
+                className="data-[state=checked]:bg-cyan-400"
                 data-testid="switch-face-id"
               />
             </div>
@@ -242,7 +242,7 @@ export default function Settings() {
                 id="require-auth"
                 checked={localSettings.twoFactorEnabled}
                 onCheckedChange={(checked) => handleToggle('twoFactorEnabled', checked)}
-                className="data-[state=checked]:bg-electric-blue"
+                className="data-[state=checked]:bg-cyan-400"
                 data-testid="switch-require-auth"
               />
             </div>
@@ -258,7 +258,7 @@ export default function Settings() {
         </Card>
 
         {/* Account Actions */}
-        <Card className="bg-dark-secondary border-dark-accent overflow-hidden">
+        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Account</h3>
           </div>

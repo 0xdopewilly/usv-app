@@ -53,33 +53,16 @@ export default function NFTPortfolio() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black relative pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black relative pb-20">
       <BottomNavigation />
       
-      {/* Status Bar */}
-      <div className="flex justify-between items-center pt-12 px-6 text-white text-sm">
-        <span className="font-medium">9:41</span>
-        <div className="flex items-center space-x-1">
-          <div className="flex space-x-1">
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white/50 rounded-full"></div>
-          </div>
-          <div className="flex items-center space-x-1 ml-2">
-            <div className="w-6 h-3 border border-white rounded-sm">
-              <div className="w-4 h-1 bg-white rounded-sm m-0.5"></div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Header */}
       <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="px-6 py-4 flex items-center justify-between"
+        className="px-6 pt-16 pb-4 flex items-center justify-between"
       >
         <ArrowLeft 
           className="w-6 h-6 text-white cursor-pointer" 
@@ -102,7 +85,7 @@ export default function NFTPortfolio() {
             placeholder="Search Items"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-gray-800/50 border-gray-700 text-white pl-12 py-3 rounded-xl focus:border-purple-500"
+            className="w-full bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 text-white pl-12 py-4 rounded-2xl focus:border-cyan-400"
           />
         </div>
       </motion.div>
@@ -124,7 +107,7 @@ export default function NFTPortfolio() {
               onClick={() => setLocation(`/nft/${nft.id}`)}
               className="cursor-pointer"
             >
-              <div className={`bg-gradient-to-b ${nft.bgColor} rounded-2xl p-4 relative overflow-hidden h-64`}>
+              <div className={`bg-gradient-to-b ${nft.bgColor} rounded-3xl p-5 relative overflow-hidden h-72 border-2 border-white/10`}>
                 {/* Smoke effects overlay */}
                 <div className="absolute inset-0 bg-black/20 rounded-2xl" />
                 <div className="absolute inset-0 opacity-30">

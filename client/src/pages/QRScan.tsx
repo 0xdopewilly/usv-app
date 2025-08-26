@@ -111,7 +111,7 @@ export default function QRScan() {
           </p>
           <Button
             onClick={requestCameraPermission}
-            className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-6 py-3"
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-2xl px-8 py-4 font-semibold"
           >
             Try Again
           </Button>
@@ -124,41 +124,24 @@ export default function QRScan() {
     <div className="min-h-screen bg-black relative">
       <BottomNavigation />
       
-      {/* Status Bar */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center pt-12 px-6 text-white text-sm">
-        <span className="font-medium">9:41</span>
-        <div className="flex items-center space-x-1">
-          <div className="flex space-x-1">
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white/50 rounded-full"></div>
-          </div>
-          <div className="flex items-center space-x-1 ml-2">
-            <div className="w-6 h-3 border border-white rounded-sm">
-              <div className="w-4 h-1 bg-white rounded-sm m-0.5"></div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Header */}
       <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="absolute top-20 left-0 right-0 z-20 px-6 py-4"
+        className="absolute top-16 left-0 right-0 z-20 px-6 py-4"
       >
         <div className="flex items-center justify-between">
           <button
             onClick={() => setLocation('/home')}
-            className="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center backdrop-blur"
+            className="w-12 h-12 bg-black/50 rounded-2xl flex items-center justify-center backdrop-blur border border-white/20"
           >
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
           <h1 className="text-white text-lg font-medium">Scan QR Code</h1>
           <button
             onClick={toggleFlash}
-            className="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center backdrop-blur"
+            className="w-12 h-12 bg-black/50 rounded-2xl flex items-center justify-center backdrop-blur border border-white/20"
           >
             {flashOn ? (
               <FlashlightOff className="w-5 h-5 text-yellow-400" />

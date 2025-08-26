@@ -41,7 +41,7 @@ function App() {
           <div className="min-h-screen bg-dark-primary text-white">
             <Router>
               <Switch>
-                <Route path="/" component={LoadingScreen} />
+                <Route path="/" component={Home} />
                 <Route path="/auth-selection" component={AuthSelection} />
                 <Route path="/signup" component={SignupMethod} />
                 <Route path="/signup/email" component={SignupEmail} />
@@ -49,7 +49,7 @@ function App() {
                 <Route path="/captcha" component={CaptchaVerification} />
                 <Route path="/login" component={LoginMethod} />
                 <Route path="/login/email" component={LoginEmail} />
-                <Route path="/home" component={Home} />
+                <Route path="/loading" component={LoadingScreen} />
                 <Route path="/wallet" component={Wallet} />
                 <Route path="/deposit" component={Deposit} />
                 <Route path="/withdraw" component={Withdraw} />
