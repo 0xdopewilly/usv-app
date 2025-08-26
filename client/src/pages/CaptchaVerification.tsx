@@ -54,30 +54,82 @@ export default function CaptchaVerification() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-8 bg-dark-primary">
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-8 z-10"
-      >
-        <h1 className="text-3xl font-bold mb-2 text-white">Verify You're Human</h1>
-        <p className="text-gray-400">Complete the verification below</p>
-      </motion.div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black relative overflow-hidden">
+      {/* Animated background */}
+      <div className="absolute inset-0">
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              background: `radial-gradient(circle, rgba(139, 92, 246, 0.2), transparent)`,
+              width: Math.random() * 100 + 50,
+              height: Math.random() * 100 + 50,
+              left: Math.random() * 100 + '%',
+              top: Math.random() * 100 + '%',
+            }}
+            animate={{
+              y: [0, -Math.random() * 150 - 100],
+              opacity: [0, 0.4, 0],
+              scale: [0.8, 1.2, 0.6],
+            }}
+            transition={{
+              duration: Math.random() * 3 + 2,
+              repeat: Infinity,
+              ease: "easeOut",
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-8">
+        <motion.div
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12"
+        >
+          <motion.h1
+            animate={{
+              textShadow: [
+                "0 0 20px #8b5cf6",
+                "0 0 30px #06b6d4",
+                "0 0 20px #8b5cf6"
+              ]
+            }}
+            transition={{ duration: 2.5, repeat: Infinity }}
+            className="text-4xl font-bold mb-4 text-white"
+            style={{
+              background: 'linear-gradient(45deg, #8b5cf6, #06b6d4)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            Verify You're Human
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-cyan-300 text-lg"
+          >
+            Complete the verification below
+          </motion.p>
+        </motion.div>
       
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="w-full max-w-sm z-10"
-      >
-        <div className="bg-dark-accent p-6 rounded-xl mb-6 border border-gray-600">
+        <motion.div
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="w-full max-w-sm"
+        >
+          <div className="bg-black/40 p-6 rounded-2xl mb-6 border-2 border-purple-500/30 backdrop-blur-sm">
           <div className="flex items-center space-x-3 mb-4">
             <Checkbox
               id="captcha-check"
               checked={isVerified}
               onCheckedChange={(checked) => setIsVerified(!!checked)}
-              className="rounded border-gray-600 bg-dark-primary text-electric-blue focus:ring-electric-blue"
+              className="rounded border-cyan-400/50 bg-black/30 text-cyan-400 focus:ring-cyan-400"
               data-testid="checkbox-captcha"
             />
             <Label htmlFor="captcha-check" className="text-gray-300">
@@ -92,12 +144,13 @@ export default function CaptchaVerification() {
         <Button
           onClick={handleVerification}
           disabled={isLoading}
-          className="w-full bg-gradient-to-r from-electric-blue to-crypto-gold text-white py-4 h-auto text-lg font-semibold glow-button disabled:opacity-50"
+          className="w-full h-16 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-2xl font-semibold text-lg disabled:opacity-50 relative overflow-hidden"
           data-testid="button-verify"
         >
           {isLoading ? 'Verifying...' : 'Verify & Continue'}
         </Button>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }

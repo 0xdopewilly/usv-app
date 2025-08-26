@@ -41,7 +41,7 @@ function App() {
           <div className="min-h-screen bg-dark-primary text-white">
             <Router>
               <Switch>
-                <Route path="/" component={Home} />
+                <Route path="/" component={LoadingScreen} />
                 <Route path="/auth-selection" component={AuthSelection} />
                 <Route path="/signup" component={SignupMethod} />
                 <Route path="/signup/email" component={SignupEmail} />
