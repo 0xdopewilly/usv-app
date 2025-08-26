@@ -1,0 +1,188 @@
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Wallet, Check, ExternalLink } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
+declare global {
+  interface Window {
+    solana?: {
+      isPhantom?: boolean;
+      connect: () => Promise<{ publicKey: { toString: () => string } }>;
+      disconnect: () => Promise<void>;
+      isConnected: boolean;
+      publicKey: { toString: () => string } | null;
+    };
+  }
+}
+
+interface ConnectWalletProps {
+  onConnected?: (publicKey: string) => void;
+  className?: string;
+}
+
+export default function ConnectWallet({ onConnected, className = "" }: ConnectWalletProps) {
+  const [isConnected, setIsConnected] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string>('');
+  const [isPhantomInstalled, setIsPhantomInstalled] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const checkPhantom = () => {
+      if (window.solana && window.solana.isPhantom) {
+        setIsPhantomInstalled(true);
+        // Check if already connected
+        if (window.solana.isConnected && window.solana.publicKey) {
+          setIsConnected(true);
+          setWalletAddress(window.solana.publicKey.toString());
+        }
+      }
+    };
+
+    checkPhantom();
+    
+    // Check again after a short delay for slower loading
+    const timeout = setTimeout(checkPhantom, 1000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  const connectWallet = async () => {
+    try {
+      setIsConnecting(true);
+
+      if (!window.solana || !window.solana.isPhantom) {
+        // Open Phantom wallet website for download
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+          // Mobile deep link to Phantom app or App Store
+          window.location.href = 'https://phantom.app/ul/browse/https://usv-token-app.replit.app?ref=https://usv-token-app.replit.app';
+        } else {
+          // Desktop - open Phantom extension page
+          window.open('https://phantom.app/', '_blank');
+        }
+        
+        toast({
+          title: "Phantom Wallet Required",
+          description: "Please install Phantom wallet to continue",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await window.solana.connect();
+      const publicKey = response.publicKey.toString();
+      
+      setIsConnected(true);
+      setWalletAddress(publicKey);
+      onConnected?.(publicKey);
+
+      toast({
+        title: "Wallet Connected!",
+        description: `Connected to ${publicKey.slice(0, 4)}...${publicKey.slice(-4)}`,
+      });
+
+    } catch (error) {
+      console.error('Failed to connect wallet:', error);
+      toast({
+        title: "Connection Failed",
+        description: "Failed to connect to Phantom wallet",
+        variant: "destructive",
+      });
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const disconnectWallet = async () => {
+    try {
+      if (window.solana) {
+        await window.solana.disconnect();
+      }
+      setIsConnected(false);
+      setWalletAddress('');
+      
+      toast({
+        title: "Wallet Disconnected",
+        description: "Successfully disconnected from Phantom",
+      });
+    } catch (error) {
+      console.error('Failed to disconnect wallet:', error);
+    }
+  };
+
+  if (isConnected) {
+    return (
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className={`flex items-center space-x-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-2 border-green-400/30 rounded-2xl px-4 py-3 backdrop-blur-sm ${className}`}
+      >
+        <div className="flex items-center space-x-2">
+          <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
+          <Check className="w-5 h-5 text-green-400" />
+        </div>
+        <div className="flex-1">
+          <p className="text-white font-medium text-sm">Connected</p>
+          <p className="text-green-400 text-xs">
+            {walletAddress.slice(0, 6)}...{walletAddress.slice(-6)}
+          </p>
+        </div>
+        <Button
+          onClick={disconnectWallet}
+          variant="ghost"
+          size="sm"
+          className="text-white/70 hover:text-white h-8 px-2"
+          data-testid="button-disconnect-wallet"
+        >
+          Disconnect
+        </Button>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={className}
+    >
+      <Button
+        onClick={connectWallet}
+        disabled={isConnecting}
+        className="w-full h-16 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 hover:from-purple-700 hover:via-pink-600 hover:to-orange-600 text-white rounded-2xl font-bold text-lg relative overflow-hidden group shadow-lg shadow-purple-500/25"
+        data-testid="button-connect-wallet"
+      >
+        {/* Animated background shimmer */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0"
+          animate={{ x: ["-100%", "200%"] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+        />
+        
+        <div className="relative z-10 flex items-center justify-center space-x-3">
+          <motion.div
+            animate={isConnecting ? { rotate: 360 } : {}}
+            transition={{ duration: 1, repeat: isConnecting ? Infinity : 0, ease: "linear" }}
+          >
+            <Wallet className="w-6 h-6" />
+          </motion.div>
+          <span className="font-bold">
+            {isConnecting ? 'Connecting...' : 'Connect Phantom Wallet'}
+          </span>
+          {!isPhantomInstalled && (
+            <ExternalLink className="w-4 h-4 ml-2" />
+          )}
+        </div>
+        
+        {/* Glow effect */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-purple-600/50 to-orange-500/50 rounded-2xl blur-lg -z-10"
+          animate={{ opacity: [0.5, 0.8, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+      </Button>
+    </motion.div>
+  );
+}

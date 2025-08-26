@@ -4,6 +4,7 @@ import { MoreHorizontal } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
 import BottomNavigation from '@/components/BottomNavigation';
+import ConnectWallet from '@/components/ConnectWallet';
 
 // Real-time chart data that updates
 const generateRealtimeData = () => {
@@ -48,9 +49,9 @@ export default function Home() {
         animate={{ y: 0, opacity: 1 }}
         className="px-6 pt-12 pb-4"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-white/20">
+            <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-cyan-400/30">
               <img 
                 src="https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=100&h=100&fit=crop&crop=face" 
                 alt="Amanda"
@@ -62,9 +63,14 @@ export default function Home() {
               <p className="text-white font-semibold text-base">Amanda</p>
             </div>
           </div>
-          <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center">
             <MoreHorizontal className="w-5 h-5 text-white" />
           </div>
+        </div>
+
+        {/* Connect Wallet Section */}
+        <div className="mb-8">
+          <ConnectWallet onConnected={(publicKey) => console.log('Wallet connected:', publicKey)} />
         </div>
       </motion.div>
 
@@ -104,7 +110,7 @@ export default function Home() {
           <motion.div
             whileTap={{ scale: 0.98 }}
             onClick={() => setLocation('/wallet')}
-            className="bg-black/40 backdrop-blur-sm rounded-2xl p-4 cursor-pointer"
+            className="bg-black/40 backdrop-blur-sm rounded-3xl p-5 cursor-pointer border border-purple-500/20"
           >
             <div className="flex items-center space-x-2 mb-3">
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
@@ -143,7 +149,7 @@ export default function Home() {
           {/* Solana Card */}
           <motion.div
             whileTap={{ scale: 0.98 }}
-            className="bg-black/40 backdrop-blur-sm rounded-2xl p-4 cursor-pointer"
+            className="bg-black/40 backdrop-blur-sm rounded-3xl p-5 cursor-pointer border border-blue-500/20"
           >
             <div className="flex items-center space-x-2 mb-3">
               <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full flex items-center justify-center">
@@ -196,10 +202,10 @@ export default function Home() {
           <motion.div
             whileTap={{ scale: 0.98 }}
             onClick={() => setLocation('/wallet')}
-            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-xl p-4 cursor-pointer"
+            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-2xl p-5 cursor-pointer border border-gray-600/30"
           >
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center">
                 <span className="text-purple-600 font-bold text-sm">USV</span>
               </div>
               <div>
@@ -216,10 +222,10 @@ export default function Home() {
           {/* Solana Row */}
           <motion.div
             whileTap={{ scale: 0.98 }}
-            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-xl p-4 cursor-pointer"
+            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-2xl p-5 cursor-pointer border border-gray-600/30"
           >
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-blue-400 rounded-2xl flex items-center justify-center">
                 <div className="w-4 h-1 bg-white rounded-full"></div>
                 <div className="w-1 h-4 bg-white rounded-full ml-0.5"></div>
               </div>
