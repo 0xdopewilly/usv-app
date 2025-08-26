@@ -23,7 +23,7 @@ export default function BottomNavigation() {
     <div className="fixed bottom-0 left-0 right-0 bg-black/60 backdrop-blur-lg z-50 safe-bottom">
       <div className="flex items-center justify-around py-2">
         {navItems.map((item) => {
-          const Icon = item.icon;
+          const IconComponent = item.icon;
           const isActive = location === item.path;
           
           return (
@@ -41,7 +41,7 @@ export default function BottomNavigation() {
               }`}
               data-testid={`nav-${item.path.replace('/', '')}`}
             >
-              {typeof Icon === 'function' ? <Icon /> : <Icon className={item.isCenter ? "w-5 h-5" : "w-4 h-4"} />}
+              {typeof IconComponent === 'function' ? <IconComponent /> : <IconComponent className={item.isCenter ? "w-5 h-5" : "w-4 h-4"} />}
             </Button>
           );
         })}
