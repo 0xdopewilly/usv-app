@@ -39,7 +39,7 @@ export default function CaptchaVerification() {
       });
       
       setTimeout(() => {
-        setLocation('/home');
+        setLocation('/');
       }, 1000);
     } catch (error) {
       console.error('Captcha verification error:', error);
