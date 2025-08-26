@@ -45,7 +45,7 @@ export default function SignupApple() {
         description: "Your Apple ID account has been created successfully.",
       });
 
-      setLocation('/home');
+      setLocation('/');
     } catch (error: any) {
       toast({
         title: "Signup Failed",

@@ -66,23 +66,6 @@ export default function Wallet() {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black relative pb-20">
       <BottomNavigation />
       
-      {/* Status Bar */}
-      <div className="flex justify-between items-center pt-12 px-6 text-white text-sm">
-        <span className="font-medium">9:41</span>
-        <div className="flex items-center space-x-1">
-          <div className="flex space-x-1">
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white rounded-full"></div>
-            <div className="w-1 h-1 bg-white/50 rounded-full"></div>
-          </div>
-          <div className="flex items-center space-x-1 ml-2">
-            <div className="w-6 h-3 border border-white rounded-sm">
-              <div className="w-4 h-1 bg-white rounded-sm m-0.5"></div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Header */}
       <motion.div
@@ -93,7 +76,7 @@ export default function Wallet() {
         <div className="flex items-center justify-between">
           <div 
             className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center cursor-pointer"
-            onClick={() => setLocation('/home')}
+            onClick={() => setLocation('/')}
           >
             <ArrowLeft className="w-5 h-5 text-white" />
           </div>

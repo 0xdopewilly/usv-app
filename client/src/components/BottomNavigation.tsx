@@ -6,7 +6,7 @@ export default function BottomNavigation() {
   const [location, setLocation] = useLocation();
 
   const navItems = [
-    { path: '/home', icon: () => <div className="w-5 h-5 text-current font-bold flex items-center justify-center">W</div>, label: '' },
+    { path: '/', icon: () => <div className="w-5 h-5 text-current font-bold flex items-center justify-center">W</div>, label: '' },
     { path: '/wallet', icon: Calendar, label: '' },
     { path: '/qr-scan', icon: QrCode, label: '', isCenter: true },
     { path: '/nft-portfolio', icon: Image, label: '' },

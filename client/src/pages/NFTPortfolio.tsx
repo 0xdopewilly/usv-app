@@ -66,7 +66,7 @@ export default function NFTPortfolio() {
       >
         <ArrowLeft 
           className="w-6 h-6 text-white cursor-pointer" 
-          onClick={() => setLocation('/home')}
+          onClick={() => setLocation('/')}
         />
         <h1 className="text-white text-xl font-semibold">NFTs</h1>
         <div className="w-6 h-6" />

@@ -35,7 +35,7 @@ export default function LoginEmail() {
   const onSubmit = async (data: LoginForm) => {
     try {
       await login(data.email, data.password);
-      setLocation('/home');
+      setLocation('/');
     } catch (error) {
       toast({
         title: "Login Failed",

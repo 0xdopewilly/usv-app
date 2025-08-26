@@ -84,7 +84,7 @@ export default function QRScan() {
         title: "QR Code Detected!",
         description: "USV Vape Pod authenticated successfully",
       });
-      setLocation('/home');
+      setLocation('/');
     }, 1000);
   };
 
@@ -134,7 +134,7 @@ export default function QRScan() {
       >
         <div className="flex items-center justify-between">
           <button
-            onClick={() => setLocation('/home')}
+            onClick={() => setLocation('/')}
             className="w-12 h-12 bg-black/50 rounded-2xl flex items-center justify-center backdrop-blur border border-white/20"
           >
             <ArrowLeft className="w-5 h-5 text-white" />

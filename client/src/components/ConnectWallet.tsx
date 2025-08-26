@@ -151,7 +151,7 @@ export default function ConnectWallet({ onConnected, className = "" }: ConnectWa
       <Button
         onClick={connectWallet}
         disabled={isConnecting}
-        className={`${className.includes('w-16') ? 'w-16 h-16 p-0' : 'w-full h-16'} bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 hover:from-purple-700 hover:via-pink-600 hover:to-orange-600 text-white rounded-2xl font-bold ${className.includes('w-16') ? 'text-xs' : 'text-lg'} relative overflow-hidden group shadow-lg shadow-purple-500/25`}
+        className={`${className?.includes('w-16') ? 'w-16 h-16 p-0' : 'w-full h-16'} bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 hover:from-purple-700 hover:via-pink-600 hover:to-orange-600 text-white rounded-2xl font-bold ${className?.includes('w-16') ? 'text-xs' : 'text-lg'} relative overflow-hidden group shadow-lg shadow-purple-500/25`}
         data-testid="button-connect-wallet"
       >
         {/* Animated background shimmer */}
@@ -161,14 +161,14 @@ export default function ConnectWallet({ onConnected, className = "" }: ConnectWa
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
         />
         
-        <div className={`relative z-10 flex items-center justify-center ${className.includes('w-16') ? '' : 'space-x-3'}`}>
+        <div className={`relative z-10 flex items-center justify-center ${className?.includes('w-16') ? '' : 'space-x-3'}`}>
           <motion.div
             animate={isConnecting ? { rotate: 360 } : {}}
             transition={{ duration: 1, repeat: isConnecting ? Infinity : 0, ease: "linear" }}
           >
-            <Wallet className={className.includes('w-16') ? 'w-5 h-5' : 'w-6 h-6'} />
+            <Wallet className={className?.includes('w-16') ? 'w-5 h-5' : 'w-6 h-6'} />
           </motion.div>
-          {!className.includes('w-16') && (
+          {!className?.includes('w-16') && (
             <>
               <span className="font-bold">
                 {isConnecting ? 'Connecting...' : 'Connect Phantom Wallet'}
