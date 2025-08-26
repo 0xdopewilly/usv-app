@@ -28,6 +28,8 @@ import ProductCatalog from "@/pages/ProductCatalog";
 import Analytics from "@/pages/Analytics";
 import UserProfile from "@/pages/UserProfile";
 import NotificationCenter from "@/pages/NotificationCenter";
+import WalletLogin from "@/pages/WalletLogin";
+import SendTokens from "@/pages/SendTokens";
 import NotFoundPage from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -70,6 +72,8 @@ function App() {
                 <Route path="/analytics" component={Analytics} />
                 <Route path="/profile" component={UserProfile} />
                 <Route path="/notifications" component={NotificationCenter} />
+                <Route path="/wallet-login" component={WalletLogin} />
+                <Route path="/send" component={SendTokens} />
                 <Route component={NotFoundPage} />
               </Switch>
             </Router>

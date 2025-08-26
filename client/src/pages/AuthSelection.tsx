@@ -139,6 +139,25 @@ export default function AuthSelection() {
               <span className="relative z-10">Sign In</span>
             </Button>
           </motion.div>
+
+          {/* Wallet Login Button */}
+          <motion.div
+            whileHover={{ scale: 1.05, y: -5 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button
+              onClick={() => setLocation('/wallet-login')}
+              className="w-full h-16 bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 border-0 rounded-2xl text-white font-semibold text-lg relative overflow-hidden group"
+              data-testid="button-wallet-login"
+            >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"
+                animate={{ x: ["-100%", "100%"] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+              />
+              <span className="relative z-10">🔗 Connect Wallet</span>
+            </Button>
+          </motion.div>
         </motion.div>
 
         {/* Footer */}

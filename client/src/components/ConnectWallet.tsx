@@ -56,8 +56,14 @@ export default function ConnectWallet({ onConnected, className = "" }: ConnectWa
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         
         if (isMobile) {
-          // Mobile deep link to Phantom app or App Store
-          window.location.href = 'https://phantom.app/ul/browse/https://usv-token-app.replit.app?ref=https://usv-token-app.replit.app';
+          // Try to open Phantom app directly, fallback to app store
+          const phantomDeepLink = `phantom://v1/connect?dapp_encryption_public_key=dummy&redirect_link=${encodeURIComponent(window.location.href)}`;
+          window.location.href = phantomDeepLink;
+          
+          // Fallback to app store after a short delay
+          setTimeout(() => {
+            window.location.href = 'https://apps.apple.com/app/phantom-solana-wallet/id1598432977';
+          }, 1000);
         } else {
           // Desktop - open Phantom extension page
           window.open('https://phantom.app/', '_blank');
@@ -71,7 +77,7 @@ export default function ConnectWallet({ onConnected, className = "" }: ConnectWa
         return;
       }
 
-      const response = await window.solana.connect();
+      const response = await window.solana.connect({ onlyIfTrusted: false });
       const publicKey = response.publicKey.toString();
       
       setIsConnected(true);
