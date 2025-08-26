@@ -10,10 +10,7 @@ export default function SignupMethod() {
   const { toast } = useToast();
 
   const handleAppleSignup = () => {
-    toast({
-      title: "Apple ID Signup",
-      description: "Apple ID integration would be implemented here",
-    });
+    setLocation('/signup/apple');
   };
 
   return (

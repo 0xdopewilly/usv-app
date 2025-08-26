@@ -9,6 +9,7 @@ import LoadingScreen from "@/pages/LoadingScreen";
 import AuthSelection from "@/pages/AuthSelection";
 import SignupMethod from "@/pages/SignupMethod";
 import SignupEmail from "@/pages/SignupEmail";
+import SignupApple from "@/pages/SignupApple";
 import CaptchaVerification from "@/pages/CaptchaVerification";
 import LoginMethod from "@/pages/LoginMethod";
 import LoginEmail from "@/pages/LoginEmail";
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/auth" component={AuthSelection} />
                 <Route path="/signup" component={SignupMethod} />
                 <Route path="/signup/email" component={SignupEmail} />
+                <Route path="/signup/apple" component={SignupApple} />
                 <Route path="/captcha" component={CaptchaVerification} />
                 <Route path="/login" component={LoginMethod} />
                 <Route path="/login/email" component={LoginEmail} />
