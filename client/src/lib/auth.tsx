@@ -49,12 +49,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginMutation = useMutation({
     mutationFn: async ({ email, password }: { email: string; password: string }) => {
-      const response = await apiRequest('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      return response;
+      const response = await apiRequest('POST', '/api/auth/login', { email, password });
+      return await response.json();
     },
     onSuccess: (data) => {
       setToken(data.token);
@@ -65,12 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signupMutation = useMutation({
     mutationFn: async (data: SignupData) => {
-      const response = await apiRequest('/api/auth/signup', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      return response;
+      const response = await apiRequest('POST', '/api/auth/signup', data);
+      return await response.json();
     },
     onSuccess: (data) => {
       setToken(data.token);
@@ -109,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider
       value={{
-        user,
+        user: user as User | null,
         token,
         login,
         signup,
