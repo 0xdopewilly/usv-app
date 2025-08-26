@@ -12,7 +12,7 @@ export default function LoadingScreen() {
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(() => {
-            setLocation('/auth-selection');
+            setLocation('/home');
           }, 500);
           return 100;
         }
