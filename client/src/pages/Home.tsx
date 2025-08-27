@@ -205,11 +205,11 @@ export default function Home() {
             className="bg-black/40 backdrop-blur-sm rounded-3xl p-5 cursor-pointer border border-blue-500/20"
           >
             <div className="flex items-center space-x-2 mb-3">
-              <div className="w-8 h-8 rounded-full overflow-hidden">
+              <div className="w-8 h-8 rounded-lg overflow-hidden bg-black p-1">
                 <img 
                   src={solanaLogo} 
                   alt="Solana" 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               </div>
               <div className="flex-1">
@@ -295,11 +295,11 @@ export default function Home() {
             className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-2xl p-5 cursor-pointer border border-gray-600/30"
           >
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-2xl overflow-hidden">
+              <div className="w-12 h-12 rounded-2xl overflow-hidden bg-black p-2">
                 <img 
                   src={solanaLogo} 
                   alt="Solana" 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
               </div>
               <div>
