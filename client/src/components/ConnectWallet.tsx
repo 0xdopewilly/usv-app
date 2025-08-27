@@ -123,27 +123,33 @@ export default function ConnectWallet({ onConnected, className = "" }: ConnectWa
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className={`flex items-center space-x-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-2 border-green-400/30 rounded-2xl px-4 py-3 backdrop-blur-sm ${className}`}
+        className={`bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-2 border-green-400/30 rounded-3xl p-4 backdrop-blur-sm ${className}`}
       >
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
-          <Check className="w-5 h-5 text-green-400" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center">
+                <Check className="w-6 h-6 text-white" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-pulse border-2 border-black"></div>
+            </div>
+            <div>
+              <p className="text-white font-semibold">Phantom Wallet</p>
+              <p className="text-green-400 text-sm font-mono">
+                {walletAddress.slice(0, 6)}...{walletAddress.slice(-6)}
+              </p>
+            </div>
+          </div>
+          <Button
+            onClick={disconnectWallet}
+            variant="outline"
+            size="sm"
+            className="border-red-400/30 text-red-300 hover:bg-red-500/20 hover:text-red-200 h-9 px-3 rounded-xl"
+            data-testid="button-disconnect-wallet"
+          >
+            Disconnect
+          </Button>
         </div>
-        <div className="flex-1">
-          <p className="text-white font-medium text-sm">Connected</p>
-          <p className="text-green-400 text-xs">
-            {walletAddress.slice(0, 6)}...{walletAddress.slice(-6)}
-          </p>
-        </div>
-        <Button
-          onClick={disconnectWallet}
-          variant="ghost"
-          size="sm"
-          className="text-white/70 hover:text-white h-8 px-2"
-          data-testid="button-disconnect-wallet"
-        >
-          Disconnect
-        </Button>
       </motion.div>
     );
   }

@@ -7,6 +7,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import ConnectWallet from '@/components/ConnectWallet';
 import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
 import PriceUpdateIndicator from '@/components/PriceUpdateIndicator';
+import { useAuth } from '@/lib/auth';
 // Use the correct Solana logo from public folder
 const solanaLogoSrc = '/solana-logo.png';
 
@@ -29,6 +30,7 @@ const generateSolanaData = () => {
 
 export default function Home() {
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
   const [chartData, setChartData] = useState(generateRealtimeData());
   const [solanaChartData, setSolanaChartData] = useState(generateSolanaData());
   const [prices, setPrices] = useState<AllPricesResponse | null>(null);
@@ -111,10 +113,13 @@ export default function Home() {
             </div>
             <div>
               <p className="text-white/90 text-sm">Welcome back,</p>
-              <p className="text-white font-semibold text-base">Amanda</p>
+              <p className="text-white font-semibold text-base">{user?.fullName?.split(' ')[0] || 'Amanda'}</p>
             </div>
           </div>
-          <div className="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center">
+          <div 
+            className="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center cursor-pointer"
+            onClick={() => setLocation('/settings')}
+          >
             <MoreHorizontal className="w-5 h-5 text-white" />
           </div>
         </div>

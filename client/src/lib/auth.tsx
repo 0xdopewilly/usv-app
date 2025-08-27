@@ -83,6 +83,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
     localStorage.removeItem('token');
     queryClient.clear();
+    // Clear any wallet connections
+    if (window.solana && window.solana.disconnect) {
+      try {
+        window.solana.disconnect();
+      } catch (error) {
+        console.log('Wallet already disconnected');
+      }
+    }
   };
 
   // Update Authorization header when token changes

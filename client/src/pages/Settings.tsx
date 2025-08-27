@@ -98,23 +98,49 @@ export default function Settings() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="px-6 space-y-6"
       >
-        {/* Profile Section */}
+        {/* Profile Section - Enhanced */}
         <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Profile</h3>
           </div>
-          <div className="p-4">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-cyan-400 rounded-2xl flex items-center justify-center">
-                <span className="text-white font-bold">{user?.fullName?.charAt(0) || 'U'}</span>
+          <div className="p-6">
+            <div className="flex items-center space-x-4 mb-6">
+              <div className="relative">
+                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-purple-400/50">
+                  <img 
+                    src={user?.avatarUrl || '/user-avatar.png'} 
+                    alt={user?.fullName || 'User'}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                      (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                  <div className="w-full h-full bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center hidden">
+                    <span className="text-white font-bold text-xl">{user?.fullName?.charAt(0) || 'U'}</span>
+                  </div>
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 rounded-full border-2 border-black flex items-center justify-center">
+                  <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                </div>
               </div>
-              <div>
-                <p className="font-medium text-white" data-testid="text-user-name">
-                  {user?.fullName || 'User'}
+              <div className="flex-1">
+                <p className="font-semibold text-white text-lg mb-1" data-testid="text-user-name">
+                  {user?.fullName || 'Amanda'}
                 </p>
-                <p className="text-gray-400 text-sm" data-testid="text-user-email">
-                  {user?.email || 'user@example.com'}
+                <p className="text-purple-300 text-sm mb-2" data-testid="text-user-email">
+                  {user?.email || 'amanda@example.com'}
                 </p>
+                <div className="flex items-center space-x-4">
+                  <div className="text-center">
+                    <p className="text-white font-bold text-sm">{user?.balance?.toFixed(0) || '4,216'}</p>
+                    <p className="text-gray-400 text-xs">USV Balance</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-white font-bold text-sm">{user?.stakedBalance?.toFixed(0) || '850'}</p>
+                    <p className="text-gray-400 text-xs">Staked</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
