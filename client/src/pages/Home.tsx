@@ -7,7 +7,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import ConnectWallet from '@/components/ConnectWallet';
 import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
 import PriceUpdateIndicator from '@/components/PriceUpdateIndicator';
-import solanaLogo from '@assets/image_1756294071167.png';
+import solanaLogo from '@assets/image_1756294848309.png';
 
 // Real-time chart data that updates
 const generateRealtimeData = () => {
