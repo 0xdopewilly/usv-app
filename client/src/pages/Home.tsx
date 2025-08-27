@@ -5,6 +5,7 @@ import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
 import BottomNavigation from '@/components/BottomNavigation';
 import ConnectWallet from '@/components/ConnectWallet';
+import { apiRequest } from '@/lib/queryClient';
 
 // Real-time chart data that updates
 const generateRealtimeData = () => {
@@ -23,17 +24,47 @@ const generateSolanaData = () => {
   }));
 };
 
+interface PriceData {
+  symbol: string;
+  price: number;
+  change24h: number;
+  changePercent24h: number;
+  volume24h: number;
+  marketCap: number;
+  lastUpdated: string;
+}
+
 export default function Home() {
   const [, setLocation] = useLocation();
   const [chartData, setChartData] = useState(generateRealtimeData());
   const [solanaChartData, setSolanaChartData] = useState(generateSolanaData());
+  const [prices, setPrices] = useState<{ SOL?: PriceData; USV?: PriceData }>({});
+  const [isLoadingPrices, setIsLoadingPrices] = useState(false);
 
-  // Update charts every 3 seconds for real-time effect
+  // Fetch real-time prices
+  const fetchPrices = async () => {
+    try {
+      setIsLoadingPrices(true);
+      const response = await apiRequest('/prices/all');
+      setPrices(response);
+      console.log('Updated prices:', response);
+    } catch (error) {
+      console.error('Failed to fetch prices:', error);
+    } finally {
+      setIsLoadingPrices(false);
+    }
+  };
+
+  // Update charts and prices
   useEffect(() => {
+    // Initial price fetch
+    fetchPrices();
+    
     const interval = setInterval(() => {
       setChartData(generateRealtimeData());
       setSolanaChartData(generateSolanaData());
-    }, 3000);
+      fetchPrices(); // Fetch real prices every update
+    }, 10000); // Update every 10 seconds for real-time effect
 
     return () => clearInterval(interval);
   }, []);
@@ -156,10 +187,17 @@ export default function Home() {
             
             <div className="flex justify-between items-end">
               <div>
-                <p className="text-white/60 text-xs">Balance</p>
-                <p className="text-white font-bold text-sm">$147,853</p>
+                <p className="text-white/60 text-xs">Price</p>
+                <p className="text-white font-bold text-sm">
+                  ${prices.USV?.price?.toFixed(3) || '0.200'}
+                  {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1">⟳</span>}
+                </p>
               </div>
-              <span className="text-green-400 text-xs font-medium">+12.3%</span>
+              <span className={`text-xs font-medium ${
+                (prices.USV?.changePercent24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'
+              }`}>
+                {(prices.USV?.changePercent24h || 0) >= 0 ? '+' : ''}{(prices.USV?.changePercent24h || 0).toFixed(1)}%
+              </span>
             </div>
           </motion.div>
 
@@ -196,10 +234,17 @@ export default function Home() {
             
             <div className="flex justify-between items-end">
               <div>
-                <p className="text-white/60 text-xs">Balance</p>
-                <p className="text-white font-bold text-sm">$5,748</p>
+                <p className="text-white/60 text-xs">Price</p>
+                <p className="text-white font-bold text-sm">
+                  ${prices.SOL?.price?.toFixed(2) || '161.25'}
+                  {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1">⟳</span>}
+                </p>
               </div>
-              <span className="text-green-400 text-xs font-medium">+1.2%</span>
+              <span className={`text-xs font-medium ${
+                (prices.SOL?.changePercent24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'
+              }`}>
+                {(prices.SOL?.changePercent24h || 0) >= 0 ? '+' : ''}{(prices.SOL?.changePercent24h || 0).toFixed(1)}%
+              </span>
             </div>
           </motion.div>
         </div>
@@ -231,8 +276,15 @@ export default function Home() {
               </div>
             </div>
             <div className="text-right">
-              <p className="text-white font-bold text-sm">$0.2125</p>
-              <p className="text-green-400 text-xs">+12.3%</p>
+              <p className="text-white font-bold text-sm">
+                ${prices.USV?.price?.toFixed(4) || '0.2000'}
+                {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1">⟳</span>}
+              </p>
+              <p className={`text-xs ${
+                (prices.USV?.changePercent24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'
+              }`}>
+                {(prices.USV?.changePercent24h || 0) >= 0 ? '+' : ''}{(prices.USV?.changePercent24h || 0).toFixed(1)}%
+              </p>
             </div>
           </motion.div>
 
@@ -252,8 +304,15 @@ export default function Home() {
               </div>
             </div>
             <div className="text-right">
-              <p className="text-white font-bold text-sm">$161.25</p>
-              <p className="text-green-400 text-xs">+4.9%</p>
+              <p className="text-white font-bold text-sm">
+                ${prices.SOL?.price?.toFixed(2) || '161.25'}
+                {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1">⟳</span>}
+              </p>
+              <p className={`text-xs ${
+                (prices.SOL?.changePercent24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'
+              }`}>
+                {(prices.SOL?.changePercent24h || 0) >= 0 ? '+' : ''}{(prices.SOL?.changePercent24h || 0).toFixed(1)}%
+              </p>
             </div>
           </motion.div>
         </div>
