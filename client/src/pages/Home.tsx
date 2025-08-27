@@ -92,7 +92,7 @@ export default function Home() {
           }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          <ConnectWallet onConnected={(publicKey) => console.log('Wallet connected:', publicKey)} className="w-16 h-16" />
+          <ConnectWallet onConnected={(publicKey) => console.log('Wallet connected:', publicKey)} />
         </motion.div>
       </motion.div>
 

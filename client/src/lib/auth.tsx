@@ -38,7 +38,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(
-    localStorage.getItem('token')
+    typeof window !== 'undefined' ? localStorage.getItem('token') : null
   );
   const queryClient = useQueryClient();
 
@@ -80,9 +80,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    // Clear token and storage first
     setToken(null);
     localStorage.removeItem('token');
+    localStorage.clear(); // Clear all localStorage
+    
+    // Clear query cache
     queryClient.clear();
+    queryClient.resetQueries();
+    
     // Clear any wallet connections
     if (window.solana && window.solana.disconnect) {
       try {
@@ -91,6 +97,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log('Wallet already disconnected');
       }
     }
+    
+    // Force reload to ensure clean state
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 100);
   };
 
   // Update Authorization header when token changes
