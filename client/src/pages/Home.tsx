@@ -7,7 +7,8 @@ import BottomNavigation from '@/components/BottomNavigation';
 import ConnectWallet from '@/components/ConnectWallet';
 import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
 import PriceUpdateIndicator from '@/components/PriceUpdateIndicator';
-import solanaLogo from '@assets/image_1756295562645.png';
+// Import the correct Solana logo
+const solanaLogoSrc = '/attached_assets/image_1756295562645.png';
 
 // Real-time chart data that updates
 const generateRealtimeData = () => {
@@ -207,9 +208,10 @@ export default function Home() {
             <div className="flex items-center space-x-2 mb-3">
               <div className="w-8 h-8 rounded-lg overflow-hidden bg-black p-1">
                 <img 
-                  src={solanaLogo} 
+                  src={solanaLogoSrc} 
                   alt="Solana" 
                   className="w-full h-full object-contain"
+                  onError={(e) => console.error('Logo failed to load:', e)}
                 />
               </div>
               <div className="flex-1">
@@ -297,9 +299,10 @@ export default function Home() {
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 rounded-2xl overflow-hidden bg-black p-2">
                 <img 
-                  src={solanaLogo} 
+                  src={solanaLogoSrc} 
                   alt="Solana" 
                   className="w-full h-full object-contain"
+                  onError={(e) => console.error('Logo failed to load:', e)}
                 />
               </div>
               <div>
