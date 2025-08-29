@@ -53,7 +53,7 @@ export default function NFTPortfolio() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black relative pb-20">
+    <div className="min-h-screen bg-black relative pb-20">
       <BottomNavigation />
       
 
@@ -62,7 +62,7 @@ export default function NFTPortfolio() {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="px-6 pt-16 pb-4 flex items-center justify-between"
+        className="px-6 pt-16 pb-6 flex items-center justify-between"
       >
         <ArrowLeft 
           className="w-6 h-6 text-white cursor-pointer" 
@@ -85,7 +85,7 @@ export default function NFTPortfolio() {
             placeholder="Search Items"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 text-white pl-12 py-4 rounded-2xl focus:border-cyan-400"
+            className="w-full bg-gray-800 border-0 text-white pl-12 py-4 rounded-2xl focus:ring-2 focus:ring-pink-500 placeholder-gray-400"
           />
         </div>
       </motion.div>
@@ -107,57 +107,65 @@ export default function NFTPortfolio() {
               onClick={() => setLocation(`/nft/${nft.id}`)}
               className="cursor-pointer"
             >
-              <div className={`bg-gradient-to-b ${nft.bgColor} rounded-3xl p-5 relative overflow-hidden h-72 border-2 border-white/10`}>
-                {/* Smoke effects overlay */}
-                <div className="absolute inset-0 bg-black/20 rounded-2xl" />
-                <div className="absolute inset-0 opacity-30">
-                  <div className="absolute top-2 left-2 w-8 h-8 bg-white/10 rounded-full blur-sm"></div>
-                  <div className="absolute top-8 right-4 w-6 h-6 bg-white/5 rounded-full blur-md"></div>
-                  <div className="absolute bottom-8 left-6 w-10 h-10 bg-white/5 rounded-full blur-lg"></div>
-                  <div className="absolute bottom-4 right-2 w-4 h-4 bg-white/10 rounded-full blur-sm"></div>
+              <div className={`bg-gradient-to-b ${nft.bgColor} rounded-3xl p-4 relative overflow-hidden h-80 border border-gray-700/30`}>
+                {/* Dark overlay for better contrast */}
+                <div className="absolute inset-0 bg-black/40 rounded-3xl" />
+                
+                {/* Ambient smoke effects */}
+                <div className="absolute inset-0 opacity-20">
+                  <div className="absolute top-4 left-4 w-6 h-6 bg-white/20 rounded-full blur-md animate-pulse"></div>
+                  <div className="absolute top-8 right-6 w-4 h-4 bg-white/10 rounded-full blur-lg"></div>
+                  <div className="absolute bottom-12 left-8 w-8 h-8 bg-white/10 rounded-full blur-xl"></div>
+                  <div className="absolute bottom-6 right-4 w-3 h-3 bg-white/20 rounded-full blur-sm"></div>
                 </div>
                 
                 {/* Content */}
                 <div className="relative z-10 h-full flex flex-col">
-                  {/* Rarity Badge */}
+                  {/* Top Row: Rarity Badge */}
                   <div className="flex justify-end mb-4">
-                    <div className="w-8 h-8 bg-yellow-500 rounded-xl flex items-center justify-center">
+                    <div className="w-8 h-8 bg-yellow-400 rounded-lg flex items-center justify-center shadow-lg">
                       <span className="text-black text-xs font-bold">{nft.rarity}</span>
                     </div>
                   </div>
                   
-                  {/* Vape device illustration */}
-                  <div className="flex-1 flex items-center justify-center mb-4">
+                  {/* Vape Device - Centered */}
+                  <div className="flex-1 flex items-center justify-center mb-6">
                     <div className="relative">
                       {/* Main vape body */}
-                      <div className="w-16 h-32 bg-gradient-to-b from-gray-300 to-gray-600 rounded-lg relative shadow-lg">
+                      <div className="w-14 h-28 bg-gradient-to-b from-gray-200 via-gray-300 to-gray-500 rounded-xl relative shadow-2xl border border-gray-400/30">
                         {/* LED indicator */}
-                        <div className="absolute top-3 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
+                        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-orange-400 rounded-full animate-pulse shadow-lg"></div>
                         
-                        {/* Brand section */}
-                        <div className="absolute top-8 left-1/2 transform -translate-x-1/2 text-center">
-                          <div className="text-black text-xs font-bold bg-white/80 px-2 py-1 rounded">
+                        {/* Brand label */}
+                        <div className="absolute top-6 left-1/2 transform -translate-x-1/2">
+                          <div className="text-black text-[10px] font-bold bg-white/90 px-2 py-0.5 rounded shadow">
                             USV
                           </div>
                         </div>
                         
-                        {/* Button */}
-                        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-10 h-10 bg-gray-800 rounded-full border-2 border-gray-600"></div>
+                        {/* Fire button */}
+                        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gray-700 rounded-full border border-gray-500 shadow-inner"></div>
                         
                         {/* Mouthpiece */}
-                        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-4 bg-gray-400 rounded-t-lg"></div>
+                        <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-6 h-3 bg-gray-300 rounded-t-lg border-t border-gray-400"></div>
                       </div>
                       
-                      {/* Vapor effect */}
-                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                        <div className="w-2 h-8 bg-white/20 rounded-full blur-sm animate-pulse"></div>
+                      {/* Vapor cloud */}
+                      <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
+                        <div className="w-1 h-4 bg-white/30 rounded-full blur-sm animate-pulse"></div>
+                        <div className="w-2 h-2 bg-white/20 rounded-full blur-md animate-bounce"></div>
                       </div>
                     </div>
                   </div>
                   
-                  {/* NFT Info */}
+                  {/* Bottom Info */}
                   <div className="text-center">
-                    <h3 className="text-white font-bold text-sm mb-1">{nft.name}</h3>
+                    <h3 className="text-white font-bold text-sm tracking-wide">{nft.name}</h3>
+                    <div className="flex items-center justify-center mt-2">
+                      <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                        <span className="text-black text-xs font-bold">{nft.rarity}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
