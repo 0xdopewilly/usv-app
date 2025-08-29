@@ -145,7 +145,6 @@ export const signupSchema = z.object({
   fullName: z.string().min(2),
   email: z.string().email(),
   password: z.string().min(8),
-  acceptTerms: z.boolean().refine(val => val === true, "Must accept terms"),
 });
 
 export const verificationSchema = z.object({

@@ -37,10 +37,18 @@ router.post('/auth/signup', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    // Create user
+    // Create user with defaults
     const user = await storage.createUser({
       ...data,
       password: hashedPassword,
+      balance: 0,
+      stakedBalance: 0,
+      isVerified: false,
+      twoFactorEnabled: false,
+      faceIdEnabled: false,
+      pushNotifications: true,
+      emailNotifications: true,
+      preferredLanguage: "en",
     });
 
     // Generate JWT token
