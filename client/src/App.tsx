@@ -10,6 +10,7 @@ import TradingInterface from "@/pages/TradingInterface";
 import QRScan from "@/pages/QRScan";
 import NFTPortfolio from "@/pages/NFTPortfolio";
 import Settings from "@/pages/Settings";
+import Wallet from "@/pages/Wallet";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -54,6 +55,7 @@ function AppRouter() {
     <Router>
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/wallet" component={Wallet} />
         <Route path="/trading" component={TradingInterface} />
         <Route path="/qr-scan" component={QRScan} />
         <Route path="/nft-portfolio" component={NFTPortfolio} />

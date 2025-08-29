@@ -37,12 +37,12 @@ router.post('/auth/signup', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    // Create user with defaults
+    // Create user with defaults - NO MOCK BALANCES
     const user = await storage.createUser({
       ...data,
       password: hashedPassword,
-      balance: 0,
-      stakedBalance: 0,
+      balance: 0,  // Real balance starts at 0
+      stakedBalance: 0,  // Real staked balance starts at 0
       isVerified: false,
       twoFactorEnabled: false,
       faceIdEnabled: false,

@@ -1,5 +1,5 @@
 import { useLocation } from 'wouter';
-import { Home, QrCode, Image, Settings, TrendingUp } from 'lucide-react';
+import { Home, QrCode, Image, Settings, TrendingUp, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function BottomNavigation() {
@@ -7,7 +7,7 @@ export default function BottomNavigation() {
 
   const navItems = [
     { path: '/', icon: Home, label: '' },
-    { path: '/trading', icon: TrendingUp, label: '' },
+    { path: '/wallet', icon: Wallet, label: '' },
     { path: '/qr-scan', icon: QrCode, label: '', isCenter: true },
     { path: '/nft-portfolio', icon: Image, label: '' },
     { path: '/settings', icon: Settings, label: '' },

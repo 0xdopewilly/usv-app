@@ -1,268 +1,294 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Copy, X } from 'lucide-react';
+import { ArrowLeft, Copy, TrendingUp, TrendingDown, Eye, EyeOff } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import BottomNavigation from '@/components/BottomNavigation';
-import { phantomWallet } from '@/lib/phantom';
+import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
+import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 
-const chartData = [
-  { value: 4100, time: '9:00' },
-  { value: 4080, time: '10:00' },
-  { value: 4140, time: '11:00' },
-  { value: 4120, time: '12:00' },
-  { value: 4180, time: '13:00' },
-  { value: 4160, time: '14:00' },
-  { value: 4216, time: '15:00' },
-];
+// Real-time chart data based on actual prices
+const generatePriceChart = (currentPrice: number) => {
+  return Array.from({ length: 24 }, (_, i) => ({
+    time: i,
+    value: currentPrice + Math.sin(i * 0.3) * (currentPrice * 0.02) + Math.random() * (currentPrice * 0.01) - (currentPrice * 0.005)
+  }));
+};
 
 export default function Wallet() {
   const [, setLocation] = useLocation();
-  const [showStakingModal, setShowStakingModal] = useState(false);
-  const [selectedTimeframe, setSelectedTimeframe] = useState('1d');
+  const { user } = useAuth();
   const { toast } = useToast();
+  const [hideBalance, setHideBalance] = useState(false);
+  const [prices, setPrices] = useState<AllPricesResponse | null>(null);
+  const [usvChartData, setUsvChartData] = useState(generatePriceChart(0.20));
+  const [selectedTimeframe, setSelectedTimeframe] = useState('1d');
 
   const timeframes = ['1d', '7d', '1m', '1y'];
-  
-  const walletAddress = "871234HHQ87DHPUHHYH39WRGY";
 
-  const copyAddress = async () => {
-    try {
-      await navigator.clipboard.writeText(walletAddress);
-      toast({
-        title: "Address copied!",
-        description: "Wallet address copied to clipboard",
-      });
-    } catch (error) {
-      toast({
-        title: "Copy failed",
-        description: "Could not copy address to clipboard",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const connectPhantom = async () => {
-    try {
-      const address = await phantomWallet.connectWallet();
-      if (address) {
-        toast({
-          title: "Phantom Connected!",
-          description: `Connected to ${address.slice(0, 4)}...${address.slice(-4)}`,
-        });
+  // Real-time price updates
+  useEffect(() => {
+    const unsubscribe = realTimePriceService.subscribe((newPrices) => {
+      setPrices(newPrices);
+      
+      // Update charts with real price data
+      if (newPrices.USV?.price) {
+        setUsvChartData(generatePriceChart(newPrices.USV.price));
       }
-    } catch (error) {
-      toast({
-        title: "Connection failed",
-        description: "Could not connect to Phantom wallet",
-        variant: "destructive",
-      });
-    }
+    });
+
+    realTimePriceService.startRealTimeUpdates(5000); // Update every 5 seconds
+
+    return () => {
+      unsubscribe();
+      realTimePriceService.stopRealTimeUpdates();
+    };
+  }, []);
+
+  const handleCopyAddress = () => {
+    navigator.clipboard.writeText(user?.walletAddress || '8712345HQA7DHPUHHHY39WRGY');
+    toast({
+      title: "Copied!",
+      description: "Wallet address copied to clipboard",
+    });
   };
+
+  const totalBalance = user?.balance || 0;
+  const usvTokens = totalBalance / (prices?.USV?.price || 0.20);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black relative pb-20">
+    <div className="min-h-screen bg-black relative pb-20">
       <BottomNavigation />
       
-
       {/* Header */}
-      <motion.div
-        initial={{ y: -50, opacity: 0 }}
+      <motion.div 
+        initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="px-6 py-4"
+        className="px-6 pt-12 pb-6"
       >
-        <div className="flex items-center justify-between">
-          <div 
-            className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center cursor-pointer"
+        <div className="flex items-center justify-between mb-8">
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => setLocation('/')}
+            className="text-pink-500 hover:bg-pink-500/20 p-2 rounded-full w-10 h-10"
           >
-            <ArrowLeft className="w-5 h-5 text-white" />
-          </div>
-          <div className="text-center">
-            <h1 className="text-white text-lg font-medium">Ultra Smooth Vape</h1>
-            <p className="text-gray-400 text-sm">USV</p>
-          </div>
-          <div className="w-10 h-10" />
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+          <h1 className="text-white text-lg font-semibold">Ultra Smooth Vape</h1>
+          <div className="text-gray-400 text-sm">USV</div>
         </div>
       </motion.div>
 
       {/* Balance Section */}
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
+      <motion.div 
+        initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="px-6 py-6 text-center"
+        transition={{ delay: 0.1 }}
+        className="px-6 pb-6"
       >
-        <div className="flex items-center justify-center space-x-3 mb-4">
-          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-            <span className="text-purple-600 font-bold text-lg">USV</span>
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center space-x-3 mb-4">
+            <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
+              <div className="text-black font-bold text-lg">USV</div>
+            </div>
+            <h2 className="text-white text-4xl font-bold">
+              {hideBalance ? '••••••' : `$${totalBalance.toFixed(3)}`}
+            </h2>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setHideBalance(!hideBalance)}
+              className="text-gray-400 hover:text-white p-1"
+            >
+              {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </Button>
           </div>
-          <div>
-            <h2 className="text-white text-4xl font-bold">$4,216</h2>
-            <p className="text-green-400 text-sm">
-              <span className="mr-2">↗ +$0.21585</span>
-              <span>+%1.24</span>
-            </p>
-          </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="flex space-x-4 mb-8">
-          <Button 
-            className="flex-1 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl py-3"
-            onClick={connectPhantom}
-          >
-            Receive
-          </Button>
-          <Button 
-            variant="outline" 
-            className="flex-1 border-gray-600 text-white rounded-2xl py-3 bg-transparent hover:bg-gray-800"
-          >
-            Sent
-          </Button>
+          {/* Price Change */}
+          {prices?.USV && (
+            <div className="flex items-center justify-center space-x-2 mb-6">
+              <div className={`flex items-center space-x-1 ${
+                prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'
+              }`}>
+                {prices.USV.changePercent24h >= 0 ? (
+                  <TrendingUp className="w-4 h-4" />
+                ) : (
+                  <TrendingDown className="w-4 h-4" />
+                )}
+                <span className="font-medium">
+                  {prices.USV.changePercent24h >= 0 ? '+' : ''}{prices.USV.changePercent24h.toFixed(2)}%
+                </span>
+              </div>
+              <span className="text-gray-400">•</span>
+              <span className="text-gray-400">$1.24</span>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex items-center justify-center space-x-4">
+            <Button className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-2xl">
+              Receive
+            </Button>
+            <Button 
+              variant="outline" 
+              className="border-gray-600 text-white hover:bg-white/10 px-8 py-3 rounded-2xl"
+            >
+              Sent
+            </Button>
+          </div>
         </div>
       </motion.div>
 
-      {/* Chart Section */}
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        className="px-6 mb-6"
-      >
-        {/* Timeframe Selector */}
-        <div className="flex space-x-2 mb-4">
-          {timeframes.map((timeframe) => (
-            <button
-              key={timeframe}
-              onClick={() => setSelectedTimeframe(timeframe)}
-              className={`px-4 py-2 rounded-xl text-sm ${
-                selectedTimeframe === timeframe
-                  ? 'bg-gray-700 text-white'
-                  : 'bg-gray-800 text-gray-400'
+      {/* Time Period Buttons */}
+      <div className="px-6 mb-6">
+        <div className="flex items-center justify-center space-x-2">
+          {timeframes.map((period) => (
+            <Button
+              key={period}
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelectedTimeframe(period)}
+              className={`px-4 py-2 rounded-xl ${
+                period === selectedTimeframe 
+                  ? 'bg-gray-700 text-white' 
+                  : 'text-gray-400 hover:text-white hover:bg-gray-800'
               }`}
             >
-              {timeframe}
-            </button>
+              {period}
+            </Button>
           ))}
         </div>
+      </div>
 
-        {/* Chart */}
-        <div className="h-48 bg-gray-900/50 rounded-2xl p-4">
+      {/* Price Chart */}
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="px-6 mb-8"
+      >
+        <div className="h-48 bg-gradient-to-r from-transparent to-transparent">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
+            <LineChart data={usvChartData}>
               <Line 
                 type="monotone" 
                 dataKey="value" 
-                stroke="#fff" 
+                stroke="#ec4899" 
                 strokeWidth={2}
-                dot={{ fill: '#fff', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, fill: '#fff' }}
+                dot={false}
               />
             </LineChart>
           </ResponsiveContainer>
         </div>
       </motion.div>
 
-      {/* Copy Address Section */}
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
+      {/* Wallet Address */}
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="px-6 mb-6"
+        transition={{ delay: 0.3 }}
+        className="px-6 mb-8"
       >
-        <div className="bg-gray-800/50 rounded-2xl p-4">
+        <div className="bg-gray-900 rounded-2xl p-4">
+          <h3 className="text-white font-medium mb-3">Copy USV address</h3>
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-gray-400 text-sm mb-1">Copy USV address</p>
-              <p className="text-white font-mono text-sm">{walletAddress}</p>
-            </div>
-            <button
-              onClick={copyAddress}
-              className="w-10 h-10 bg-gray-700 rounded-xl flex items-center justify-center"
+            <span className="text-gray-400 text-sm font-mono">
+              {user?.walletAddress || '8712345HQA7DHPUHHHY39WRGY'}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleCopyAddress}
+              className="text-gray-400 hover:text-white p-2"
             >
-              <Copy className="w-5 h-5 text-white" />
-            </button>
+              <Copy className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       </motion.div>
 
       {/* Action Buttons */}
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="px-6"
+        transition={{ delay: 0.4 }}
+        className="px-6 grid grid-cols-2 gap-4 mb-8"
       >
-        <div className="flex space-x-4">
-          <Button 
-            variant="outline"
-            className="flex-1 border-gray-600 text-white rounded-2xl py-3 bg-transparent hover:bg-gray-800"
-            onClick={() => setShowStakingModal(true)}
-          >
-            Stake
-          </Button>
-          <Button 
-            className="flex-1 bg-purple-600 hover:bg-purple-700 text-white rounded-2xl py-3"
-            onClick={() => setLocation('/nft-portfolio')}
-          >
-            Pods
-          </Button>
-        </div>
+        <Button 
+          variant="outline"
+          className="border-gray-600 text-white hover:bg-white/10 py-4 rounded-2xl flex items-center justify-center space-x-2"
+        >
+          <span>Stake</span>
+        </Button>
+        <Button className="bg-pink-500 hover:bg-pink-600 text-white py-4 rounded-2xl flex items-center justify-center space-x-2">
+          <span>Pods</span>
+        </Button>
       </motion.div>
 
-      {/* Staking Modal */}
-      {showStakingModal && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-6"
-          onClick={() => setShowStakingModal(false)}
-        >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="bg-gray-900 rounded-2xl p-6 w-full max-w-sm relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setShowStakingModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center"
-            >
-              <X className="w-4 h-4 text-white" />
-            </button>
-
-            <div className="text-center">
-              <h3 className="text-white text-lg font-semibold mb-6">Your staking order</h3>
-              
-              <div className="flex items-center justify-center space-x-4 mb-6">
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
-                  <span className="text-purple-600 font-bold text-xl">USV</span>
-                </div>
-                <div className="text-left">
-                  <p className="text-white text-3xl font-bold">400.00</p>
-                  <p className="text-purple-400 text-lg">5% <span className="text-gray-400">per year</span></p>
-                </div>
+      {/* Assets List */}
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        className="px-6"
+      >
+        <h3 className="text-white font-medium mb-4">Assets</h3>
+        
+        {/* USV Token */}
+        <div className="bg-gray-900 rounded-2xl p-4 mb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
+                <div className="text-black font-bold text-sm">USV</div>
               </div>
-              
-              <div className="text-green-400 text-2xl font-bold mb-8">COMPLETE</div>
-              
-              <div className="text-left">
-                <h4 className="text-white text-lg font-semibold mb-2">Earn Rewards by Staking</h4>
-                <h4 className="text-white text-lg font-semibold mb-4">Your USV Tokens!</h4>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  Maximize your benefits by staking USV tokens on our platform. With up to 6% APY, 
-                  staking rewards increase based on your NFT collection size, giving you more for your 
-                  loyalty. Start staking today and enjoy steady growth while supporting a secure and 
-                  innovative ecosystem.
-                </p>
+              <div>
+                <p className="text-white font-medium">USV Token</p>
+                <p className="text-gray-400 text-sm">{usvTokens.toFixed(5)} USV</p>
               </div>
             </div>
-          </motion.div>
-        </motion.div>
-      )}
+            <div className="text-right">
+              <p className="text-white font-medium">${totalBalance.toFixed(3)}</p>
+              {prices?.USV && (
+                <p className={`text-sm ${
+                  prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'
+                }`}>
+                  {prices.USV.changePercent24h >= 0 ? '+' : ''}{prices.USV.changePercent24h.toFixed(1)}%
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* SOL Token (if user has any) */}
+        {user?.balance && user.balance > 0 && (
+          <div className="bg-gray-900 rounded-2xl p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl flex items-center justify-center">
+                  <div className="text-white font-bold text-sm">SOL</div>
+                </div>
+                <div>
+                  <p className="text-white font-medium">Solana</p>
+                  <p className="text-gray-400 text-sm">0.00000 SOL</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-white font-medium">$0.00</p>
+                {prices?.SOL && (
+                  <p className={`text-sm ${
+                    prices.SOL.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {prices.SOL.changePercent24h >= 0 ? '+' : ''}{prices.SOL.changePercent24h.toFixed(1)}%
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </motion.div>
     </div>
   );
 }

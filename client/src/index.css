@@ -59,8 +59,8 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background: var(--gradient-purple-dark);
-  color: var(--text-primary);
+  background: #000000;  /* Pure black like reference image */
+  color: #ffffff;  /* Pure white text */
   overflow-x: hidden;
   min-height: 100vh;
 }

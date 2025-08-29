@@ -10,28 +10,26 @@ import { useAuth } from '@/lib/auth';
 // Use the correct Solana logo from public folder
 const solanaLogoSrc = '/solana-logo.png';
 
-// Real-time chart data that updates
-const generateRealtimeData = () => {
-  const basePrice = 4215;
+// Real-time chart data that updates based on actual prices
+const generateRealtimeData = (currentPrice: number) => {
   return Array.from({ length: 20 }, (_, i) => ({
     time: i,
-    value: basePrice + Math.sin(i * 0.3) * 50 + Math.random() * 30 - 15
+    value: currentPrice + Math.sin(i * 0.3) * (currentPrice * 0.02) + Math.random() * (currentPrice * 0.01) - (currentPrice * 0.005)
   }));
 };
 
-const generateSolanaData = () => {
-  const basePrice = 161.25;
+const generateSolanaData = (currentPrice: number) => {
   return Array.from({ length: 20 }, (_, i) => ({
     time: i,
-    value: basePrice + Math.cos(i * 0.4) * 8 + Math.random() * 6 - 3
+    value: currentPrice + Math.cos(i * 0.4) * (currentPrice * 0.02) + Math.random() * (currentPrice * 0.01) - (currentPrice * 0.005)
   }));
 };
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
-  const [chartData, setChartData] = useState(generateRealtimeData());
-  const [solanaChartData, setSolanaChartData] = useState(generateSolanaData());
+  const [chartData, setChartData] = useState(generateRealtimeData(0.20));
+  const [solanaChartData, setSolanaChartData] = useState(generateSolanaData(200));
   const [prices, setPrices] = useState<AllPricesResponse | null>(null);
   const [isLoadingPrices, setIsLoadingPrices] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
@@ -49,11 +47,15 @@ export default function Home() {
     // Start the real-time price service
     realTimePriceService.startRealTimeUpdates(8000); // Update every 8 seconds
 
-    // Update charts every 3 seconds
+    // Update charts when prices change
     const chartInterval = setInterval(() => {
-      setChartData(generateRealtimeData());
-      setSolanaChartData(generateSolanaData());
-    }, 3000);
+      if (prices?.USV?.price) {
+        setChartData(generateRealtimeData(prices.USV.price));
+      }
+      if (prices?.SOL?.price) {
+        setSolanaChartData(generateSolanaData(prices.SOL.price));
+      }
+    }, 5000);
 
     return () => {
       unsubscribe();
@@ -63,15 +65,9 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 relative pb-20">
+    <div className="min-h-screen bg-black relative pb-20">
       <BottomNavigation />
       
-      {/* Real-time Price Update Indicator */}
-      <PriceUpdateIndicator 
-        isUpdating={isLoadingPrices}
-        lastUpdated={lastUpdated}
-        changePercent={prices?.SOL?.changePercent24h || 0}
-      />
       
 
       {/* Header with Profile */}
@@ -112,17 +108,27 @@ export default function Home() {
         className="px-6 pb-6"
       >
         <div className="text-center">
-          <h1 className="text-white text-5xl font-bold mb-3">$4,215</h1>
+          <h1 className="text-white text-5xl font-bold mb-3">
+            ${user?.balance?.toFixed(2) || '0.00'}
+          </h1>
           <div className="flex items-center justify-center space-x-6">
-            <div className="flex items-center space-x-1">
-              <div className="text-green-400 text-sm">↗</div>
-              <span className="text-green-400 text-sm font-medium">6.3%</span>
-            </div>
+            {prices?.USV && (
+              <div className="flex items-center space-x-1">
+                <div className={`text-sm ${prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {prices.USV.changePercent24h >= 0 ? '↗' : '↘'}
+                </div>
+                <span className={`text-sm font-medium ${prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {prices.USV.changePercent24h >= 0 ? '+' : ''}{prices.USV.changePercent24h.toFixed(1)}%
+                </span>
+              </div>
+            )}
             <div className="flex items-center space-x-1">
               <div className="w-4 h-4 bg-white/20 rounded-md flex items-center justify-center">
                 <div className="w-2 h-2 bg-white rounded-sm"></div>
               </div>
-              <span className="text-white/80 text-sm">0.21585</span>
+              <span className="text-white/80 text-sm">
+                {user?.balance ? (user.balance / (prices?.USV?.price || 0.20)).toFixed(5) : '0.00000'} USV
+              </span>
             </div>
           </div>
         </div>
