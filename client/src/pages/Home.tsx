@@ -74,26 +74,17 @@ export default function Home() {
         changePercent={prices?.SOL?.changePercent24h || 0}
       />
       
-      {/* Floating Connect Wallet Button */}
+      {/* Compact Connect Wallet Button */}
       <motion.div
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ duration: 1, type: "spring", bounce: 0.5 }}
-        className="fixed top-6 right-6 z-50"
+        className="fixed top-4 right-4 z-50"
       >
-        <motion.div
-          animate={{ 
-            y: [0, -8, 0],
-            boxShadow: [
-              "0 0 20px rgba(139, 92, 246, 0.3)",
-              "0 0 40px rgba(139, 92, 246, 0.6)",
-              "0 0 20px rgba(139, 92, 246, 0.3)"
-            ]
-          }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <ConnectWallet onConnected={(publicKey) => console.log('Wallet connected:', publicKey)} />
-        </motion.div>
+        <ConnectWallet 
+          onConnected={(publicKey) => console.log('Wallet connected:', publicKey)} 
+          className="w-12 h-12"
+        />
       </motion.div>
 
       {/* Header with Profile */}
