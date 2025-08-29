@@ -1,36 +1,16 @@
+import { useState, useEffect } from 'react';
 import { Route, Switch, Router } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider } from "@/lib/auth";
-import { WalletProvider } from "@/lib/wallet";
-
-// Import all pages
-import LoadingScreen from "@/pages/LoadingScreen";
-import AuthSelection from "@/pages/AuthSelection";
-import SignupMethod from "@/pages/SignupMethod";
-import SignupEmail from "@/pages/SignupEmail";
-import SignupApple from "@/pages/SignupApple";
-import CaptchaVerification from "@/pages/CaptchaVerification";
-import LoginMethod from "@/pages/LoginMethod";
-import LoginEmail from "@/pages/LoginEmail";
+import { AuthProvider, useAuth } from "@/lib/auth";
+import LoadingScreen from "@/components/LoadingScreen";
+import AuthPage from "@/pages/AuthPage";
 import Home from "@/pages/Home";
-import Wallet from "@/pages/Wallet";
-import Deposit from "@/pages/Deposit";
-import Withdraw from "@/pages/Withdraw";
-import SecurityVerification from "@/pages/SecurityVerification";
+import TradingInterface from "@/pages/TradingInterface";
 import QRScan from "@/pages/QRScan";
 import NFTPortfolio from "@/pages/NFTPortfolio";
-import NFTDetail from "@/pages/NFTDetail";
 import Settings from "@/pages/Settings";
-import TradingInterface from "@/pages/TradingInterface";
-import StoreLocator from "@/pages/StoreLocator";
-import ProductCatalog from "@/pages/ProductCatalog";
-import Analytics from "@/pages/Analytics";
-import UserProfile from "@/pages/UserProfile";
-import NotificationCenter from "@/pages/NotificationCenter";
-import WalletLogin from "@/pages/WalletLogin";
-import SendTokens from "@/pages/SendTokens";
-import NotFoundPage from "@/pages/not-found";
+import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,45 +21,57 @@ const queryClient = new QueryClient({
   },
 });
 
+function AppRouter() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const [showLoading, setShowLoading] = useState(true);
+
+  // Show loading screen for 3 seconds on app start
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Show loading screen initially
+  if (showLoading) {
+    return <LoadingScreen />;
+  }
+
+  // Show auth page if not authenticated
+  if (!isLoading && !isAuthenticated) {
+    return <AuthPage />;
+  }
+
+  // Show loading while checking auth
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  // Main authenticated app routes
+  return (
+    <Router>
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/trading" component={TradingInterface} />
+        <Route path="/qr-scan" component={QRScan} />
+        <Route path="/nft-portfolio" component={NFTPortfolio} />
+        <Route path="/settings" component={Settings} />
+        <Route component={NotFound} />
+      </Switch>
+    </Router>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <WalletProvider>
-          <div className="min-h-screen bg-dark-primary text-white">
-            <Router>
-              <Switch>
-                <Route path="/" component={Home} />
-                <Route path="/auth-selection" component={AuthSelection} />
-                <Route path="/signup" component={SignupMethod} />
-                <Route path="/signup/email" component={SignupEmail} />
-                <Route path="/signup/apple" component={SignupApple} />
-                <Route path="/captcha" component={CaptchaVerification} />
-                <Route path="/login" component={LoginMethod} />
-                <Route path="/login/email" component={LoginEmail} />
-                <Route path="/loading" component={LoadingScreen} />
-                <Route path="/wallet" component={Wallet} />
-                <Route path="/deposit" component={Deposit} />
-                <Route path="/withdraw" component={Withdraw} />
-                <Route path="/security" component={SecurityVerification} />
-                <Route path="/qr-scan" component={QRScan} />
-                <Route path="/nft-portfolio" component={NFTPortfolio} />
-                <Route path="/nft/:id" component={NFTDetail} />
-                <Route path="/settings" component={Settings} />
-                <Route path="/trading" component={TradingInterface} />
-                <Route path="/stores" component={StoreLocator} />
-                <Route path="/catalog" component={ProductCatalog} />
-                <Route path="/analytics" component={Analytics} />
-                <Route path="/profile" component={UserProfile} />
-                <Route path="/notifications" component={NotificationCenter} />
-                <Route path="/wallet-login" component={WalletLogin} />
-                <Route path="/send" component={SendTokens} />
-                <Route component={NotFoundPage} />
-              </Switch>
-            </Router>
-            <Toaster />
-          </div>
-        </WalletProvider>
+        <div className="min-h-screen bg-dark-primary text-white">
+          <AppRouter />
+          <Toaster />
+        </div>
       </AuthProvider>
     </QueryClientProvider>
   );

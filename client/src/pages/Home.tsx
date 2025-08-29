@@ -4,7 +4,6 @@ import { MoreHorizontal } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
 import BottomNavigation from '@/components/BottomNavigation';
-import ConnectWallet from '@/components/ConnectWallet';
 import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
 import PriceUpdateIndicator from '@/components/PriceUpdateIndicator';
 import { useAuth } from '@/lib/auth';
@@ -74,18 +73,6 @@ export default function Home() {
         changePercent={prices?.SOL?.changePercent24h || 0}
       />
       
-      {/* Compact Connect Wallet Button */}
-      <motion.div
-        initial={{ scale: 0, rotate: -180 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ duration: 1, type: "spring", bounce: 0.5 }}
-        className="fixed top-4 right-4 z-50"
-      >
-        <ConnectWallet 
-          onConnected={(publicKey) => console.log('Wallet connected:', publicKey)} 
-          className="w-12 h-12"
-        />
-      </motion.div>
 
       {/* Header with Profile */}
       <motion.div 
