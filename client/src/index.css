@@ -3,6 +3,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* USV Token App Theme - Dark Purple/Magenta Gradient */
+:root {
+  --gradient-primary: linear-gradient(135deg, #2d1b69 0%, #6b46c1 50%, #a855f7 100%);
+  --gradient-secondary: linear-gradient(135deg, #4c1d95 0%, #7c3aed 50%, #c084fc 100%);
+  --gradient-accent: linear-gradient(135deg, #581c87 0%, #8b5cf6 50%, #d8b4fe 100%);
+  --color-primary: #6b46c1;
+  --color-secondary: #a855f7;
+  --color-accent: #c084fc;
+  --color-dark: #1a1a1a;
+  --color-darker: #0f0f0f;
+}
+
 :root {
   /* New Purple Gradient Theme */
   --dark-primary: hsl(235, 25%, 8%);

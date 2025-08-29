@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 export default function LoadingScreen() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-black flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 flex items-center justify-center">
       {/* Main Loading Content */}
       <div className="flex flex-col items-center space-y-8">
         

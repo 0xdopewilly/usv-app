@@ -78,7 +78,7 @@ export default function Settings() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black relative pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 relative pb-20">
       <BottomNavigation />
       
       {/* Header */}

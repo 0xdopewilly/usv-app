@@ -48,7 +48,7 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-black flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 flex items-center justify-center p-6">
       
       {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden">
@@ -195,6 +195,13 @@ export default function AuthPage() {
           {/* Apple Sign In */}
           <Button
             variant="outline"
+            onClick={() => {
+              toast({
+                title: "Apple Sign-In",
+                description: "Apple ID authentication coming soon! Please use email for now.",
+                variant: "default",
+              });
+            }}
             className="w-full bg-black/40 border-gray-600 text-white py-4 rounded-2xl hover:bg-black/60 transition-all duration-300"
             data-testid="button-apple-signin"
           >
@@ -205,6 +212,13 @@ export default function AuthPage() {
           {/* Email Sign In */}
           <Button
             variant="outline"
+            onClick={() => {
+              toast({
+                title: "Email Sign-In",
+                description: "Use the form above to sign in with your email address.",
+                variant: "default",
+              });
+            }}
             className="w-full bg-gray-800/40 border-gray-600 text-white py-4 rounded-2xl hover:bg-gray-800/60 transition-all duration-300"
             data-testid="button-email-signin"
           >
@@ -217,12 +231,15 @@ export default function AuthPage() {
             <ConnectWallet 
               onConnected={(publicKey) => {
                 toast({
-                  title: "Wallet Connected!",
-                  description: `Connected to ${publicKey.slice(0, 8)}...`,
+                  title: "Wallet Connected! (Devnet)",
+                  description: `Connected to ${publicKey.slice(0, 8)}... on Solana Devnet`,
                 });
               }}
               className="w-full"
             />
+            <p className="text-center text-xs text-gray-500 mt-2">
+              ⚡ Currently using Solana Devnet for testing
+            </p>
           </div>
         </motion.div>
 
