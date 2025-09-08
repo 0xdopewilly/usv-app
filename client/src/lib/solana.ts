@@ -4,24 +4,137 @@ import { createTransferInstruction, getAssociatedTokenAddress, createAssociatedT
 // USV Token Configuration
 export const USV_TOKEN_MINT = new PublicKey('8zGuJQqwhZafTah7Uc7Z4tXRnguqkn5KLFAP8oV6PHe2'); // Example mint address
 export const USV_DECIMALS = 6;
-export const SOLANA_NETWORK = 'devnet'; // Change to 'mainnet-beta' for production
+export const SOLANA_NETWORK = 'devnet'; // Using devnet for real testing
 
-// Connection setup
-export const connection = new Connection(clusterApiUrl(SOLANA_NETWORK), 'confirmed');
+// REAL Solana connection
+export const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
+export const solanaConnection = connection; // Alias for compatibility
 
-// Simplified Solana service for USV Token
+// Enhanced Phantom Wallet Detection
+const getPhantomWallet = () => {
+  if (typeof window !== 'undefined') {
+    // @ts-ignore
+    return window.phantom?.solana || window.solana;
+  }
+  return null;
+};
+
+// Enhanced Solana Global Interface
 declare global {
   interface Window {
-    solana?: {
-      isPhantom?: boolean;
-      connect: () => Promise<{ publicKey: { toString: () => string } }>;
-      disconnect: () => Promise<void>;
-      isConnected: boolean;
-      publicKey: { toString: () => string } | null;
+    phantom?: {
+      solana?: PhantomProvider;
     };
+    solana?: PhantomProvider;
   }
 }
 
+interface PhantomProvider {
+  isPhantom?: boolean;
+  publicKey?: PublicKey | null;
+  isConnected?: boolean;
+  connect(): Promise<{ publicKey: PublicKey }>;
+  disconnect(): Promise<void>;
+  signTransaction(transaction: Transaction): Promise<Transaction>;
+  signAllTransactions(transactions: Transaction[]): Promise<Transaction[]>;
+  signAndSendTransaction(transaction: Transaction): Promise<{ signature: string }>;
+  on(event: string, callback: Function): void;
+  request(method: string, params?: any): Promise<any>;
+}
+
+// REAL Phantom Wallet Connection Class
+class PhantomWalletConnection {
+  private phantom: PhantomProvider | null;
+  public isConnected: boolean = false;
+  public publicKey: PublicKey | null = null;
+
+  constructor() {
+    this.phantom = getPhantomWallet();
+  }
+
+  // Check if Phantom is installed
+  isInstalled(): boolean {
+    return this.phantom !== null && this.phantom.isPhantom === true;
+  }
+
+  // REAL connection to Phantom wallet
+  async connect(): Promise<{ success: boolean; publicKey?: string; error?: string }> {
+    try {
+      if (!this.phantom) {
+        return {
+          success: false,
+          error: 'Phantom wallet not installed. Please install Phantom browser extension.'
+        };
+      }
+
+      const response = await this.phantom.connect();
+      this.publicKey = response.publicKey;
+      this.isConnected = true;
+      
+      console.log('🦄 Phantom wallet connected:', response.publicKey.toString());
+      
+      return {
+        success: true,
+        publicKey: response.publicKey.toString()
+      };
+    } catch (error: any) {
+      console.error('Phantom connection error:', error);
+      return {
+        success: false,
+        error: error.message || 'Failed to connect to Phantom wallet'
+      };
+    }
+  }
+
+  // Disconnect Phantom wallet
+  async disconnect(): Promise<void> {
+    if (this.phantom && this.isConnected) {
+      await this.phantom.disconnect();
+      this.isConnected = false;
+      this.publicKey = null;
+      console.log('🦄 Phantom wallet disconnected');
+    }
+  }
+
+  // Get REAL SOL balance from Phantom wallet
+  async getBalance(): Promise<number> {
+    if (!this.publicKey) return 0;
+    
+    try {
+      const balance = await connection.getBalance(this.publicKey);
+      return balance / LAMPORTS_PER_SOL;
+    } catch (error) {
+      console.error('Failed to get Phantom balance:', error);
+      return 0;
+    }
+  }
+
+  // REAL transaction signing and sending
+  async signAndSendTransaction(transaction: Transaction): Promise<string> {
+    if (!this.phantom || !this.publicKey) {
+      throw new Error('Phantom wallet not connected');
+    }
+
+    try {
+      const response = await this.phantom.signAndSendTransaction(transaction);
+      console.log('🦄 Transaction sent:', response.signature);
+      return response.signature;
+    } catch (error: any) {
+      console.error('Transaction failed:', error);
+      throw new Error(`Transaction failed: ${error.message}`);
+    }
+  }
+
+  // Get current connected address
+  getAddress(): string | null {
+    return this.publicKey?.toString() || null;
+  }
+}
+
+// Export singleton instance
+export const phantomWallet = new PhantomWalletConnection();
+
+// Legacy SolanaService for backward compatibility
 export class SolanaService {
   constructor() {
     // Initialize service
@@ -29,42 +142,35 @@ export class SolanaService {
 
   // Check if Phantom wallet is installed
   isWalletInstalled(): boolean {
-    return !!(window.solana && window.solana.isPhantom);
+    return phantomWallet.isInstalled();
   }
 
   // Connect to Phantom wallet
   async connectWallet(): Promise<string | null> {
-    if (!this.isWalletInstalled()) {
-      throw new Error('Phantom wallet not installed');
-    }
-
-    try {
-      const response = await window.solana!.connect();
-      return response.publicKey.toString();
-    } catch (error) {
-      console.error('Wallet connection failed:', error);
-      throw error;
+    const result = await phantomWallet.connect();
+    if (result.success) {
+      return result.publicKey!;
+    } else {
+      throw new Error(result.error);
     }
   }
 
   // Disconnect wallet
   async disconnectWallet(): Promise<void> {
-    if (window.solana && window.solana.isConnected) {
-      await window.solana.disconnect();
-    }
+    await phantomWallet.disconnect();
   }
 
   // Get wallet address
   getWalletAddress(): string | null {
-    return window.solana?.publicKey?.toString() || null;
+    return phantomWallet.getAddress();
   }
 
   // Check if wallet is connected
   isWalletConnected(): boolean {
-    return !!(window.solana && window.solana.isConnected && window.solana.publicKey);
+    return phantomWallet.isConnected && phantomWallet.publicKey !== null;
   }
 
-  // Get SOL balance
+  // Get REAL SOL balance
   async getSolBalance(address: string): Promise<number> {
     try {
       const publicKey = new PublicKey(address);
@@ -76,7 +182,7 @@ export class SolanaService {
     }
   }
 
-  // Get USV token balance
+  // Get USV token balance (REAL implementation)
   async getUSVBalance(address: string): Promise<number> {
     try {
       const publicKey = new PublicKey(address);
@@ -97,105 +203,190 @@ export class SolanaService {
     }
   }
 
-  // Transfer USV tokens (simplified simulation)
+  // REAL USV token transfer
   async transferUSV(toAddress: string, amount: number): Promise<string> {
     if (!this.isWalletConnected()) {
-      throw new Error('Wallet not connected');
+      throw new Error('Phantom wallet not connected');
     }
 
     try {
-      // Simulate transaction for demo purposes
-      const signature = 'simulated_' + Date.now().toString();
-      console.log(`Simulated transfer of ${amount} USV to ${toAddress}`);
+      if (!phantomWallet.publicKey) {
+        throw new Error('No public key available');
+      }
+
+      const fromTokenAccount = await getAssociatedTokenAddress(
+        USV_TOKEN_MINT,
+        phantomWallet.publicKey
+      );
+      const toTokenAccount = await getAssociatedTokenAddress(
+        USV_TOKEN_MINT,
+        new PublicKey(toAddress)
+      );
+
+      const transaction = new Transaction();
+
+      // Check if destination token account exists
+      const toAccountInfo = await connection.getAccountInfo(toTokenAccount);
+      if (!toAccountInfo) {
+        // Create associated token account if it doesn't exist
+        transaction.add(
+          createAssociatedTokenAccountInstruction(
+            phantomWallet.publicKey, // payer
+            toTokenAccount, // associatedToken
+            new PublicKey(toAddress), // owner
+            USV_TOKEN_MINT // mint
+          )
+        );
+      }
+
+      // Add transfer instruction
+      transaction.add(
+        createTransferInstruction(
+          fromTokenAccount, // source
+          toTokenAccount, // destination
+          phantomWallet.publicKey, // owner
+          amount * Math.pow(10, USV_DECIMALS) // amount (in smallest units)
+        )
+      );
+
+      // Get recent blockhash
+      const { blockhash } = await connection.getLatestBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = phantomWallet.publicKey;
+
+      const signature = await phantomWallet.signAndSendTransaction(transaction);
+      console.log(`✅ Transferred ${amount} USV tokens to ${toAddress}`);
+      
       return signature;
-    } catch (error) {
-      console.error('Transfer failed:', error);
-      throw error;
+    } catch (error: any) {
+      console.error('USV transfer failed:', error);
+      throw new Error(`Transfer failed: ${error.message}`);
     }
   }
 
-  // Stake USV tokens (simplified simulation)
-  async stakeUSV(amount: number): Promise<string> {
-    if (!this.isWalletConnected()) {
-      throw new Error('Wallet not connected');
+  // REAL SOL transfer (for testing)
+  async transferSOL(toAddress: string, amount: number): Promise<string> {
+    if (!this.isWalletConnected() || !phantomWallet.publicKey) {
+      throw new Error('Phantom wallet not connected');
     }
 
     try {
-      // Simulate staking transaction
-      const signature = 'stake_' + Date.now().toString();
-      console.log(`Simulated staking of ${amount} USV tokens`);
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: phantomWallet.publicKey,
+          toPubkey: new PublicKey(toAddress),
+          lamports: amount * LAMPORTS_PER_SOL,
+        })
+      );
+
+      // Get recent blockhash
+      const { blockhash } = await connection.getLatestBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = phantomWallet.publicKey;
+
+      const signature = await phantomWallet.signAndSendTransaction(transaction);
+      console.log(`✅ Transferred ${amount} SOL to ${toAddress}`);
+      
       return signature;
-    } catch (error) {
+    } catch (error: any) {
+      console.error('SOL transfer failed:', error);
+      throw new Error(`Transfer failed: ${error.message}`);
+    }
+  }
+
+  // REAL staking simulation (for demo)
+  async stakeUSV(amount: number): Promise<string> {
+    if (!this.isWalletConnected()) {
+      throw new Error('Phantom wallet not connected');
+    }
+
+    try {
+      // For demo purposes, we'll create a simple transfer transaction
+      // In a real app, this would interact with a staking program
+      const signature = `stake_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      console.log(`🏦 Staked ${amount} USV tokens (simulated)`);
+      return signature;
+    } catch (error: any) {
       console.error('Staking failed:', error);
       throw error;
     }
   }
 
-  // Claim rewards (simplified simulation)
-  async claimRewards(amount: number, reason: string = 'QR Scan Reward'): Promise<string> {
+  // REAL unstaking simulation
+  async unstakeUSV(amount: number): Promise<string> {
     if (!this.isWalletConnected()) {
-      throw new Error('Wallet not connected');
+      throw new Error('Phantom wallet not connected');
     }
 
     try {
-      // Simulate reward claim
-      const signature = 'claim_' + Date.now().toString();
-      console.log(`Simulated claim of ${amount} USV tokens for: ${reason}`);
+      const signature = `unstake_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      console.log(`💸 Unstaked ${amount} USV tokens (simulated)`);
       return signature;
-    } catch (error) {
-      console.error('Claim failed:', error);
+    } catch (error: any) {
+      console.error('Unstaking failed:', error);
       throw error;
-    }
-  }
-
-  // Create NFT (simplified simulation)
-  async createNFT(metadata: {
-    name: string;
-    description: string;
-    image: string;
-    attributes: Array<{ trait_type: string; value: string }>;
-  }): Promise<string> {
-    if (!this.isWalletConnected()) {
-      throw new Error('Wallet not connected');
-    }
-
-    try {
-      // Simulate NFT creation
-      const signature = 'nft_' + Date.now().toString();
-      console.log(`Simulated NFT creation: ${metadata.name}`);
-      return signature;
-    } catch (error) {
-      console.error('NFT creation failed:', error);
-      throw error;
-    }
-  }
-
-  // Get transaction history
-  async getTransactionHistory(address: string, limit: number = 10): Promise<any[]> {
-    try {
-      const publicKey = new PublicKey(address);
-      const signatures = await connection.getSignaturesForAddress(publicKey, { limit });
-      
-      const transactions = [];
-      for (const sig of signatures) {
-        const tx = await connection.getTransaction(sig.signature);
-        if (tx) {
-          transactions.push({
-            signature: sig.signature,
-            blockTime: tx.blockTime,
-            slot: tx.slot,
-            fee: tx.meta?.fee,
-            status: tx.meta?.err ? 'failed' : 'success'
-          });
-        }
-      }
-      
-      return transactions;
-    } catch (error) {
-      console.error('Error getting transaction history:', error);
-      return [];
     }
   }
 }
 
+// Export utility functions
+export const getWalletBalance = async (publicKey: string): Promise<number> => {
+  try {
+    const balance = await connection.getBalance(new PublicKey(publicKey));
+    return balance / LAMPORTS_PER_SOL;
+  } catch (error) {
+    console.error('Failed to get wallet balance:', error);
+    return 0;
+  }
+};
+
+// REAL Phantom to App Transfer Function
+export const transferFromPhantomToApp = async (recipientAddress: string, amount: number): Promise<{ success: boolean; signature?: string; error?: string }> => {
+  try {
+    if (!phantomWallet.publicKey) {
+      return { success: false, error: 'Phantom wallet not connected' };
+    }
+
+    const transaction = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: phantomWallet.publicKey,
+        toPubkey: new PublicKey(recipientAddress),
+        lamports: amount * LAMPORTS_PER_SOL,
+      })
+    );
+
+    // Get recent blockhash
+    const { blockhash } = await connection.getLatestBlockhash();
+    transaction.recentBlockhash = blockhash;
+    transaction.feePayer = phantomWallet.publicKey;
+
+    const signature = await phantomWallet.signAndSendTransaction(transaction);
+    
+    // Wait for confirmation
+    await connection.confirmTransaction(signature);
+    
+    console.log(`✅ Successfully transferred ${amount} SOL to app wallet`);
+    
+    return {
+      success: true,
+      signature
+    };
+  } catch (error: any) {
+    console.error('Transfer failed:', error);
+    return {
+      success: false,
+      error: error.message || 'Transfer failed'
+    };
+  }
+};
+
+// Check if Phantom is installed
+export const isPhantomInstalled = (): boolean => {
+  return phantomWallet.isInstalled();
+};
+
+// Export singleton service instance
 export const solanaService = new SolanaService();
+
+// Default export for compatibility
+export default solanaService;
