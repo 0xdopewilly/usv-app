@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useLocation } from 'wouter';
+import BottomNavigation from '@/components/BottomNavigation';
 
 export default function SimpleSend() {
   const [, setLocation] = useLocation();
@@ -8,9 +9,11 @@ export default function SimpleSend() {
   const [address, setAddress] = useState('');
 
   return (
-    <div className="min-h-screen bg-black text-white p-6">
+    <div className="min-h-screen bg-black text-white pb-20">
+      <BottomNavigation />
+      
       {/* Header */}
-      <div className="flex items-center mb-8 pt-6">
+      <div className="flex items-center mb-8 pt-12 px-6">
         <button
           onClick={() => setLocation('/wallet')}
           className="text-pink-500 hover:bg-pink-500/20 p-2 rounded-full w-10 h-10 flex items-center justify-center mr-4"
@@ -21,7 +24,7 @@ export default function SimpleSend() {
       </div>
 
       {/* Send Form */}
-      <div className="space-y-6">
+      <div className="px-6 space-y-6">
         <div>
           <label className="text-white text-sm font-medium mb-2 block">Amount</label>
           <input
