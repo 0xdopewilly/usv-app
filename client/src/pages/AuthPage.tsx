@@ -68,7 +68,7 @@ export default function AuthPage() {
           description: "Successfully logged in to USV Token",
         });
       } else {
-        await signup({ email, password, fullName });
+        await signup({ email, password, fullName, acceptTerms: true });
         toast({
           title: "Account created!",
           description: "Welcome to the USV Token ecosystem",

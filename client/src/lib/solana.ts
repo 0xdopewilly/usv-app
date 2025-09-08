@@ -13,19 +13,10 @@ export const solanaConnection = connection; // Alias for compatibility
 // Enhanced Phantom Wallet Detection  
 const getPhantomWallet = (): PhantomProvider | null => {
   if (typeof window !== 'undefined') {
-    return (window.phantom?.solana || window.solana) as PhantomProvider | null;
+    const windowAny = window as any;
+    return (windowAny.phantom?.solana || windowAny.solana) as PhantomProvider | null;
   }
   return null;
-};
-
-// Enhanced Solana Global Interface
-declare global {
-  interface Window {
-    phantom?: {
-      solana?: PhantomProvider;
-    };
-    solana?: any;
-  }
 }
 
 interface PhantomProvider {
