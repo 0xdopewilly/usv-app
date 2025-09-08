@@ -41,7 +41,7 @@ export default function BottomNavigation() {
               }`}
               data-testid={`nav-${item.path.replace('/', '')}`}
             >
-              {typeof IconComponent === 'function' ? <IconComponent /> : <IconComponent className={item.isCenter ? "w-6 h-6" : "w-5 h-5"} />}
+              <IconComponent className={item.isCenter ? "w-6 h-6" : "w-5 h-5"} />
             </Button>
           );
         })}
