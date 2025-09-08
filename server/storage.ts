@@ -20,6 +20,7 @@ export interface IStorage {
   
   // QR Code operations
   createQRCode(qrCode: InsertQRCode): Promise<QRCode>;
+  getQRCode(code: string): Promise<QRCode | null>;
   getQRCodeByCode(code: string): Promise<QRCode | null>;
   updateQRCode(id: string, updates: Partial<QRCode>): Promise<QRCode>;
   
@@ -196,13 +197,17 @@ export class MemStorage implements IStorage {
     return qrCode;
   }
 
-  async getQRCodeByCode(code: string): Promise<QRCode | null> {
+  async getQRCode(code: string): Promise<QRCode | null> {
     for (const qrCode of Array.from(this.qrCodes.values())) {
       if (qrCode.code === code) {
         return qrCode;
       }
     }
     return null;
+  }
+
+  async getQRCodeByCode(code: string): Promise<QRCode | null> {
+    return this.getQRCode(code);
   }
 
   async updateQRCode(id: string, updates: Partial<QRCode>): Promise<QRCode> {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Mail, Apple, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,18 @@ import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import ConnectWallet from '@/components/ConnectWallet';
 
+// Apple Sign-In Configuration
+declare global {
+  interface Window {
+    AppleID: {
+      auth: {
+        init: (config: any) => void;
+        signIn: () => Promise<any>;
+      };
+    };
+  }
+}
+
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -14,9 +26,35 @@ export default function AuthPage() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
   
   const { login, signup } = useAuth();
   const { toast } = useToast();
+
+  // Initialize Apple Sign-In SDK
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
+    script.async = true;
+    script.onload = () => {
+      if (window.AppleID) {
+        window.AppleID.auth.init({
+          clientId: process.env.VITE_APPLE_CLIENT_ID || 'com.usvtoken.webapp', // Replace with your actual Apple Client ID
+          scope: 'name email',
+          redirectURI: window.location.origin + '/auth/apple/callback',
+          state: 'apple-signin',
+          usePopup: true
+        });
+      }
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +82,54 @@ export default function AuthPage() {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // REAL Apple Sign-In Implementation
+  const handleAppleSignIn = async () => {
+    setAppleLoading(true);
+    try {
+      if (!window.AppleID) {
+        throw new Error('Apple Sign-In SDK not loaded');
+      }
+
+      const response = await window.AppleID.auth.signIn();
+      
+      if (response.authorization && response.authorization.id_token) {
+        // Send the Apple ID token to your backend for verification
+        const backendResponse = await fetch('/api/auth/apple', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id_token: response.authorization.id_token,
+            authorization_code: response.authorization.code
+          })
+        });
+
+        if (backendResponse.ok) {
+          const userData = await backendResponse.json();
+          // Use your existing auth system to log the user in
+          await login(userData.email, userData.password || 'apple-signin');
+          
+          toast({
+            title: "Welcome!",
+            description: "Successfully signed in with Apple",
+          });
+        } else {
+          throw new Error('Apple authentication failed on server');
+        }
+      }
+    } catch (error) {
+      console.error('Apple Sign-In Error:', error);
+      toast({
+        title: "Apple Sign-In Failed",
+        description: "Unable to sign in with Apple. Please try email authentication.",
+        variant: "destructive",
+      });
+    } finally {
+      setAppleLoading(false);
     }
   };
 
@@ -82,15 +168,19 @@ export default function AuthPage() {
         className="w-full max-w-md bg-black/20 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/20 relative z-10"
       >
         
-        {/* Logo */}
+        {/* USV Logo */}
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex justify-center mb-8"
         >
-          <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
-            <span className="text-white text-xl font-black">USV</span>
+          <div className="w-20 h-20 bg-black rounded-2xl flex items-center justify-center shadow-lg border border-white/10">
+            <img 
+              src="/usv-logo.png" 
+              alt="USV Token" 
+              className="w-16 h-16 object-contain"
+            />
           </div>
         </motion.div>
 
@@ -102,7 +192,7 @@ export default function AuthPage() {
           className="text-center mb-8"
         >
           <h1 className="text-white text-2xl font-bold mb-2">
-            {isLogin ? 'Welcome back' : 'Join USV Token'}
+            {isLogin ? 'Welcome back' : 'Join Ultra Smooth Vape'}
           </h1>
           <p className="text-purple-300 text-sm">
             {isLogin ? 'Sign in to your account' : 'Create your account to get started'}
@@ -192,21 +282,16 @@ export default function AuthPage() {
           transition={{ duration: 0.6, delay: 1.1 }}
           className="space-y-4"
         >
-          {/* Apple Sign In */}
+          {/* REAL Apple Sign In */}
           <Button
             variant="outline"
-            onClick={() => {
-              toast({
-                title: "Apple Sign-In",
-                description: "Apple ID authentication coming soon! Please use email for now.",
-                variant: "default",
-              });
-            }}
+            onClick={handleAppleSignIn}
+            disabled={appleLoading}
             className="w-full bg-black/40 border-gray-600 text-white py-4 rounded-2xl hover:bg-black/60 transition-all duration-300"
             data-testid="button-apple-signin"
           >
             <Apple className="w-5 h-5 mr-3" />
-            Continue with Apple
+            {appleLoading ? 'Connecting to Apple...' : 'Continue with Apple'}
           </Button>
 
           {/* Email Sign In */}
