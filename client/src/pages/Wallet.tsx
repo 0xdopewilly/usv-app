@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Copy, TrendingUp, TrendingDown, Eye, EyeOff, Wallet as WalletIcon, ExternalLink, Zap, Send } from 'lucide-react';
+import { ArrowLeft, Copy, TrendingUp, TrendingDown, Eye, EyeOff, Wallet as WalletIcon, ExternalLink, Send } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import { solanaService, phantomWallet, isPhantomInstalled } from '@/lib/solana';
+
 // Using a fallback since logo file needs to be placed in assets
 const usvLogo = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiM4QjVDRjYiLz4KPHB0aCBkPSJNMTYgMjBoMTJMMjQgMzIgMTYgMjB6IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=';
 
@@ -35,6 +36,7 @@ export default function Wallet() {
   const [phantomAddress, setPhantomAddress] = useState<string | null>(null);
   const [phantomBalance, setPhantomBalance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [realSolBalance, setRealSolBalance] = useState(0);
 
   const timeframes = ['1d', '7d', '1m', '1y'];
 
@@ -54,11 +56,27 @@ export default function Wallet() {
     // Check Phantom connection on mount
     checkPhantomConnection();
 
+    // Check real Solana balance for the user's USV wallet
+    checkRealSolanaBalance();
+
     return () => {
       unsubscribe();
       realTimePriceService.stopRealTimeUpdates();
     };
   }, []);
+
+  // Check real Solana balance for USV wallet
+  const checkRealSolanaBalance = async () => {
+    if (user?.walletAddress) {
+      try {
+        const balance = await solanaService.getSolBalance(user.walletAddress);
+        setRealSolBalance(balance);
+        console.log(`🚀 Real SOL balance for ${user.walletAddress}: ${balance} SOL`);
+      } catch (error) {
+        console.error('Error checking SOL balance:', error);
+      }
+    }
+  };
   
   const checkPhantomConnection = async () => {
     if (phantomWallet.isConnected && phantomWallet.publicKey) {
@@ -77,7 +95,6 @@ export default function Wallet() {
         description: "Please install the Phantom browser extension to continue.",
         variant: "destructive",
       });
-      // Open Phantom website
       window.open('https://phantom.app/', '_blank');
       return;
     }
@@ -141,7 +158,6 @@ export default function Wallet() {
     
     setIsLoading(true);
     try {
-      // Transfer a small amount (0.01 SOL) to app wallet
       const result = await solanaService.transferSOL(user.walletAddress, 0.01);
       
       toast({
@@ -153,6 +169,7 @@ export default function Wallet() {
       setTimeout(async () => {
         const newBalance = await phantomWallet.getBalance();
         setPhantomBalance(newBalance);
+        await checkRealSolanaBalance();
       }, 2000);
     } catch (error: any) {
       toast({
@@ -193,61 +210,238 @@ export default function Wallet() {
         </div>
       </motion.div>
 
-      {/* App Wallet Balance Section */}
+      {/* Main Wallet Balance Section */}
       <motion.div 
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.1 }}
         className="px-6 pb-6"
       >
-        <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/20 p-6 mb-6">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center space-x-3 mb-4">
-              <img src={usvLogo} alt="USV" className="w-12 h-12 rounded-xl" />
-              <h2 className="text-white text-4xl font-bold" data-testid="text-app-balance">
-                {hideBalance ? '••••••' : `$${totalBalance.toFixed(3)}`}
-              </h2>
+        {/* Main Balance Display */}
+        <div className="text-center mb-6">
+          <div className="flex items-center justify-center space-x-3 mb-4">
+            <img src={usvLogo} alt="USV" className="w-12 h-12 rounded-xl" />
+            <h2 className="text-white text-4xl font-bold" data-testid="text-app-balance">
+              {hideBalance ? '••••••' : `$${totalBalance.toFixed(3)}`}
+            </h2>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setHideBalance(!hideBalance)}
+              className="text-gray-400 hover:text-white p-1"
+              data-testid="button-toggle-balance"
+            >
+              {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </Button>
+          </div>
+          
+          <div className="flex items-center justify-center space-x-2 mb-6">
+            <span className={`text-sm flex items-center ${
+              (prices?.USV?.change24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'
+            }`}>
+              {(prices?.USV?.change24h || 0) >= 0 ? (
+                <TrendingUp className="w-3 h-3 mr-1" />
+              ) : (
+                <TrendingDown className="w-3 h-3 mr-1" />
+              )}
+              +{Math.abs(prices?.USV?.change24h || 9.18).toFixed(2)}%
+            </span>
+            <span className="text-gray-400">•</span>
+            <span className="text-gray-300">${prices?.USV?.price?.toFixed(2) || '1.24'}</span>
+          </div>
+
+          {/* Receive and Send Buttons */}
+          <div className="flex space-x-4 mb-6">
+            <Button
+              onClick={() => {
+                copyAddress(user?.walletAddress || '', 'USV wallet');
+                toast({
+                  title: "Receive Address Copied!",
+                  description: "Share this address to receive USV tokens and SOL",
+                });
+              }}
+              className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
+              data-testid="button-receive"
+            >
+              Receive
+            </Button>
+            <Button
+              onClick={() => setLocation('/send')}
+              variant="outline"
+              className="flex-1 border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
+              data-testid="button-send"
+            >
+              Send
+            </Button>
+          </div>
+        </div>
+
+        {/* Price Chart Section */}
+        <Card className="bg-gray-900/50 border-gray-700/50 p-6 mb-6">
+          {/* Timeframe Selection */}
+          <div className="flex space-x-2 mb-4">
+            {timeframes.map((timeframe) => (
               <Button
-                variant="ghost"
+                key={timeframe}
+                variant={selectedTimeframe === timeframe ? "default" : "ghost"}
                 size="sm"
-                onClick={() => setHideBalance(!hideBalance)}
-                className="text-gray-400 hover:text-white p-1"
-                data-testid="button-toggle-balance"
+                onClick={() => setSelectedTimeframe(timeframe)}
+                className={`flex-1 text-xs ${
+                  selectedTimeframe === timeframe 
+                    ? 'bg-gray-700 hover:bg-gray-600 text-white' 
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                }`}
+                data-testid={`button-timeframe-${timeframe}`}
               >
-                {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {timeframe}
               </Button>
-            </div>
-            
-            <div className="text-center text-gray-300 mb-4">
-              <p className="text-sm">
-                {usvTokens.toFixed(2)} USV tokens ≈ ${prices?.USV?.price?.toFixed(4) || '0.0000'}/token
-              </p>
-              <p className="text-xs text-gray-400 mt-1">App Wallet</p>
-            </div>
-            
-            {/* App Wallet Address */}
-            <div className="bg-black/30 rounded-xl p-4 mb-4">
-              <p className="text-xs text-gray-400 mb-2">App Wallet Address</p>
-              <div className="flex items-center justify-between">
-                <p className="text-white font-mono text-sm" data-testid="text-app-address">
-                  {user?.walletAddress ? 
-                    `${user.walletAddress.slice(0, 8)}...${user.walletAddress.slice(-8)}` : 
-                    'No wallet address'
-                  }
-                </p>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyAddress(user?.walletAddress || '', 'App wallet')}
-                  className="text-pink-500 hover:bg-pink-500/20 p-1"
-                  data-testid="button-copy-app-address"
-                >
-                  <Copy className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
+            ))}
+          </div>
+
+          {/* Chart */}
+          <div className="h-32 mb-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={usvChartData}>
+                <Line 
+                  type="monotone" 
+                  dataKey="value" 
+                  stroke="#ec4899" 
+                  strokeWidth={2} 
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </Card>
+
+        {/* Copy USV Address Section */}
+        <div className="bg-gray-900/50 rounded-xl p-4 mb-6">
+          <p className="text-gray-400 text-sm mb-2">Copy USV address</p>
+          <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
+            <p className="text-white font-mono text-sm" data-testid="text-usv-address">
+              {user?.walletAddress ? 
+                user.walletAddress : 
+                'No wallet address'
+              }
+            </p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => copyAddress(user?.walletAddress || '', 'USV wallet')}
+              className="text-gray-400 hover:text-white p-2"
+              data-testid="button-copy-usv-address"
+            >
+              <Copy className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Stake and Pods Buttons */}
+        <div className="flex space-x-4 mb-6">
+          <Button
+            variant="outline"
+            className="flex-1 border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
+            data-testid="button-stake"
+          >
+            Stake
+          </Button>
+          <Button
+            className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
+            data-testid="button-pods"
+          >
+            Pods
+          </Button>
+        </div>
+
+        {/* Assets Section */}
+        <div className="mb-6">
+          <h3 className="text-white text-lg font-semibold mb-4">Assets</h3>
+          <div className="space-y-3">
+            {/* USV Token Asset */}
+            <motion.div
+              whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                toast({
+                  title: "USV Token",
+                  description: `Balance: ${usvTokens.toFixed(4)} USV ($${totalBalance.toFixed(2)})`,
+                });
+              }}
+              className="flex items-center justify-between bg-gray-900/50 rounded-xl p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
+              data-testid="asset-usv"
+            >
+              <div className="flex items-center space-x-3">
+                <img src={usvLogo} alt="USV" className="w-10 h-10 rounded-lg" />
+                <div>
+                  <p className="text-white font-medium">Ultra Smooth Vape</p>
+                  <p className="text-gray-400 text-sm">USV • {usvTokens.toFixed(4)}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-white font-bold">${totalBalance.toFixed(2)}</p>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/send');
+                  }}
+                  size="sm"
+                  className="bg-pink-500 hover:bg-pink-600 text-white text-xs px-3 py-1 mt-1"
+                  data-testid="button-send-usv"
+                >
+                  Send USV
+                </Button>
+              </div>
+            </motion.div>
+
+            {/* SOL Asset - LIVE DEVNET BALANCE */}
+            <motion.div
+              whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                toast({
+                  title: "Solana (SOL)",
+                  description: `Live devnet balance: ${realSolBalance.toFixed(4)} SOL`,
+                });
+              }}
+              className="flex items-center justify-between bg-gray-900/50 rounded-xl p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
+              data-testid="asset-sol"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">SOL</span>
+                </div>
+                <div>
+                  <p className="text-white font-medium">Solana</p>
+                  <p className="text-gray-400 text-sm">SOL • {realSolBalance.toFixed(4)}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-white font-bold">${(realSolBalance * (prices?.SOL?.price || 215)).toFixed(2)}</p>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (realSolBalance > 0) {
+                      setLocation('/send');
+                    } else {
+                      toast({
+                        title: "Send SOL",
+                        description: "Send SOL to your USV wallet first to see balance and send",
+                        variant: "default",
+                      });
+                    }
+                  }}
+                  size="sm"
+                  className={`text-xs px-3 py-1 mt-1 ${
+                    realSolBalance > 0 
+                      ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                      : 'border border-gray-600 text-gray-400 hover:bg-gray-800'
+                  }`}
+                  data-testid="button-send-sol"
+                >
+                  Send SOL
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
 
         {/* Phantom Wallet Section */}
         <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/10 p-6">
@@ -258,7 +452,7 @@ export default function Wallet() {
               </div>
               <div>
                 <h3 className="text-white font-semibold">Phantom Wallet</h3>
-                <p className="text-gray-400 text-xs">External wallet connection</p>
+                <p className="text-gray-400 text-xs">Connect for easy transfers</p>
               </div>
             </div>
             
@@ -344,79 +538,10 @@ export default function Wallet() {
               <WalletIcon className="w-12 h-12 text-gray-500 mx-auto mb-4" />
               <p className="text-gray-400 text-sm mb-2">Connect your Phantom wallet</p>
               <p className="text-gray-500 text-xs">
-                Connect to transfer SOL and interact with the Solana blockchain
+                Connect to transfer SOL to your USV wallet instantly
               </p>
             </div>
           )}
-        </Card>
-      </motion.div>
-
-      {/* Price Chart Section */}
-      <motion.div 
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="px-6 pb-6"
-      >
-        <Card className="bg-gray-900/50 border-gray-700/50 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <img src={usvLogo} alt="USV" className="w-8 h-8 rounded-full" />
-              <div>
-                <h3 className="text-white font-semibold">USV Token</h3>
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl font-bold text-white">
-                    ${prices?.USV?.price?.toFixed(4) || '0.0000'}
-                  </span>
-                  <span className={`text-sm flex items-center ${
-                    (prices?.USV?.change24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-                  }`}>
-                    {(prices?.USV?.change24h || 0) >= 0 ? (
-                      <TrendingUp className="w-3 h-3 mr-1" />
-                    ) : (
-                      <TrendingDown className="w-3 h-3 mr-1" />
-                    )}
-                    {Math.abs(prices?.USV?.change24h || 0).toFixed(2)}%
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Chart */}
-          <div className="h-32 mb-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={usvChartData}>
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#ec4899" 
-                  strokeWidth={2} 
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Timeframe Selection */}
-          <div className="flex space-x-2">
-            {timeframes.map((timeframe) => (
-              <Button
-                key={timeframe}
-                variant={selectedTimeframe === timeframe ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setSelectedTimeframe(timeframe)}
-                className={`flex-1 text-xs ${
-                  selectedTimeframe === timeframe 
-                    ? 'bg-pink-500 hover:bg-pink-600 text-white' 
-                    : 'text-gray-400 hover:text-white hover:bg-gray-800'
-                }`}
-                data-testid={`button-timeframe-${timeframe}`}
-              >
-                {timeframe}
-              </Button>
-            ))}
-          </div>
         </Card>
       </motion.div>
 
