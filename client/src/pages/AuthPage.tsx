@@ -175,12 +175,8 @@ export default function AuthPage() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex justify-center mb-8"
         >
-          <div className="w-20 h-20 bg-black rounded-2xl flex items-center justify-center shadow-lg border border-white/10">
-            <img 
-              src="/usv-logo.png" 
-              alt="USV Token" 
-              className="w-16 h-16 object-contain"
-            />
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg border border-white/10">
+            <div className="text-white font-bold text-xl">USV</div>
           </div>
         </motion.div>
 

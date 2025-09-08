@@ -10,11 +10,10 @@ export const SOLANA_NETWORK = 'devnet'; // Using devnet for real testing
 export const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
 export const solanaConnection = connection; // Alias for compatibility
 
-// Enhanced Phantom Wallet Detection
-const getPhantomWallet = () => {
+// Enhanced Phantom Wallet Detection  
+const getPhantomWallet = (): PhantomProvider | null => {
   if (typeof window !== 'undefined') {
-    // @ts-ignore
-    return window.phantom?.solana || window.solana;
+    return (window.phantom?.solana || window.solana) as PhantomProvider | null;
   }
   return null;
 };
@@ -25,7 +24,7 @@ declare global {
     phantom?: {
       solana?: PhantomProvider;
     };
-    solana?: PhantomProvider;
+    solana?: any;
   }
 }
 
