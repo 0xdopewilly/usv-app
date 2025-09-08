@@ -6,9 +6,10 @@ import { AuthProvider, useAuth } from "@/lib/auth";
 import LoadingScreen from "@/components/LoadingScreen";
 import AuthPage from "@/pages/AuthPage";
 import Home from "@/pages/Home";
-import Wallet from "@/pages/Wallet";
-import Send from "@/pages/Send";
+import SimpleWallet from "@/pages/SimpleWallet";
+import SimpleSend from "@/pages/SimpleSend";
 import Settings from "@/pages/Settings";
+import SimpleNFT from "@/pages/SimpleNFT";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -47,8 +48,9 @@ function AppRouter() {
     <Router>
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/wallet" component={Wallet} />
-        <Route path="/send" component={Send} />
+        <Route path="/wallet" component={SimpleWallet} />
+        <Route path="/send" component={SimpleSend} />
+        <Route path="/nft-portfolio" component={SimpleNFT} />
         <Route path="/settings" component={Settings} />
         <Route component={NotFound} />
       </Switch>
