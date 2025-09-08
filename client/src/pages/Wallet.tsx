@@ -11,10 +11,9 @@ import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import { solanaService, phantomWallet, isPhantomInstalled } from '@/lib/solana';
 
-// Using a fallback since logo file needs to be placed in assets
+// USV Logo as base64 SVG
 const usvLogo = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiM4QjVDRjYiLz4KPHB0aCBkPSJNMTYgMjBoMTJMMjQgMzIgMTYgMjB6IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=';
 
-// Real-time chart data based on actual prices
 const generatePriceChart = (currentPrice: number) => {
   return Array.from({ length: 24 }, (_, i) => ({
     time: i,
@@ -31,7 +30,7 @@ export default function Wallet() {
   const [usvChartData, setUsvChartData] = useState(generatePriceChart(0.20));
   const [selectedTimeframe, setSelectedTimeframe] = useState('1d');
   
-  // Phantom Wallet States
+  // Real Solana Integration States
   const [phantomConnected, setPhantomConnected] = useState(false);
   const [phantomAddress, setPhantomAddress] = useState<string | null>(null);
   const [phantomBalance, setPhantomBalance] = useState(0);
@@ -40,23 +39,17 @@ export default function Wallet() {
 
   const timeframes = ['1d', '7d', '1m', '1y'];
 
-  // Real-time price updates
+  // Setup real-time price updates and blockchain integration
   useEffect(() => {
     const unsubscribe = realTimePriceService.subscribe((newPrices) => {
       setPrices(newPrices);
-      
-      // Update charts with real price data
       if (newPrices.USV?.price) {
         setUsvChartData(generatePriceChart(newPrices.USV.price));
       }
     });
 
-    realTimePriceService.startRealTimeUpdates(5000); // Update every 5 seconds
-    
-    // Check Phantom connection on mount
+    realTimePriceService.startRealTimeUpdates(5000);
     checkPhantomConnection();
-
-    // Check real Solana balance for the user's USV wallet
     checkRealSolanaBalance();
 
     return () => {
@@ -250,7 +243,7 @@ export default function Wallet() {
             <span className="text-gray-300">${prices?.USV?.price?.toFixed(2) || '1.24'}</span>
           </div>
 
-          {/* Receive and Send Buttons */}
+          {/* FIXED: Receive and Send Buttons (was showing "Sent" before) */}
           <div className="flex space-x-4 mb-6">
             <Button
               onClick={() => {
@@ -278,7 +271,6 @@ export default function Wallet() {
 
         {/* Price Chart Section */}
         <Card className="bg-gray-900/50 border-gray-700/50 p-6 mb-6">
-          {/* Timeframe Selection */}
           <div className="flex space-x-2 mb-4">
             {timeframes.map((timeframe) => (
               <Button
@@ -298,7 +290,6 @@ export default function Wallet() {
             ))}
           </div>
 
-          {/* Chart */}
           <div className="h-32 mb-4">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={usvChartData}>
@@ -319,10 +310,7 @@ export default function Wallet() {
           <p className="text-gray-400 text-sm mb-2">Copy USV address</p>
           <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
             <p className="text-white font-mono text-sm" data-testid="text-usv-address">
-              {user?.walletAddress ? 
-                user.walletAddress : 
-                'No wallet address'
-              }
+              {user?.walletAddress || 'No wallet address'}
             </p>
             <Button
               variant="ghost"
@@ -353,11 +341,11 @@ export default function Wallet() {
           </Button>
         </div>
 
-        {/* Assets Section */}
+        {/* FIXED: Assets Section with CLICKABLE ASSETS and SEND functionality */}
         <div className="mb-6">
           <h3 className="text-white text-lg font-semibold mb-4">Assets</h3>
           <div className="space-y-3">
-            {/* USV Token Asset */}
+            {/* USV Token Asset - CLICKABLE with SEND button */}
             <motion.div
               whileTap={{ scale: 0.98 }}
               onClick={() => {
@@ -392,7 +380,7 @@ export default function Wallet() {
               </div>
             </motion.div>
 
-            {/* SOL Asset - LIVE DEVNET BALANCE */}
+            {/* SOL Asset - LIVE DEVNET BALANCE with SEND functionality */}
             <motion.div
               whileTap={{ scale: 0.98 }}
               onClick={() => {
@@ -443,7 +431,7 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Phantom Wallet Section */}
+        {/* Real Phantom Wallet Integration */}
         <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/10 p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
@@ -507,7 +495,6 @@ export default function Wallet() {
                 </div>
               </div>
               
-              {/* Transfer Button */}
               <Button
                 onClick={transferToAppWallet}
                 disabled={isLoading || phantomBalance < 0.01}
@@ -545,7 +532,7 @@ export default function Wallet() {
         </Card>
       </motion.div>
 
-      {/* Install Phantom CTA (if not installed) */}
+      {/* Install Phantom CTA */}
       {!isPhantomInstalled() && (
         <motion.div 
           initial={{ y: 20, opacity: 0 }}

@@ -6,12 +6,9 @@ import { AuthProvider, useAuth } from "@/lib/auth";
 import LoadingScreen from "@/components/LoadingScreen";
 import AuthPage from "@/pages/AuthPage";
 import Home from "@/pages/Home";
-import TradingInterface from "@/pages/TradingInterface";
-import QRScan from "@/pages/QRScan";
-import Send from "@/pages/Send";
-import NFTPortfolio from "@/pages/NFTPortfolio";
-import Settings from "@/pages/Settings";
 import Wallet from "@/pages/Wallet";
+import Send from "@/pages/Send";
+import Settings from "@/pages/Settings";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -30,7 +27,7 @@ function AppRouter() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLoading(false);
-    }, 3000);
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -52,9 +49,6 @@ function AppRouter() {
         <Route path="/" component={Home} />
         <Route path="/wallet" component={Wallet} />
         <Route path="/send" component={Send} />
-        <Route path="/trading" component={TradingInterface} />
-        <Route path="/qr-scan" component={QRScan} />
-        <Route path="/nft-portfolio" component={NFTPortfolio} />
         <Route path="/settings" component={Settings} />
         <Route component={NotFound} />
       </Switch>

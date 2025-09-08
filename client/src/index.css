@@ -17,6 +17,12 @@ body {
   min-height: 100vh;
 }
 
-.bg-gradient-primary {
-  background: linear-gradient(135deg, #6b46c1 0%, #a855f7 50%, #ec4899 100%);
+/* Custom gradients and animations */
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
 }
