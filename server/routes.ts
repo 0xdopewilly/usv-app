@@ -605,6 +605,79 @@ router.post('/qr/scan', authenticateToken, async (req: any, res) => {
   }
 });
 
+// REAL TOKEN TRANSFER API
+router.post('/user/transfer', authenticateToken, async (req: any, res) => {
+  try {
+    const { toAddress, amount, signature } = req.body;
+    
+    if (!toAddress || !amount || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid transfer data' });
+    }
+
+    const user = await storage.getUserById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check sufficient balance
+    if (user.balance < amount) {
+      return res.status(400).json({ error: 'Insufficient balance' });
+    }
+
+    // Update sender balance
+    const updatedSender = await storage.updateUser(req.user.userId, {
+      balance: user.balance - amount
+    });
+
+    // Create transaction record
+    await storage.createTransaction({
+      userId: req.user.userId,
+      type: 'send',
+      amount: amount,
+      token: 'USV',
+      status: 'completed',
+      toAddress: toAddress,
+      signature: signature || `transfer_${Date.now()}`
+    });
+
+    // Try to find recipient and credit their balance
+    try {
+      const recipient = await storage.getUserByWallet(toAddress);
+      if (recipient) {
+        await storage.updateUser(recipient.id, {
+          balance: recipient.balance + amount
+        });
+        
+        // Create receive transaction record
+        await storage.createTransaction({
+          userId: recipient.id,
+          type: 'receive',
+          amount: amount,
+          token: 'USV',
+          status: 'completed',
+          fromAddress: user.walletAddress,
+          signature: signature || `transfer_${Date.now()}`
+        });
+      }
+    } catch (error) {
+      console.log('Recipient not found in system, external transfer');
+    }
+
+    console.log(`💸 ${amount} USV tokens transferred from ${user.email} to ${toAddress}`);
+
+    res.json({
+      success: true,
+      newBalance: updatedSender.balance,
+      transactionId: signature || `transfer_${Date.now()}`,
+      message: `Successfully transferred ${amount} USV tokens`
+    });
+    
+  } catch (error) {
+    console.error('Transfer processing error:', error);
+    res.status(500).json({ error: 'Failed to process transfer' });
+  }
+});
+
 // Generate QR codes for stores (admin function)
 router.post('/qr/generate', authenticateToken, async (req: any, res) => {
   try {

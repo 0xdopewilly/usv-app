@@ -5,6 +5,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   getUserById(id: string): Promise<User | null>;
   getUserByEmail(email: string): Promise<User | null>;
+  getUserByWallet(walletAddress: string): Promise<User | null>;
   updateUser(id: string, updates: Partial<User>): Promise<User>;
   
   // Transaction operations
@@ -112,6 +113,15 @@ export class MemStorage implements IStorage {
   async getUserByEmail(email: string): Promise<User | null> {
     for (const user of Array.from(this.users.values())) {
       if (user.email === email) {
+        return user;
+      }
+    }
+    return null;
+  }
+
+  async getUserByWallet(walletAddress: string): Promise<User | null> {
+    for (const user of Array.from(this.users.values())) {
+      if (user.walletAddress === walletAddress) {
         return user;
       }
     }

@@ -10,7 +10,8 @@ import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import { solanaService, phantomWallet, isPhantomInstalled } from '@/lib/solana';
-import usvLogo from '@/assets/usv-logo.png';
+// Using a fallback since logo file needs to be placed in assets
+const usvLogo = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiM4QjVDRjYiLz4KPHB0aCBkPSJNMTYgMjBoMTJMMjQgMzIgMTYgMjB6IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4=';
 
 // Real-time chart data based on actual prices
 const generatePriceChart = (currentPrice: number) => {
