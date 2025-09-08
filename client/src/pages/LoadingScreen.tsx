@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation } from 'wouter';
 
-export default function LoadingScreen() {
+interface LoadingScreenProps {
+  autoNavigate?: boolean;
+}
+
+export default function LoadingScreen({ autoNavigate = false }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0);
   const [, setLocation] = useLocation();
 
@@ -11,9 +15,11 @@ export default function LoadingScreen() {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => {
-            setLocation('/');
-          }, 500);
+          if (autoNavigate) {
+            setTimeout(() => {
+              setLocation('/');
+            }, 500);
+          }
           return 100;
         }
         return prev + 2;
@@ -21,7 +27,7 @@ export default function LoadingScreen() {
     }, 50);
 
     return () => clearInterval(interval);
-  }, [setLocation]);
+  }, [setLocation, autoNavigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black flex flex-col items-center justify-center relative overflow-hidden">

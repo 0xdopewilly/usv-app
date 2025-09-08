@@ -3,10 +3,10 @@ import { Route, Switch, Router } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/lib/auth";
-import LoadingScreen from "@/components/LoadingScreen";
+import SimpleLoadingScreen from "@/components/SimpleLoadingScreen";
 import AuthPage from "@/pages/AuthPage";
 import Home from "@/pages/Home";
-import SimpleWallet from "@/pages/SimpleWallet";
+import SimpleWalletTest from "@/pages/SimpleWalletTest";
 import SimpleSend from "@/pages/SimpleSend";
 import Settings from "@/pages/Settings";
 import SimpleNFT from "@/pages/SimpleNFT";
@@ -28,12 +28,12 @@ function AppRouter() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLoading(false);
-    }, 2000);
+    }, 500); // Reduced from 2000ms to 500ms for faster debugging
     return () => clearTimeout(timer);
   }, []);
 
   if (showLoading) {
-    return <LoadingScreen />;
+    return <SimpleLoadingScreen />;
   }
 
   if (!isLoading && !isAuthenticated) {
@@ -41,14 +41,14 @@ function AppRouter() {
   }
 
   if (isLoading) {
-    return <LoadingScreen />;
+    return <SimpleLoadingScreen />;
   }
 
   return (
     <Router>
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/wallet" component={SimpleWallet} />
+        <Route path="/wallet" component={SimpleWalletTest} />
         <Route path="/send" component={SimpleSend} />
         <Route path="/nft-portfolio" component={SimpleNFT} />
         <Route path="/settings" component={Settings} />
