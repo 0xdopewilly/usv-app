@@ -1,17 +1,94 @@
-import { useState } from 'react';
-import { ArrowLeft, Copy, Eye, EyeOff } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Copy, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { useLocation } from 'wouter';
 import BottomNavigation from '@/components/BottomNavigation';
+import { refreshWalletBalances, phantomWallet, solanaService } from '@/lib/solana';
+import { useToast } from '@/hooks/use-toast';
+
+interface TokenData {
+  mint: string;
+  symbol: string;
+  name: string;
+  balance: number;
+  decimals: number;
+  isNative: boolean;
+}
 
 export default function SimpleWallet() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const [hideBalance, setHideBalance] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [tokens, setTokens] = useState<TokenData[]>([]);
+  const [totalValue, setTotalValue] = useState(0);
+
+  // Initialize wallet connection and load balances
+  useEffect(() => {
+    initializeWallet();
+  }, []);
+
+  const initializeWallet = async () => {
+    try {
+      // Try to connect to existing wallet or get current address
+      if (phantomWallet.isConnected && phantomWallet.publicKey) {
+        const address = phantomWallet.publicKey.toString();
+        setWalletAddress(address);
+        await refreshBalances(address);
+      } else {
+        // Auto-connect if phantom is available
+        const result = await phantomWallet.connect();
+        if (result.success && result.publicKey) {
+          setWalletAddress(result.publicKey);
+          await refreshBalances(result.publicKey);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to initialize wallet:', error);
+    }
+  };
+
+  const refreshBalances = async (address?: string) => {
+    if (!address && !walletAddress) return;
+    
+    const addressToUse = address || walletAddress!;
+    setIsRefreshing(true);
+    
+    try {
+      const tokenData = await refreshWalletBalances(addressToUse);
+      setTokens(tokenData);
+      
+      // Calculate total value (simplified - in production you'd fetch real prices)
+      const total = tokenData.reduce((sum, token) => {
+        if (token.isNative) return sum + (token.balance * 230); // Approximate SOL price
+        return sum; // For other tokens, you'd need price data
+      }, 0);
+      setTotalValue(total);
+      
+      toast({
+        title: "✅ Balances Updated",
+        description: `Found ${tokenData.length} tokens in your wallet`,
+      });
+    } catch (error) {
+      console.error('Failed to refresh balances:', error);
+      toast({
+        title: "❌ Refresh Failed",
+        description: "Failed to load wallet balances",
+        variant: "destructive"
+      });
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      alert('Address copied to clipboard!');
+      toast({
+        title: "✅ Copied!",
+        description: "Address copied to clipboard",
+      });
     } catch (err) {
       console.error('Failed to copy: ', err);
       // Fallback for older browsers
@@ -21,40 +98,28 @@ export default function SimpleWallet() {
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      alert('Address copied to clipboard!');
+      toast({
+        title: "✅ Copied!",
+        description: "Address copied to clipboard",
+      });
     }
   };
 
-  const handleAssetClick = (assetType: string) => {
-    setSelectedAsset(assetType);
+  const handleAssetClick = (token: TokenData) => {
+    setSelectedAsset(token.mint);
   };
 
   const renderAssetDetail = () => {
     if (!selectedAsset) return null;
 
-    const assetData = {
-      USV: {
-        name: 'Ultra Smooth Vape',
-        symbol: 'USV',
-        balance: '0.0000',
-        value: '$0.00',
-        price: '$1.24',
-        change: '+9.18%',
-        color: 'bg-purple-500'
-      },
-      SOL: {
-        name: 'Solana',
-        symbol: 'SOL',
-        balance: '0.0000',
-        value: '$0.00',
-        price: '$215.58',
-        change: '+2.45%',
-        color: 'bg-gradient-to-r from-purple-500 to-blue-500'
-      }
-    };
+    const token = tokens.find(t => t.mint === selectedAsset);
+    if (!token) return null;
 
-    const asset = assetData[selectedAsset as keyof typeof assetData];
-    if (!asset) return null;
+    const getTokenColor = (symbol: string) => {
+      if (symbol === 'SOL') return 'bg-gradient-to-r from-purple-500 to-blue-500';
+      if (symbol === 'USV') return 'bg-purple-500';
+      return 'bg-gradient-to-r from-blue-500 to-green-500';
+    };
 
     return (
       <div className="fixed inset-0 bg-black z-50 p-6">
@@ -66,22 +131,29 @@ export default function SimpleWallet() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-white text-xl font-semibold">{asset.name}</h1>
+          <h1 className="text-white text-xl font-semibold">{token.name}</h1>
         </div>
 
         {/* Asset Info */}
         <div className="text-center mb-8">
-          <div className={`w-16 h-16 ${asset.color} rounded-xl flex items-center justify-center mx-auto mb-4`}>
-            <span className="text-white font-bold text-lg">{asset.symbol}</span>
+          <div className={`w-16 h-16 ${getTokenColor(token.symbol)} rounded-xl flex items-center justify-center mx-auto mb-4`}>
+            <span className="text-white font-bold text-lg">{token.symbol}</span>
           </div>
           
-          <h2 className="text-white text-4xl font-bold mb-2">{asset.balance} {asset.symbol}</h2>
-          <p className="text-gray-400 mb-2">{asset.value}</p>
+          <h2 className="text-white text-4xl font-bold mb-2">{token.balance.toFixed(4)} {token.symbol}</h2>
+          <p className="text-gray-400 mb-2">${token.isNative ? (token.balance * 230).toFixed(2) : '0.00'}</p>
           
           <div className="flex items-center justify-center space-x-2 mb-6">
-            <span className="text-sm text-gray-300">Price: {asset.price}</span>
-            <span className="text-gray-400">•</span>
-            <span className="text-green-400 text-sm">{asset.change}</span>
+            {token.isNative && (
+              <>
+                <span className="text-sm text-gray-300">Price: ~$230</span>
+                <span className="text-gray-400">•</span>
+                <span className="text-green-400 text-sm">+2.45%</span>
+              </>
+            )}
+            {!token.isNative && (
+              <span className="text-sm text-gray-300">Custom Token</span>
+            )}
           </div>
         </div>
 
@@ -95,10 +167,10 @@ export default function SimpleWallet() {
         {/* Action Buttons */}
         <div className="flex space-x-4 mb-6">
           <button 
-            onClick={() => copyToClipboard('C3YEqRNvJN696v3ZcXndjnekCai3cL7zrutLN9FNDpjn')}
+            onClick={() => copyToClipboard(walletAddress || '')}
             className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
           >
-            Receive {asset.symbol}
+            Receive {token.symbol}
           </button>
           <button 
             onClick={() => {
@@ -107,7 +179,7 @@ export default function SimpleWallet() {
             }}
             className="flex-1 border border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
           >
-            Send {asset.symbol}
+            Send {token.symbol}
           </button>
         </div>
       </div>
@@ -141,13 +213,21 @@ export default function SimpleWallet() {
                 <span className="text-white font-bold">USV</span>
               </div>
               <h2 className="text-white text-4xl font-bold">
-                {hideBalance ? '••••••' : '$0.000'}
+                {hideBalance ? '••••••' : `$${totalValue.toFixed(2)}`}
               </h2>
               <button
                 onClick={() => setHideBalance(!hideBalance)}
                 className="text-gray-400 hover:text-white p-1"
               >
                 {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+              {/* REFRESH BUTTON */}
+              <button
+                onClick={() => refreshBalances()}
+                disabled={isRefreshing}
+                className="text-gray-400 hover:text-white p-1 hover:bg-gray-800 rounded-full"
+              >
+                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
               </button>
             </div>
             
@@ -160,7 +240,7 @@ export default function SimpleWallet() {
             {/* Receive and Send Buttons */}
             <div className="flex space-x-4 mb-6">
               <button 
-                onClick={() => copyToClipboard('C3YEqRNvJN696v3ZcXndjnekCai3cL7zrutLN9FNDpjn')}
+                onClick={() => copyToClipboard(walletAddress || '')}
                 className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
               >
                 Receive
@@ -174,81 +254,89 @@ export default function SimpleWallet() {
             </div>
           </div>
 
-          {/* Copy Address Section - FIXED COPY BUTTON */}
-          <div className="bg-gray-900/50 rounded-xl p-4 mb-6">
-            <p className="text-gray-400 text-sm mb-2">Copy USV address</p>
-            <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
-              <p className="text-white font-mono text-sm">
-                C3YEqRNvJN696v3ZcXndjnekCai3cL7z...
-              </p>
-              <button 
-                onClick={() => copyToClipboard('C3YEqRNvJN696v3ZcXndjnekCai3cL7zrutLN9FNDpjn')}
-                className="text-gray-400 hover:text-white p-2 hover:bg-gray-700 rounded"
+          {/* Copy Address Section - REAL WALLET ADDRESS */}
+          {walletAddress && (
+            <div className="bg-gray-900/50 rounded-xl p-4 mb-6">
+              <p className="text-gray-400 text-sm mb-2">Copy wallet address</p>
+              <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
+                <p className="text-white font-mono text-sm">
+                  {walletAddress.slice(0, 8)}...{walletAddress.slice(-8)}
+                </p>
+                <button 
+                  onClick={() => copyToClipboard(walletAddress)}
+                  className="text-gray-400 hover:text-white p-2 hover:bg-gray-700 rounded"
+                >
+                  <Copy className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Assets Section - REAL BLOCKCHAIN TOKENS */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white text-lg font-semibold">Assets</h3>
+              <button
+                onClick={() => refreshBalances()}
+                disabled={isRefreshing}
+                className="text-pink-500 hover:text-pink-400 text-sm flex items-center space-x-1"
               >
-                <Copy className="w-4 h-4" />
+                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
               </button>
             </div>
-          </div>
-
-          {/* Assets Section - FIXED CLICKABLE ASSETS */}
-          <div className="mb-6">
-            <h3 className="text-white text-lg font-semibold mb-4">Assets</h3>
+            
             <div className="space-y-3">
-              {/* USV Token Asset - NOW CLICKABLE */}
-              <div 
-                onClick={() => handleAssetClick('USV')}
-                className="flex items-center justify-between bg-gray-900/50 rounded-xl p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">USV</span>
-                  </div>
-                  <div>
-                    <p className="text-white font-medium">Ultra Smooth Vape</p>
-                    <p className="text-gray-400 text-sm">USV • 0.0000</p>
-                  </div>
+              {tokens.length === 0 && !isRefreshing && (
+                <div className="text-center py-8 text-gray-400">
+                  <p>No tokens found</p>
+                  <p className="text-sm">Connect your Phantom wallet to see your tokens</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-white font-bold">$0.00</p>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setLocation('/send');
-                    }}
-                    className="bg-pink-500 hover:bg-pink-600 text-white text-xs px-3 py-1 mt-1 rounded"
-                  >
-                    Send USV
-                  </button>
-                </div>
-              </div>
+              )}
+              
+              {tokens.map((token) => {
+                const getTokenColor = (symbol: string) => {
+                  if (symbol === 'SOL') return 'bg-gradient-to-r from-purple-500 to-blue-500';
+                  if (symbol === 'USV') return 'bg-purple-500';
+                  return 'bg-gradient-to-r from-blue-500 to-green-500';
+                };
 
-              {/* SOL Asset - NOW CLICKABLE */}
-              <div 
-                onClick={() => handleAssetClick('SOL')}
-                className="flex items-center justify-between bg-gray-900/50 rounded-xl p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">SOL</span>
-                  </div>
-                  <div>
-                    <p className="text-white font-medium">Solana</p>
-                    <p className="text-gray-400 text-sm">SOL • 0.0000</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-white font-bold">$0.00</p>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setLocation('/send');
-                    }}
-                    className="border border-gray-600 text-gray-400 text-xs px-3 py-1 mt-1 rounded hover:bg-gray-800"
+                return (
+                  <div 
+                    key={token.mint}
+                    onClick={() => handleAssetClick(token)}
+                    className="flex items-center justify-between bg-gray-900/50 rounded-xl p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
                   >
-                    Send SOL
-                  </button>
-                </div>
-              </div>
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-10 h-10 ${getTokenColor(token.symbol)} rounded-lg flex items-center justify-center`}>
+                        <span className="text-white font-bold text-sm">{token.symbol}</span>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">{token.name}</p>
+                        <p className="text-gray-400 text-sm">{token.symbol} • {token.balance.toFixed(4)}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-white font-bold">
+                        ${token.isNative ? (token.balance * 230).toFixed(2) : '0.00'}
+                      </p>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLocation('/send');
+                        }}
+                        className={`text-xs px-3 py-1 mt-1 rounded ${
+                          token.isNative 
+                            ? 'border border-gray-600 text-gray-400 hover:bg-gray-800'
+                            : 'bg-pink-500 hover:bg-pink-600 text-white'
+                        }`}
+                      >
+                        Send {token.symbol}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

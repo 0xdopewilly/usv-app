@@ -330,6 +330,93 @@ export const getWalletBalance = async (publicKey: string): Promise<number> => {
   }
 };
 
+// Get ALL token accounts for a wallet (REAL DEVNET TOKENS)
+export const getAllTokenAccounts = async (publicKey: string) => {
+  try {
+    const wallet = new PublicKey(publicKey);
+    
+    // Get all token accounts for this wallet
+    const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
+      wallet,
+      { programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA') }
+    );
+
+    const tokens = [];
+    
+    // Add SOL first (native token)
+    const solBalance = await connection.getBalance(wallet);
+    tokens.push({
+      mint: 'So11111111111111111111111111111111111111112', // SOL mint address
+      symbol: 'SOL',
+      name: 'Solana',
+      balance: solBalance / LAMPORTS_PER_SOL,
+      decimals: 9,
+      isNative: true
+    });
+
+    // Add all SPL tokens
+    for (const tokenAccount of tokenAccounts.value) {
+      const tokenAmount = tokenAccount.account.data.parsed.info.tokenAmount;
+      const mint = tokenAccount.account.data.parsed.info.mint;
+      
+      if (tokenAmount.uiAmount && tokenAmount.uiAmount > 0) {
+        tokens.push({
+          mint: mint,
+          symbol: await getTokenSymbol(mint),
+          name: await getTokenName(mint),
+          balance: tokenAmount.uiAmount,
+          decimals: tokenAmount.decimals,
+          isNative: false
+        });
+      }
+    }
+
+    return tokens;
+  } catch (error) {
+    console.error('Failed to get token accounts:', error);
+    return [];
+  }
+};
+
+// Get token metadata (symbol and name)
+const getTokenSymbol = async (mint: string): Promise<string> => {
+  // For USV token, return USV
+  if (mint === USV_TOKEN_MINT.toString()) return 'USV';
+  
+  // For other tokens, try to get from metadata or use shortened mint
+  try {
+    // This is a simplified approach - in production you'd want to fetch from token registry
+    return mint.slice(0, 8) + '...';
+  } catch {
+    return 'Unknown';
+  }
+};
+
+const getTokenName = async (mint: string): Promise<string> => {
+  // For USV token
+  if (mint === USV_TOKEN_MINT.toString()) return 'Ultra Smooth Vape';
+  
+  // For other tokens, try to get from metadata
+  try {
+    return `Token ${mint.slice(0, 8)}`;
+  } catch {
+    return 'Unknown Token';
+  }
+};
+
+// Refresh all balances for a wallet
+export const refreshWalletBalances = async (publicKey: string) => {
+  try {
+    console.log('🔄 Refreshing wallet balances for:', publicKey);
+    const tokens = await getAllTokenAccounts(publicKey);
+    console.log('💰 Found tokens:', tokens);
+    return tokens;
+  } catch (error) {
+    console.error('Failed to refresh balances:', error);
+    return [];
+  }
+};
+
 // REAL Phantom to App Transfer Function
 export const transferFromPhantomToApp = async (recipientAddress: string, amount: number): Promise<{ success: boolean; signature?: string; error?: string }> => {
   try {
