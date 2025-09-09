@@ -466,16 +466,68 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Real Phantom Wallet Integration */}
-        <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/10 p-6">
+        {/* Show Your Auto-Generated Wallet Info (for email/Apple users) */}
+        {user?.walletAddress && (
+          <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/10 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                  <WalletIcon className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold">Your USV Wallet</h3>
+                  <p className="text-gray-400 text-xs">Auto-generated Solana wallet</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-green-400 text-xs">Active</span>
+              </div>
+            </div>
+            
+            <div className="bg-black/30 rounded-xl p-4 mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <p className="text-xs text-gray-400">Live Devnet Balance</p>
+                <p className="text-white font-semibold" data-testid="text-usv-wallet-balance">
+                  {currentSolBalance.toFixed(4)} SOL
+                </p>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-white font-mono text-sm" data-testid="text-usv-wallet-address">
+                  {user.walletAddress.slice(0, 8)}...{user.walletAddress.slice(-8)}
+                </p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => copyAddress(user.walletAddress, 'USV Wallet')}
+                  className="text-blue-400 hover:bg-blue-500/20 p-1"
+                  data-testid="button-copy-usv-wallet-address"
+                >
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+            
+            <div className="text-center py-4">
+              <div className="text-green-400 text-sm mb-2">✅ Your wallet is ready!</div>
+              <p className="text-gray-400 text-xs">
+                This wallet was auto-generated when you signed up. Send SOL to this address to see real-time balance updates.
+              </p>
+            </div>
+          </Card>
+        )}
+        
+        {/* Optional: Phantom Wallet Integration (only show if user wants additional wallet) */}
+        <Card className="bg-gradient-to-br from-gray-900/30 to-gray-800/30 border-gray-700/10 p-6 mt-4">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-gray-600 to-gray-500 rounded-full flex items-center justify-center">
                 <WalletIcon className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-white font-semibold">Phantom Wallet</h3>
-                <p className="text-gray-400 text-xs">Connect for easy transfers</p>
+                <h3 className="text-white font-semibold">Additional Wallet</h3>
+                <p className="text-gray-400 text-xs">Optional: Connect Phantom for transfers</p>
               </div>
             </div>
             
@@ -493,11 +545,12 @@ export default function Wallet() {
               <Button
                 onClick={connectPhantomWallet}
                 disabled={isLoading}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                variant="outline"
+                className="border-gray-600 text-gray-300 hover:bg-gray-700"
                 data-testid="button-connect-phantom"
               >
                 {isLoading ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
                 ) : (
                   'Connect Phantom'
                 )}
@@ -544,7 +597,7 @@ export default function Wallet() {
                 ) : (
                   <div className="flex items-center space-x-2">
                     <Send className="w-4 h-4" />
-                    <span>Transfer 0.01 SOL to App</span>
+                    <span>Transfer 0.01 SOL to USV Wallet</span>
                   </div>
                 )}
               </Button>
@@ -556,11 +609,11 @@ export default function Wallet() {
               )}
             </>
           ) : (
-            <div className="text-center py-8">
-              <WalletIcon className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-              <p className="text-gray-400 text-sm mb-2">Connect your Phantom wallet</p>
+            <div className="text-center py-6">
+              <WalletIcon className="w-8 h-8 text-gray-500 mx-auto mb-3" />
+              <p className="text-gray-400 text-sm mb-1">Optional wallet connection</p>
               <p className="text-gray-500 text-xs">
-                Connect to transfer SOL to your USV wallet instantly
+                Connect Phantom to transfer SOL between wallets
               </p>
             </div>
           )}
