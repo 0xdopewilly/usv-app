@@ -100,7 +100,7 @@ export default function Wallet() {
   
   // Calculate balances from real-time data
   const currentSolBalance = walletBalance?.balanceSOL || realSolBalance || 0;
-  const usvTokens = tokenBalances?.tokens?.find(token => token.symbol === 'USV')?.amount || 2847.39; // Fallback to mock for demo
+  const usvTokens = tokenBalances?.tokens?.find((token: any) => token.symbol === 'USV')?.amount || 2847.39; // Fallback to mock for demo
   const totalBalance = (currentSolBalance * (prices?.SOL?.price || 23.45)) + (usvTokens * (prices?.USV?.price || 0.20));
   
   const checkPhantomConnection = async () => {
@@ -207,8 +207,7 @@ export default function Wallet() {
     }
   };
 
-  const totalBalance = user?.balance || 0;
-  const usvTokens = totalBalance / (prices?.USV?.price || 0.20);
+  // Remove duplicate variable declarations - already defined above
 
   return (
     <div className="min-h-screen bg-black relative pb-20">

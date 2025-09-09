@@ -350,6 +350,7 @@ router.post('/transactions/withdraw', authenticateToken, async (req: any, res) =
       userId: req.user.userId,
       type: 'withdraw',
       amount: data.amount,
+      token: 'USV',
       toAddress: data.toAddress,
       status: 'pending',
     });
@@ -392,6 +393,7 @@ router.post('/qr/claim', authenticateToken, async (req: any, res) => {
       userId: req.user.userId,
       type: 'claim',
       amount: qrCode.tokenReward,
+      token: 'USV',
       status: 'completed',
     });
 
@@ -764,12 +766,12 @@ router.post('/user/transfer', authenticateToken, async (req: any, res) => {
     // Create transaction record
     await storage.createTransaction({
       userId: req.user.userId,
-      type: 'send',
+      type: 'transfer',
       amount: amount,
       token: 'USV',
       status: 'completed',
       toAddress: toAddress,
-      signature: signature || `transfer_${Date.now()}`
+      txHash: signature || `transfer_${Date.now()}`
     });
 
     // Try to find recipient and credit their balance
@@ -783,12 +785,12 @@ router.post('/user/transfer', authenticateToken, async (req: any, res) => {
         // Create receive transaction record
         await storage.createTransaction({
           userId: recipient.id,
-          type: 'receive',
+          type: 'deposit',
           amount: amount,
           token: 'USV',
           status: 'completed',
           fromAddress: user.walletAddress,
-          signature: signature || `transfer_${Date.now()}`
+          txHash: signature || `transfer_${Date.now()}`
         });
       }
     } catch (error) {

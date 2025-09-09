@@ -197,7 +197,7 @@ export default function Home() {
             <div className="flex items-center space-x-2 mb-3">
               <div className="w-8 h-8 rounded-lg overflow-hidden bg-black p-1">
                 <img 
-                  src={solanaLogoSrc} 
+                  src={usvLogoSrc} 
                   alt="Solana" 
                   className="w-full h-full object-contain"
                   onError={(e) => console.error('Logo failed to load:', e)}
@@ -288,7 +288,7 @@ export default function Home() {
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 rounded-2xl overflow-hidden bg-black p-2">
                 <img 
-                  src={solanaLogoSrc} 
+                  src={usvLogoSrc} 
                   alt="Solana" 
                   className="w-full h-full object-contain"
                   onError={(e) => console.error('Logo failed to load:', e)}
