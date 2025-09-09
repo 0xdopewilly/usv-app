@@ -1,4 +1,5 @@
 import { User, Transaction, NFT, QRCode, VapeStore, InsertUser, InsertTransaction, InsertNFT, InsertQRCode, InsertVapeStore } from '../shared/schema';
+import { DatabaseStorage } from './db/storage';
 
 export interface IStorage {
   // User operations
@@ -250,4 +251,5 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Switch to real database instead of memory storage
+export const storage = new DatabaseStorage();
