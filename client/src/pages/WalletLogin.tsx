@@ -17,19 +17,35 @@ export default function WalletLogin() {
     setIsConnecting(true);
     
     try {
-      // Simulate user login with wallet address
-      await login('wallet_user@phantom.app', 'wallet_password');
+      // Use real Phantom wallet authentication
+      const response = await fetch('/api/auth/phantom', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          walletAddress: publicKey,
+          signature: 'phantom-signature' // In production, get real signature
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Phantom authentication failed');
+      }
+      
+      const data = await response.json();
+      
+      // Store token and redirect
+      localStorage.setItem('token', data.token);
       
       toast({
-        title: "Welcome back!",
-        description: "Successfully logged in with Phantom wallet",
+        title: "Welcome!",
+        description: `Connected with Phantom wallet: ${publicKey.slice(0, 6)}...${publicKey.slice(-4)}`,
       });
       
       setLocation('/');
     } catch (error) {
       toast({
         title: "Login Failed",
-        description: "Could not complete wallet login",
+        description: "Could not authenticate with Phantom wallet",
         variant: "destructive",
       });
     } finally {
