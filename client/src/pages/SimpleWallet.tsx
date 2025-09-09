@@ -3,55 +3,29 @@ import { ArrowLeft, Copy, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { useLocation } from 'wouter';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useToast } from '@/hooks/use-toast';
-import { realPhantomWallet, refreshRealWalletBalances, type TokenAccount } from '@/lib/realSolana';
+import { useAuth } from '@/lib/auth';
+import { refreshRealWalletBalances, type TokenAccount } from '@/lib/realSolana';
 
 // Remove interface - using TokenAccount from realSolana
 
 export default function SimpleWallet() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [hideBalance, setHideBalance] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [tokens, setTokens] = useState<TokenAccount[]>([]);
   const [totalValue, setTotalValue] = useState(0);
 
-  // Initialize wallet connection and load balances
+  // Load balances for user's auto-generated wallet
   useEffect(() => {
-    initializeWallet();
-  }, []);
-
-  const initializeWallet = async () => {
-    try {
-      console.log('🚀 Connecting to REAL Phantom wallet...');
-      
-      // Connect to REAL Phantom wallet
-      const result = await realPhantomWallet.connect();
-      
-      if (result.success && result.publicKey) {
-        setWalletAddress(result.publicKey);
-        console.log('✅ Connected to wallet:', result.publicKey);
-        
-        // Load REAL balances immediately
-        await loadRealBalances(result.publicKey);
-        
-        toast({
-          title: "🦄 REAL Wallet Connected!",
-          description: `Connected to ${result.publicKey.slice(0, 8)}...`,
-        });
-      } else {
-        throw new Error(result.error || 'Failed to connect');
-      }
-    } catch (error) {
-      console.error('❌ Failed to connect wallet:', error);
-      toast({
-        title: "❌ Connection Failed",
-        description: "Please install Phantom wallet and try again",
-        variant: "destructive"
-      });
+    if (user?.walletAddress) {
+      loadRealBalances(user.walletAddress);
     }
-  };
+  }, [user?.walletAddress]);
+
+  // No longer needed - using auto-generated wallet
 
   const loadRealBalances = async (address: string) => {
     setIsRefreshing(true);
@@ -90,20 +64,18 @@ export default function SimpleWallet() {
     }
   };
 
-  const refreshBalances = async (address?: string) => {
-    if (!address && !walletAddress) {
+  const refreshBalances = async () => {
+    if (!user?.walletAddress) {
       toast({
-        title: "❌ No Wallet Connected",
-        description: "Please connect your Phantom wallet first",
+        title: "❌ No Wallet Found",
+        description: "Your auto-generated wallet is not available",
         variant: "destructive"
       });
       return;
     }
     
-    const addressToUse = address || walletAddress!;
     console.log('🔄 Refreshing REAL balances from devnet...');
-    
-    await loadRealBalances(addressToUse);
+    await loadRealBalances(user.walletAddress);
   };
 
   const copyToClipboard = async (text: string) => {
@@ -191,7 +163,7 @@ export default function SimpleWallet() {
         {/* Action Buttons */}
         <div className="flex space-x-4 mb-6">
           <button 
-            onClick={() => copyToClipboard(walletAddress || '')}
+            onClick={() => copyToClipboard(user?.walletAddress || '')}
             className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
           >
             Receive {token.symbol}
@@ -264,7 +236,7 @@ export default function SimpleWallet() {
             {/* Receive and Send Buttons */}
             <div className="flex space-x-4 mb-6">
               <button 
-                onClick={() => copyToClipboard(walletAddress || '')}
+                onClick={() => copyToClipboard(user?.walletAddress || '')}
                 className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
               >
                 Receive
@@ -278,16 +250,16 @@ export default function SimpleWallet() {
             </div>
           </div>
 
-          {/* Copy Address Section - REAL WALLET ADDRESS */}
-          {walletAddress && (
+          {/* Copy Address Section - YOUR AUTO-GENERATED WALLET ADDRESS */}
+          {user?.walletAddress && (
             <div className="bg-gray-900/50 rounded-xl p-4 mb-6">
-              <p className="text-gray-400 text-sm mb-2">Copy wallet address</p>
+              <p className="text-gray-400 text-sm mb-2">Your USV wallet address</p>
               <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
                 <p className="text-white font-mono text-sm">
-                  {walletAddress.slice(0, 8)}...{walletAddress.slice(-8)}
+                  {user.walletAddress.slice(0, 8)}...{user.walletAddress.slice(-8)}
                 </p>
                 <button 
-                  onClick={() => copyToClipboard(walletAddress)}
+                  onClick={() => copyToClipboard(user.walletAddress)}
                   className="text-gray-400 hover:text-white p-2 hover:bg-gray-700 rounded"
                 >
                   <Copy className="w-4 h-4" />
@@ -311,10 +283,21 @@ export default function SimpleWallet() {
             </div>
             
             <div className="space-y-3">
-              {tokens.length === 0 && !isRefreshing && (
+              {tokens.length === 0 && !isRefreshing && user?.walletAddress && (
                 <div className="text-center py-8 text-gray-400">
                   <p>No tokens found</p>
-                  <p className="text-sm">Connect your Phantom wallet to see your tokens</p>
+                  <p className="text-sm">Send SOL to your wallet to see your balance</p>
+                  <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                    <p className="text-blue-400 text-xs">
+                      ✅ Your wallet is ready! Address: {user.walletAddress.slice(0, 8)}...{user.walletAddress.slice(-8)}
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              {!user?.walletAddress && (
+                <div className="text-center py-8 text-gray-400">
+                  <p>Please log in to see your wallet</p>
                 </div>
               )}
               
