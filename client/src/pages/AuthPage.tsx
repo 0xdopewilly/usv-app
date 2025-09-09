@@ -60,14 +60,31 @@ export default function AuthPage() {
     e.preventDefault();
     setIsLoading(true);
 
+    console.log('🔐 Auth attempt:', { isLogin, email, passwordLength: password.length, fullName });
+
     try {
+      // Basic client-side validation
+      if (!email || !password) {
+        throw new Error('Email and password are required');
+      }
+      
+      if (password.length < 8) {
+        throw new Error('Password must be at least 8 characters long');
+      }
+      
+      if (!isLogin && (!fullName || fullName.length < 2)) {
+        throw new Error('Full name must be at least 2 characters long');
+      }
+
       if (isLogin) {
+        console.log('🔑 Attempting login...');
         await login(email, password);
         toast({
           title: "Welcome back!",
           description: "Successfully logged in to USV Token",
         });
       } else {
+        console.log('📝 Attempting signup...');
         await signup({ email, password, fullName, acceptTerms: true });
         toast({
           title: "Account created!",
@@ -75,6 +92,7 @@ export default function AuthPage() {
         });
       }
     } catch (error) {
+      console.error('❌ Auth error:', error);
       toast({
         title: "Authentication failed",
         description: error instanceof Error ? error.message : "Please try again",

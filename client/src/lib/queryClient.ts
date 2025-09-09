@@ -12,13 +12,27 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  const token = localStorage.getItem('token');
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  
+  // Add Authorization header if token exists
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  
+  console.log(`🌐 API Request: ${method} ${url}`, data ? data : 'no data');
+  
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers,
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
 
+  console.log(`📡 API Response: ${res.status} ${res.statusText}`);
+  
   await throwIfResNotOk(res);
   return res;
 }

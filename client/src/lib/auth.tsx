@@ -106,11 +106,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Update Authorization header when token changes
   useEffect(() => {
+    // Set the authorization header for future requests
     if (token) {
       queryClient.setDefaultOptions({
         queries: {
-          meta: {
-            headers: { Authorization: `Bearer ${token}` }
+          queryFn: async ({ queryKey }) => {
+            const res = await fetch(queryKey.join("/") as string, {
+              credentials: "include",
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            });
+            if (!res.ok) {
+              const text = (await res.text()) || res.statusText;
+              throw new Error(`${res.status}: ${text}`);
+            }
+            return await res.json();
           }
         }
       });
