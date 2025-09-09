@@ -243,7 +243,7 @@ export default function SendTokens() {
           >
             <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/20 p-6">
               <div className="text-center mb-6">
-                <img src={usvLogo} alt="USV" className="w-16 h-16 mx-auto mb-4 rounded-xl" />
+                <img src="/attached_assets/image_1757432267841.png" alt="USV" className="w-16 h-16 mx-auto mb-4 rounded-xl" />
                 <h2 className="text-white text-3xl font-bold mb-2" data-testid="text-confirm-amount">
                   {amountNum} USV
                 </h2>
@@ -334,7 +334,7 @@ export default function SendTokens() {
           {/* Balance Card */}
           <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/20 p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <img src={usvLogo} alt="USV" className="w-10 h-10 rounded-xl" />
+              <img src="/attached_assets/image_1757432267841.png" alt="USV" className="w-10 h-10 rounded-xl" />
               <div>
                 <h3 className="text-white font-semibold">Available Balance</h3>
                 <p className="text-gray-400 text-sm">USV Tokens</p>

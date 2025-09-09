@@ -244,7 +244,7 @@ export default function Wallet() {
         {/* Main Balance Display */}
         <div className="text-center mb-6">
           <div className="flex items-center justify-center space-x-3 mb-4">
-            <img src="/attached_assets/image_1757431326277.png" alt="USV" className="w-12 h-12 rounded-xl" />
+            <img src="/attached_assets/image_1757432267841.png" alt="USV" className="w-12 h-12 rounded-xl" />
             <h2 className="text-white text-4xl font-bold" data-testid="text-app-balance">
               {hideBalance ? '••••••' : `$${totalBalance.toFixed(3)}`}
             </h2>
@@ -393,7 +393,7 @@ export default function Wallet() {
               data-testid="asset-usv"
             >
               <div className="flex items-center space-x-3">
-                <img src="/attached_assets/image_1757431326277.png" alt="USV" className="w-10 h-10 rounded-lg" />
+                <img src="/attached_assets/image_1757432267841.png" alt="USV" className="w-10 h-10 rounded-lg" />
                 <div>
                   <p className="text-white font-medium">Ultra Smooth Vape</p>
                   <p className="text-gray-400 text-sm">USV • {usvTokens.toFixed(4)}</p>
