@@ -428,7 +428,20 @@ export default function Wallet() {
               data-testid="asset-sol"
             >
               <div className="flex items-center space-x-3">
-                <img src="/solana-logo.png" alt="Solana" className="w-10 h-10 object-contain" />
+                <img 
+                  src="/solana-logo.png?v=2" 
+                  alt="Solana" 
+                  className="w-10 h-10 object-contain rounded-lg" 
+                  onError={(e) => {
+                    console.error('Solana logo failed to load');
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement!.innerHTML = `
+                      <div class="w-10 h-10 bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xs">◆</span>
+                      </div>
+                    `;
+                  }}
+                />
                 <div>
                   <p className="text-white font-medium">Solana</p>
                   <p className="text-gray-400 text-sm">SOL • {realSolBalance.toFixed(4)}</p>
