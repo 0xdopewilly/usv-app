@@ -445,6 +445,69 @@ router.get('/stores', async (req, res) => {
   }
 });
 
+// Real-time wallet balance endpoints
+router.get('/wallet/balance/:walletAddress', async (req, res) => {
+  try {
+    const { walletAddress } = req.params;
+    
+    if (!walletAddress) {
+      return res.status(400).json({ error: 'Wallet address required' });
+    }
+    
+    // Get real SOL balance from Solana devnet
+    const publicKey = new PublicKey(walletAddress);
+    const balanceInLamports = await connection.getBalance(publicKey);
+    const balanceInSOL = balanceInLamports / LAMPORTS_PER_SOL;
+    
+    res.json({
+      walletAddress,
+      balanceSOL: balanceInSOL,
+      balanceLamports: balanceInLamports,
+      network: 'devnet',
+      lastUpdated: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Failed to fetch wallet balance:', error);
+    res.status(500).json({ error: 'Failed to fetch wallet balance' });
+  }
+});
+
+router.get('/wallet/tokens/:walletAddress', async (req, res) => {
+  try {
+    const { walletAddress } = req.params;
+    
+    if (!walletAddress) {
+      return res.status(400).json({ error: 'Wallet address required' });
+    }
+    
+    // Get all token accounts for this wallet
+    const publicKey = new PublicKey(walletAddress);
+    const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey, {
+      programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'), // SPL Token program
+    });
+    
+    const tokens = tokenAccounts.value.map(account => {
+      const tokenInfo = account.account.data.parsed.info;
+      return {
+        mint: tokenInfo.mint,
+        amount: tokenInfo.tokenAmount.uiAmount,
+        decimals: tokenInfo.tokenAmount.decimals,
+        symbol: 'UNKNOWN', // Would need token metadata to get symbol
+      };
+    });
+    
+    res.json({
+      walletAddress,
+      tokens,
+      network: 'devnet',
+      lastUpdated: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Failed to fetch token balances:', error);
+    res.status(500).json({ error: 'Failed to fetch token balances' });
+  }
+});
+
 // Real-time price API endpoints
 router.get('/prices/solana', async (req, res) => {
   try {

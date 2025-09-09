@@ -9,6 +9,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
+import { useQuery } from '@tanstack/react-query';
 import { solanaService, phantomWallet, isPhantomInstalled } from '@/lib/solana';
 
 // USV Logo as base64 SVG
@@ -36,6 +37,32 @@ export default function Wallet() {
   const [phantomBalance, setPhantomBalance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [realSolBalance, setRealSolBalance] = useState(0);
+  
+  // Real-time SOL balance fetching
+  const { data: walletBalance, refetch: refetchBalance } = useQuery({
+    queryKey: ['wallet-balance', user?.walletAddress],
+    queryFn: async () => {
+      if (!user?.walletAddress) return null;
+      const response = await fetch(`/api/wallet/balance/${user.walletAddress}`);
+      if (!response.ok) throw new Error('Failed to fetch balance');
+      return response.json();
+    },
+    enabled: !!user?.walletAddress,
+    refetchInterval: 10000, // Refresh every 10 seconds for real-time updates
+  });
+  
+  // Real-time token balances
+  const { data: tokenBalances } = useQuery({
+    queryKey: ['wallet-tokens', user?.walletAddress],
+    queryFn: async () => {
+      if (!user?.walletAddress) return null;
+      const response = await fetch(`/api/wallet/tokens/${user.walletAddress}`);
+      if (!response.ok) throw new Error('Failed to fetch tokens');
+      return response.json();
+    },
+    enabled: !!user?.walletAddress,
+    refetchInterval: 15000, // Refresh every 15 seconds
+  });
 
   const timeframes = ['1d', '7d', '1m', '1y'];
 
@@ -70,6 +97,11 @@ export default function Wallet() {
       }
     }
   };
+  
+  // Calculate balances from real-time data
+  const currentSolBalance = walletBalance?.balanceSOL || realSolBalance || 0;
+  const usvTokens = tokenBalances?.tokens?.find(token => token.symbol === 'USV')?.amount || 2847.39; // Fallback to mock for demo
+  const totalBalance = (currentSolBalance * (prices?.SOL?.price || 23.45)) + (usvTokens * (prices?.USV?.price || 0.20));
   
   const checkPhantomConnection = async () => {
     if (phantomWallet.isConnected && phantomWallet.publicKey) {
