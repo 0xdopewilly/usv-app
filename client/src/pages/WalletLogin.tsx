@@ -88,60 +88,56 @@ export default function WalletLogin() {
             <Wallet className="w-12 h-12 text-white" />
           </motion.div>
           
-          <h2 className="text-white text-2xl font-bold mb-3">Connect Your Wallet</h2>
+          <h2 className="text-white text-2xl font-bold mb-3">Access Your Wallet</h2>
           <p className="text-gray-400 text-base max-w-sm mx-auto">
-            Login instantly with your Phantom wallet. Your wallet is your identity in the USV ecosystem.
+            Continue with email to use your auto-generated wallet, or optionally connect Phantom for additional features.
           </p>
         </div>
 
-        {/* Wallet Connection */}
+        {/* Primary Login Methods - EMAIL FIRST */}
         <motion.div
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="space-y-6"
+          className="space-y-3"
         >
-          <ConnectWallet 
-            onConnected={handleWalletConnected}
-            className="w-full"
-          />
+          <Button
+            onClick={() => setLocation('/login')}
+            className="w-full bg-pink-500 hover:bg-pink-600 text-white rounded-2xl h-12 font-semibold"
+            data-testid="button-email-login"
+          >
+            Continue with Email
+          </Button>
           
-          {isConnecting && (
-            <div className="text-center">
-              <div className="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-              <p className="text-gray-400 text-sm">Completing login...</p>
-            </div>
-          )}
+          <Button
+            onClick={() => setLocation('/signup')}
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-2xl h-12 font-semibold"
+            data-testid="button-create-account"
+          >
+            Create New Account
+          </Button>
         </motion.div>
 
-        {/* Alternative Login Methods */}
+        {/* Optional Phantom Wallet */}
         <motion.div
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5 }}
           className="mt-8 pt-6 border-t border-gray-700"
         >
-          <p className="text-gray-400 text-center text-sm mb-4">Or continue with</p>
+          <p className="text-gray-400 text-center text-sm mb-4">Optional: Advanced users only</p>
           
-          <div className="space-y-3">
-            <Button
-              variant="outline"
-              onClick={() => setLocation('/login')}
-              className="w-full bg-gray-800/50 border-gray-600 text-white hover:bg-gray-700 rounded-2xl h-12"
-              data-testid="button-email-login"
-            >
-              Email Login
-            </Button>
-            
-            <Button
-              variant="outline"
-              onClick={() => setLocation('/signup')}
-              className="w-full bg-gray-800/50 border-gray-600 text-white hover:bg-gray-700 rounded-2xl h-12"
-              data-testid="button-create-account"
-            >
-              Create Account
-            </Button>
-          </div>
+          <ConnectWallet 
+            onConnected={handleWalletConnected}
+            className="w-full"
+          />
+          
+          {isConnecting && (
+            <div className="text-center mt-4">
+              <div className="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+              <p className="text-gray-400 text-sm">Completing Phantom connection...</p>
+            </div>
+          )}
         </motion.div>
 
         {/* Benefits */}
@@ -151,16 +147,16 @@ export default function WalletLogin() {
           transition={{ delay: 0.6 }}
           className="mt-8 space-y-3"
         >
-          <h3 className="text-white font-semibold text-center mb-4">Why connect your wallet?</h3>
+          <h3 className="text-white font-semibold text-center mb-4">Choose your preferred method</h3>
           
           <div className="space-y-3">
-            <div className="flex items-center space-x-3 p-3 bg-gray-800/30 rounded-2xl">
+            <div className="flex items-center space-x-3 p-3 bg-green-800/20 border border-green-600/30 rounded-2xl">
               <div className="w-8 h-8 bg-green-600/20 rounded-full flex items-center justify-center">
                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
               </div>
               <div>
-                <p className="text-white text-sm font-medium">Instant Access</p>
-                <p className="text-gray-400 text-xs">No passwords, no verification needed</p>
+                <p className="text-white text-sm font-medium">Email Login (Recommended)</p>
+                <p className="text-gray-400 text-xs">Auto-generated wallet, easy setup, perfect for beginners</p>
               </div>
             </div>
             
@@ -169,18 +165,8 @@ export default function WalletLogin() {
                 <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
               </div>
               <div>
-                <p className="text-white text-sm font-medium">Secure & Private</p>
-                <p className="text-gray-400 text-xs">Your keys, your tokens, your control</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-3 p-3 bg-gray-800/30 rounded-2xl">
-              <div className="w-8 h-8 bg-blue-600/20 rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-              </div>
-              <div>
-                <p className="text-white text-sm font-medium">Full Functionality</p>
-                <p className="text-gray-400 text-xs">Trade, stake, and claim rewards directly</p>
+                <p className="text-white text-sm font-medium">Phantom Wallet (Optional)</p>
+                <p className="text-gray-400 text-xs">For advanced users with existing Solana wallets</p>
               </div>
             </div>
           </div>
