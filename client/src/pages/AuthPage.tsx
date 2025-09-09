@@ -189,16 +189,22 @@ export default function AuthPage() {
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
+      console.log('🔍 Starting Google Sign-In process...');
       if (!window.google) {
+        console.error('❌ Google SDK not loaded');
         throw new Error('Google Sign-In SDK not loaded');
       }
+      console.log('✅ Google SDK loaded successfully');
 
       // Clear any cached cancellation state
       window.google.accounts.id.cancel();
 
       // Re-initialize Google Sign-In fresh
+      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '167005079025-vi7tuicclb0jujlnbfhl1q2l75nle42k.apps.googleusercontent.com';
+      console.log('🔍 Google Client ID being used:', clientId);
+      
       window.google.accounts.id.initialize({
-        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id.apps.googleusercontent.com',
+        client_id: clientId,
         callback: async (response: any) => {
           try {
             // Send the Google ID token to your backend for verification
