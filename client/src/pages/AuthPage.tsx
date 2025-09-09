@@ -165,7 +165,7 @@ export default function AuthPage() {
       console.error('Apple Sign-In Error:', error);
       
       // Check if it's an invalid_client error (common in development)
-      const errorMessage = error.toString();
+      const errorMessage = error instanceof Error ? error.message : String(error);
       if (errorMessage.includes('invalid_client') || errorMessage.includes('Invalid client')) {
         toast({
           title: "Apple Developer Setup Required",
@@ -184,7 +184,7 @@ export default function AuthPage() {
     }
   };
 
-  // REAL Google Sign-In Implementation
+  // REAL Google Sign-In Implementation (Fixed for cancellation issues)
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
@@ -192,7 +192,10 @@ export default function AuthPage() {
         throw new Error('Google Sign-In SDK not loaded');
       }
 
-      // Initialize Google Sign-In
+      // Clear any cached cancellation state
+      window.google.accounts.id.cancel();
+
+      // Re-initialize Google Sign-In fresh
       window.google.accounts.id.initialize({
         client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id.apps.googleusercontent.com',
         callback: async (response: any) => {
@@ -218,7 +221,8 @@ export default function AuthPage() {
                 description: "Successfully signed in with Google",
               });
             } else {
-              throw new Error('Google authentication failed on server');
+              const errorData = await backendResponse.json();
+              throw new Error(errorData.error || 'Google authentication failed on server');
             }
           } catch (error) {
             console.error('Google Sign-In Callback Error:', error);
@@ -230,16 +234,27 @@ export default function AuthPage() {
           } finally {
             setGoogleLoading(false);
           }
-        }
+        },
+        auto_select: false,
+        cancel_on_tap_outside: false
       });
 
-      // Prompt the sign-in
-      window.google.accounts.id.prompt((notification: any) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          // Fallback: create manual sign-in button
-          console.log('Google prompt not displayed, using manual flow');
-        }
-      });
+      // Force prompt with fresh state
+      setTimeout(() => {
+        window.google.accounts.id.prompt((notification: any) => {
+          console.log('Google prompt notification:', notification);
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            // Create fallback manual button
+            console.log('Google prompt blocked, user may have canceled before');
+            toast({
+              title: "Google Sign-In",
+              description: "If nothing happens, try clearing cookies or use email sign-in instead.",
+              variant: "default",
+            });
+            setGoogleLoading(false);
+          }
+        });
+      }, 100);
     } catch (error) {
       console.error('Google Sign-In Error:', error);
       toast({
