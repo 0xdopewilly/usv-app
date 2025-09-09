@@ -206,13 +206,7 @@ export default function SimpleWallet() {
           <div className="text-center mb-6">
             <div className="flex items-center justify-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-2">
-                <div className="w-full h-full bg-black rounded-xl flex items-center justify-center">
-                  <svg viewBox="0 0 100 100" className="w-full h-full">
-                    <polygon points="15,75 35,25 55,75 45,60 25,60" fill="white"/>
-                    <polygon points="35,75 55,25 75,75 65,60 45,60" fill="white"/>
-                    <text x="50" y="92" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">USV</text>
-                  </svg>
-                </div>
+                <img src="/attached_assets/image_1757432548673.png" alt="USV" className="w-full h-full object-contain" />
               </div>
               <h2 className="text-white text-4xl font-bold">
                 {hideBalance ? '••••••' : `$${totalValue.toFixed(2)}`}

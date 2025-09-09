@@ -152,13 +152,7 @@ export default function Home() {
           >
             <div className="flex items-center space-x-2 mb-3">
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center p-1">
-                <div className="w-full h-full bg-black rounded-full flex items-center justify-center">
-                  <svg viewBox="0 0 100 100" className="w-full h-full">
-                    <polygon points="20,80 40,20 60,80 50,65 30,65" fill="white"/>
-                    <polygon points="40,80 60,20 80,80 70,65 50,65" fill="white"/>
-                    <text x="50" y="95" textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">USV</text>
-                  </svg>
-                </div>
+                <img src="/attached_assets/image_1757432548673.png" alt="USV" className="w-full h-full object-contain" />
               </div>
               <div className="flex-1">
                 <p className="text-white text-xs font-medium">Ultra Smooth Vape</p>
