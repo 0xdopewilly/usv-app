@@ -244,7 +244,13 @@ export default function Wallet() {
         {/* Main Balance Display */}
         <div className="text-center mb-6">
           <div className="flex items-center justify-center space-x-3 mb-4">
-            <img src="/attached_assets/image_1757432267841.png" alt="USV" className="w-12 h-12 rounded-xl" />
+            <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center">
+              <svg viewBox="0 0 100 100" className="w-full h-full">
+                <polygon points="15,75 35,25 55,75 45,60 25,60" fill="white"/>
+                <polygon points="35,75 55,25 75,75 65,60 45,60" fill="white"/>
+                <text x="50" y="92" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">USV</text>
+              </svg>
+            </div>
             <h2 className="text-white text-4xl font-bold" data-testid="text-app-balance">
               {hideBalance ? '••••••' : `$${totalBalance.toFixed(3)}`}
             </h2>
@@ -393,7 +399,13 @@ export default function Wallet() {
               data-testid="asset-usv"
             >
               <div className="flex items-center space-x-3">
-                <img src="/attached_assets/image_1757432267841.png" alt="USV" className="w-10 h-10 rounded-lg" />
+                <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
+                  <svg viewBox="0 0 100 100" className="w-full h-full">
+                    <polygon points="15,75 35,25 55,75 45,60 25,60" fill="white"/>
+                    <polygon points="35,75 55,25 75,75 65,60 45,60" fill="white"/>
+                    <text x="50" y="92" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">USV</text>
+                  </svg>
+                </div>
                 <div>
                   <p className="text-white font-medium">Ultra Smooth Vape</p>
                   <p className="text-gray-400 text-sm">USV • {usvTokens.toFixed(4)}</p>

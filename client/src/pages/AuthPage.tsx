@@ -176,7 +176,13 @@ export default function AuthPage() {
           className="flex justify-center mb-8"
         >
           <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-white/10 p-2">
-            <img src="/attached_assets/image_1757432267841.png" alt="USV" className="w-full h-full object-contain" />
+            <div className="w-full h-full bg-black rounded-xl flex items-center justify-center">
+              <svg viewBox="0 0 100 100" className="w-full h-full">
+                <polygon points="15,75 35,25 55,75 45,60 25,60" fill="white"/>
+                <polygon points="35,75 55,25 75,75 65,60 45,60" fill="white"/>
+                <text x="50" y="92" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">USV</text>
+              </svg>
+            </div>
           </div>
         </motion.div>
 

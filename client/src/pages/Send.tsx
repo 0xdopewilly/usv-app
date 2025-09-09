@@ -243,7 +243,13 @@ export default function SendTokens() {
           >
             <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/20 p-6">
               <div className="text-center mb-6">
-                <img src="/attached_assets/image_1757432267841.png" alt="USV" className="w-16 h-16 mx-auto mb-4 rounded-xl" />
+                <div className="w-16 h-16 bg-black rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <svg viewBox="0 0 100 100" className="w-full h-full">
+                    <polygon points="15,75 35,25 55,75 45,60 25,60" fill="white"/>
+                    <polygon points="35,75 55,25 75,75 65,60 45,60" fill="white"/>
+                    <text x="50" y="92" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">USV</text>
+                  </svg>
+                </div>
                 <h2 className="text-white text-3xl font-bold mb-2" data-testid="text-confirm-amount">
                   {amountNum} USV
                 </h2>
@@ -334,7 +340,13 @@ export default function SendTokens() {
           {/* Balance Card */}
           <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/20 p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <img src="/attached_assets/image_1757432267841.png" alt="USV" className="w-10 h-10 rounded-xl" />
+              <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center">
+                <svg viewBox="0 0 100 100" className="w-full h-full">
+                  <polygon points="15,75 35,25 55,75 45,60 25,60" fill="white"/>
+                  <polygon points="35,75 55,25 75,75 65,60 45,60" fill="white"/>
+                  <text x="50" y="92" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">USV</text>
+                </svg>
+              </div>
               <div>
                 <h3 className="text-white font-semibold">Available Balance</h3>
                 <p className="text-gray-400 text-sm">USV Tokens</p>
