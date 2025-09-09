@@ -1,0 +1,188 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x9"}}
+content.js:2 Check phishing by URL: Passed.
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. Object
+(anonymous) @ script.bundle.js:52
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. Object
+(anonymous) @ script.bundle.js:52
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Backpack couldn't override `window.ethereum`.
+vVs @ injected.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+injected.js:1 TronLink initiated
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+(index):1 Error while trying to use the following icon from the Manifest: https://usv-app.replit.app/icon-144.png (Download error or resource isn't a valid image)
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CNMRJJp2.js:163 🔍 Starting Google Sign-In process...
+index-CNMRJJp2.js:163 ✅ Google SDK loaded successfully
+index-CNMRJJp2.js:163 🔍 Google Client ID being used: 167005079025-vi7tuicclb0jujlnbfhl1q2l75nle42k.apps.googleusercontent.com
+VM90 client:74 [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+_.F @ VM90 client:74
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CNMRJJp2.js:163 Google prompt notification: dt
+index-CNMRJJp2.js:163 🌐 API Request: POST /api/auth/login Object
+/api/auth/login:1  Failed to load resource: the server responded with a status of 400 ()
+index-CNMRJJp2.js:163 📡 API Response: 400 
+index-CNMRJJp2.js:163 ❌ API Error 400: Validation failed: email: Required
+qk @ index-CNMRJJp2.js:163
+index-CNMRJJp2.js:163 Google Sign-In Callback Error: Error: Validation failed: email: Required
+    at qk (index-CNMRJJp2.js:163:23302)
+    at async Yy (index-CNMRJJp2.js:163:23676)
+    at async Object.mutationFn (index-CNMRJJp2.js:163:24280)
+callback @ index-CNMRJJp2.js:163
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CNMRJJp2.js:163 🔍 Starting Google Sign-In process...
+index-CNMRJJp2.js:163 ✅ Google SDK loaded successfully
+index-CNMRJJp2.js:163 🔍 Google Client ID being used: 167005079025-vi7tuicclb0jujlnbfhl1q2l75nle42k.apps.googleusercontent.com
+VM90 client:74 [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+_.F @ VM90 client:74
+xt.ba @ VM90 client:307
+ps.ba @ VM90 client:345
+us @ VM90 client:276
+(anonymous) @ index-CNMRJJp2.js:163
+setTimeout
+x @ index-CNMRJJp2.js:163
+nL @ index-CNMRJJp2.js:37
+iL @ index-CNMRJJp2.js:37
+oL @ index-CNMRJJp2.js:37
+T1 @ index-CNMRJJp2.js:37
+E_ @ index-CNMRJJp2.js:37
+(anonymous) @ index-CNMRJJp2.js:37
+Nb @ index-CNMRJJp2.js:40
+YC @ index-CNMRJJp2.js:37
+Pm @ index-CNMRJJp2.js:37
+lb @ index-CNMRJJp2.js:37
+wL @ index-CNMRJJp2.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CNMRJJp2.js:163 Google prompt notification: dt {g: 'dismissed', i: 'credential_returned'}
+index-CNMRJJp2.js:163 🌐 API Request: POST /api/auth/login {email: undefined, password: 'google-signin'}
+requests.js:1  POST https://usv-app.replit.app/api/auth/login 400 (Bad Request)
+s.fetch @ requests.js:1
+(anonymous) @ traffic.js:1
+fetch @ traffic.js:1
+value @ injected.js:1
+Yy @ index-CNMRJJp2.js:163
+mutationFn @ index-CNMRJJp2.js:163
+fn @ index-CNMRJJp2.js:48
+m @ index-CNMRJJp2.js:48
+start @ index-CNMRJJp2.js:48
+execute @ index-CNMRJJp2.js:48
+await in execute
+mutate @ index-CNMRJJp2.js:48
+l @ index-CNMRJJp2.js:163
+callback @ index-CNMRJJp2.js:163
+await in callback
+xt.fa @ VM90 client:304
+Ps.fa @ VM90 client:283
+(anonymous) @ VM90 client:281
+Promise.then
+Rs @ VM90 client:281
+Ts @ VM90 client:284
+Us @ VM90 client:284
+xt.ba @ VM90 client:309
+ps.ba @ VM90 client:345
+us @ VM90 client:276
+(anonymous) @ index-CNMRJJp2.js:163
+setTimeout
+x @ index-CNMRJJp2.js:163
+nL @ index-CNMRJJp2.js:37
+iL @ index-CNMRJJp2.js:37
+oL @ index-CNMRJJp2.js:37
+T1 @ index-CNMRJJp2.js:37
+E_ @ index-CNMRJJp2.js:37
+(anonymous) @ index-CNMRJJp2.js:37
+Nb @ index-CNMRJJp2.js:40
+YC @ index-CNMRJJp2.js:37
+Pm @ index-CNMRJJp2.js:37
+lb @ index-CNMRJJp2.js:37
+wL @ index-CNMRJJp2.js:37
+index-CNMRJJp2.js:163 📡 API Response: 400 
+index-CNMRJJp2.js:163 ❌ API Error 400: Validation failed: email: Required
+qk @ index-CNMRJJp2.js:163
+await in qk
+Yy @ index-CNMRJJp2.js:163
+await in Yy
+mutationFn @ index-CNMRJJp2.js:163
+fn @ index-CNMRJJp2.js:48
+m @ index-CNMRJJp2.js:48
+start @ index-CNMRJJp2.js:48
+execute @ index-CNMRJJp2.js:48
+await in execute
+mutate @ index-CNMRJJp2.js:48
+l @ index-CNMRJJp2.js:163
+callback @ index-CNMRJJp2.js:163
+await in callback
+xt.fa @ VM90 client:304
+Ps.fa @ VM90 client:283
+(anonymous) @ VM90 client:281
+Promise.then
+Rs @ VM90 client:281
+Ts @ VM90 client:284
+Us @ VM90 client:284
+xt.ba @ VM90 client:309
+ps.ba @ VM90 client:345
+us @ VM90 client:276
+(anonymous) @ index-CNMRJJp2.js:163
+setTimeout
+x @ index-CNMRJJp2.js:163
+nL @ index-CNMRJJp2.js:37
+iL @ index-CNMRJJp2.js:37
+oL @ index-CNMRJJp2.js:37
+T1 @ index-CNMRJJp2.js:37
+E_ @ index-CNMRJJp2.js:37
+(anonymous) @ index-CNMRJJp2.js:37
+Nb @ index-CNMRJJp2.js:40
+YC @ index-CNMRJJp2.js:37
+Pm @ index-CNMRJJp2.js:37
+lb @ index-CNMRJJp2.js:37
+wL @ index-CNMRJJp2.js:37
+index-CNMRJJp2.js:163 Google Sign-In Callback Error: Error: Validation failed: email: Required
+    at qk (index-CNMRJJp2.js:163:23302)
+    at async Yy (index-CNMRJJp2.js:163:23676)
+    at async Object.mutationFn (index-CNMRJJp2.js:163:24280)
+callback @ index-CNMRJJp2.js:163
+await in callback
+xt.fa @ VM90 client:304
+Ps.fa @ VM90 client:283
+(anonymous) @ VM90 client:281
+Promise.then
+Rs @ VM90 client:281
+Ts @ VM90 client:284
+Us @ VM90 client:284
+xt.ba @ VM90 client:309
+ps.ba @ VM90 client:345
+us @ VM90 client:276
+(anonymous) @ index-CNMRJJp2.js:163
+setTimeout
+x @ index-CNMRJJp2.js:163
+nL @ index-CNMRJJp2.js:37
+iL @ index-CNMRJJp2.js:37
+oL @ index-CNMRJJp2.js:37
+T1 @ index-CNMRJJp2.js:37
+E_ @ index-CNMRJJp2.js:37
+(anonymous) @ index-CNMRJJp2.js:37
+Nb @ index-CNMRJJp2.js:40
+YC @ index-CNMRJJp2.js:37
+Pm @ index-CNMRJJp2.js:37
+lb @ index-CNMRJJp2.js:37
+wL @ index-CNMRJJp2.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}

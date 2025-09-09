@@ -220,8 +220,14 @@ export default function AuthPage() {
 
             if (backendResponse.ok) {
               const userData = await backendResponse.json();
-              // Use your existing auth system to log the user in
-              await login(userData.email, userData.password || 'google-signin');
+              console.log('✅ Google backend success:', userData);
+              
+              // Store the JWT token and user data directly (don't use login function)
+              localStorage.setItem('authToken', userData.token);
+              localStorage.setItem('userData', JSON.stringify(userData.user));
+              
+              // Refresh the page to update auth state
+              window.location.reload();
               
               toast({
                 title: "Welcome!",
