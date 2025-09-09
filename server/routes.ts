@@ -294,14 +294,18 @@ router.post('/auth/apple', async (req, res) => {
 // REAL Google Sign-In route
 router.post('/auth/google', async (req, res) => {
   try {
+    console.log('🔍 Google auth request received:', { body: req.body });
     const { id_token } = req.body;
     
     if (!id_token) {
+      console.error('❌ No ID token provided');
       return res.status(400).json({ error: 'Google ID token required' });
     }
 
+    console.log('🔍 Attempting to verify Google token...');
     // Verify Google ID token with proper verification
     const googleUser = await verifyGoogleToken(id_token);
+    console.log('✅ Google token verified:', { email: googleUser.email, name: googleUser.name });
     
     if (!googleUser.email) {
       return res.status(400).json({ error: 'Email not provided by Google' });
@@ -349,8 +353,15 @@ router.post('/auth/google', async (req, res) => {
     });
     
   } catch (error) {
-    console.error('Google Sign-in Error:', error);
-    res.status(400).json({ error: 'Google authentication failed' });
+    console.error('❌ Google Sign-in Error:', error);
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    res.status(400).json({ 
+      error: 'Google authentication failed',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 

@@ -222,7 +222,8 @@ export default function AuthPage() {
               });
             } else {
               const errorData = await backendResponse.json();
-              throw new Error(errorData.error || 'Google authentication failed on server');
+              console.error('Backend error response:', errorData);
+              throw new Error(errorData.details || errorData.error || 'Google authentication failed on server');
             }
           } catch (error) {
             console.error('Google Sign-In Callback Error:', error);
