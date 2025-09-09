@@ -54,11 +54,33 @@ const authenticateToken = (req: any, res: any, next: any) => {
 // Auth routes
 router.post('/auth/signup', async (req, res) => {
   try {
-    const data = signupSchema.parse(req.body);
+    console.log('🔵 Signup request body:', req.body);
+    
+    // Check if request body exists
+    if (!req.body) {
+      console.error('❌ No request body provided');
+      return res.status(400).json({ error: 'Request body is required' });
+    }
+
+    // Validate with detailed error reporting
+    const parseResult = signupSchema.safeParse(req.body);
+    if (!parseResult.success) {
+      console.error('❌ Validation failed:', parseResult.error.issues);
+      const validationErrors = parseResult.error.issues.map(issue => 
+        `${issue.path.join('.')}: ${issue.message}`
+      ).join(', ');
+      return res.status(400).json({ 
+        error: `Validation failed: ${validationErrors}` 
+      });
+    }
+
+    const data = parseResult.data;
+    console.log('✅ Validation passed for:', data.email);
     
     // Check if user already exists
     const existingUser = await storage.getUserByEmail(data.email);
     if (existingUser) {
+      console.log('❌ User already exists:', data.email);
       return res.status(400).json({ error: 'User already exists' });
     }
 
@@ -89,6 +111,7 @@ router.post('/auth/signup', async (req, res) => {
     // Generate JWT token
     const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET);
 
+    console.log('✅ Signup successful for:', user.email);
     res.json({ 
       token, 
       user: { 
@@ -101,29 +124,56 @@ router.post('/auth/signup', async (req, res) => {
       } 
     });
   } catch (error) {
-    res.status(400).json({ error: 'Invalid signup data' });
+    console.error('❌ Signup error:', error);
+    res.status(400).json({ 
+      error: error instanceof Error ? error.message : 'Invalid signup data' 
+    });
   }
 });
 
 router.post('/auth/login', async (req, res) => {
   try {
-    const data = loginSchema.parse(req.body);
+    console.log('🔵 Login request body:', req.body);
+    
+    // Check if request body exists
+    if (!req.body) {
+      console.error('❌ No request body provided');
+      return res.status(400).json({ error: 'Request body is required' });
+    }
+
+    // Validate with detailed error reporting
+    const parseResult = loginSchema.safeParse(req.body);
+    if (!parseResult.success) {
+      console.error('❌ Login validation failed:', parseResult.error.issues);
+      const validationErrors = parseResult.error.issues.map(issue => 
+        `${issue.path.join('.')}: ${issue.message}`
+      ).join(', ');
+      return res.status(400).json({ 
+        error: `Validation failed: ${validationErrors}` 
+      });
+    }
+
+    const data = parseResult.data;
+    console.log('✅ Login validation passed for:', data.email);
     
     // Find user
     const user = await storage.getUserByEmail(data.email);
     if (!user) {
+      console.log('❌ User not found:', data.email);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     // Verify password
     const validPassword = await bcrypt.compare(data.password, user.password);
     if (!validPassword) {
+      console.log('❌ Invalid password for user:', data.email);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     // Generate JWT token
     const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET);
 
+    console.log('✅ Login successful for:', user.email);
     res.json({ 
       token, 
       user: { 
@@ -136,7 +186,10 @@ router.post('/auth/login', async (req, res) => {
       } 
     });
   } catch (error) {
-    res.status(400).json({ error: 'Invalid login data' });
+    console.error('❌ Login error:', error);
+    res.status(400).json({ 
+      error: error instanceof Error ? error.message : 'Invalid login data' 
+    });
   }
 });
 
