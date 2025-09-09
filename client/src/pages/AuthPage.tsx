@@ -23,6 +23,7 @@ declare global {
           initialize: (config: any) => void;
           prompt: (callback?: any) => void;
           renderButton: (element: any, options: any) => void;
+          cancel: () => void;
         };
       };
     };
