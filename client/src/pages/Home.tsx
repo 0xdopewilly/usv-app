@@ -259,9 +259,7 @@ export default function Home() {
             className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-2xl p-5 cursor-pointer border border-gray-600/30"
           >
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center">
-                <span className="text-purple-600 font-bold text-sm">USV</span>
-              </div>
+              <img src="/usv-logo.png" alt="USV" className="w-12 h-12 object-contain rounded-2xl" />
               <div>
                 <p className="text-white font-medium text-sm">Ultra Smooth Token</p>
                 <p className="text-white/60 text-xs">USV</p>
