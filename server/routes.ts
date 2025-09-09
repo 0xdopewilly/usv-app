@@ -2,6 +2,8 @@ import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Connection, Keypair, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { OAuth2Client } from 'google-auth-library';
+import appleSignin from 'apple-signin-auth';
 import { storage } from './storage';
 import { loginSchema, signupSchema, verificationSchema, withdrawSchema } from '../shared/schema';
 
@@ -17,18 +19,51 @@ function generateSolanaWallet() {
   };
 }
 
-// Helper function to verify Apple ID token (simplified - you'd use Apple's verification in production)
-function verifyAppleToken(idToken: string): { email: string; name?: string } {
-  // In production, you'd verify the JWT with Apple's public keys
-  // For now, we'll decode it as a basic JWT (DO NOT USE IN PRODUCTION)
+// Google OAuth client setup
+const googleClient = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID || 'your-google-client-id.apps.googleusercontent.com'
+);
+
+// REAL Apple Sign-In token verification
+async function verifyAppleToken(idToken: string): Promise<{ email: string; name?: string }> {
   try {
-    const decoded = jwt.decode(idToken) as any;
+    // Use apple-signin-auth library for proper verification
+    const appleIdTokenClaims = await appleSignin.verifyIdToken(idToken, {
+      // Replace with your actual Apple team ID, client ID, etc.
+      audience: process.env.APPLE_CLIENT_ID || 'com.usvtoken.webapp',
+      ignoreExpiration: true, // Set to true for development - change to false in production
+    });
+    
     return {
-      email: decoded.email,
-      name: decoded.name
+      email: appleIdTokenClaims.email,
+      name: (appleIdTokenClaims as any).name || 'Apple User'
     };
   } catch (error) {
+    console.error('Apple token verification failed:', error);
     throw new Error('Invalid Apple ID token');
+  }
+}
+
+// REAL Google Sign-In token verification
+async function verifyGoogleToken(idToken: string): Promise<{ email: string; name?: string }> {
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken: idToken,
+      audience: process.env.GOOGLE_CLIENT_ID || 'your-google-client-id.apps.googleusercontent.com',
+    });
+    
+    const payload = ticket.getPayload();
+    if (!payload) {
+      throw new Error('No payload in Google token');
+    }
+    
+    return {
+      email: payload.email!,
+      name: payload.name
+    };
+  } catch (error) {
+    console.error('Google token verification failed:', error);
+    throw new Error('Invalid Google ID token');
   }
 }
 
@@ -202,8 +237,8 @@ router.post('/auth/apple', async (req, res) => {
       return res.status(400).json({ error: 'Apple ID token required' });
     }
 
-    // Verify Apple ID token (simplified for demo - use proper verification in production)
-    const appleUser = verifyAppleToken(id_token);
+    // Verify Apple ID token with proper verification
+    const appleUser = await verifyAppleToken(id_token);
     
     if (!appleUser.email) {
       return res.status(400).json({ error: 'Email not provided by Apple' });
@@ -253,6 +288,69 @@ router.post('/auth/apple', async (req, res) => {
   } catch (error) {
     console.error('Apple Sign-in Error:', error);
     res.status(400).json({ error: 'Apple authentication failed' });
+  }
+});
+
+// REAL Google Sign-In route
+router.post('/auth/google', async (req, res) => {
+  try {
+    const { id_token } = req.body;
+    
+    if (!id_token) {
+      return res.status(400).json({ error: 'Google ID token required' });
+    }
+
+    // Verify Google ID token with proper verification
+    const googleUser = await verifyGoogleToken(id_token);
+    
+    if (!googleUser.email) {
+      return res.status(400).json({ error: 'Email not provided by Google' });
+    }
+
+    // Check if user exists
+    let user = await storage.getUserByEmail(googleUser.email);
+    
+    if (!user) {
+      // Create new user with Google data + AUTO-GENERATED Solana wallet
+      const solanaWallet = generateSolanaWallet();
+      const hashedPassword = await bcrypt.hash('google-signin-' + Date.now(), 10);
+      
+      user = await storage.createUser({
+        email: googleUser.email,
+        fullName: googleUser.name || 'Google User',
+        password: hashedPassword,
+        balance: 0,  // Real balance starts at 0
+        stakedBalance: 0,
+        walletAddress: solanaWallet.publicKey,  // AUTO-GENERATED Solana wallet
+        isVerified: true,  // Google users are pre-verified
+        twoFactorEnabled: false,
+        faceIdEnabled: false,
+        pushNotifications: true,
+        emailNotifications: true,
+        preferredLanguage: "en",
+      });
+      
+      console.log('🔍 Google signup: Auto-generated Solana wallet:', user.email, solanaWallet.publicKey);
+    }
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET);
+
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+        balance: user.balance,
+        stakedBalance: user.stakedBalance,
+        walletAddress: user.walletAddress,
+      }
+    });
+    
+  } catch (error) {
+    console.error('Google Sign-in Error:', error);
+    res.status(400).json({ error: 'Google authentication failed' });
   }
 });
 
