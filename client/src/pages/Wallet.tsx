@@ -428,11 +428,7 @@ export default function Wallet() {
               data-testid="asset-sol"
             >
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                  <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                    <div className="text-transparent bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text font-bold text-xs">◆</div>
-                  </div>
-                </div>
+                <img src="/solana-logo.png" alt="Solana" className="w-10 h-10 object-contain" />
                 <div>
                   <p className="text-white font-medium">Solana</p>
                   <p className="text-gray-400 text-sm">SOL • {realSolBalance.toFixed(4)}</p>
