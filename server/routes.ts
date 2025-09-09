@@ -140,7 +140,7 @@ router.post('/auth/login', async (req, res) => {
   }
 });
 
-// REAL Apple Sign-in Route
+// Apple Sign-In Route - AUTO-GENERATES Solana wallet
 router.post('/auth/apple', async (req, res) => {
   try {
     const { id_token, authorization_code } = req.body;
@@ -160,7 +160,7 @@ router.post('/auth/apple', async (req, res) => {
     let user = await storage.getUserByEmail(appleUser.email);
     
     if (!user) {
-      // Create new user with Apple data + Solana wallet
+      // Create new user with Apple data + AUTO-GENERATED Solana wallet
       const solanaWallet = generateSolanaWallet();
       const hashedPassword = await bcrypt.hash('apple-signin-' + Date.now(), 10);
       
@@ -170,7 +170,7 @@ router.post('/auth/apple', async (req, res) => {
         password: hashedPassword,
         balance: 0,  // Real balance starts at 0
         stakedBalance: 0,
-        walletAddress: solanaWallet.publicKey,  // REAL Solana wallet
+        walletAddress: solanaWallet.publicKey,  // AUTO-GENERATED Solana wallet
         isVerified: true,  // Apple users are pre-verified
         twoFactorEnabled: false,
         faceIdEnabled: false,
@@ -179,7 +179,7 @@ router.post('/auth/apple', async (req, res) => {
         preferredLanguage: "en",
       });
       
-      console.log('🍎 New Apple user with Solana wallet:', user.email, solanaWallet.publicKey);
+      console.log('🍎 Apple signup: Auto-generated Solana wallet:', user.email, solanaWallet.publicKey);
     }
 
     // Generate JWT token
@@ -200,6 +200,75 @@ router.post('/auth/apple', async (req, res) => {
   } catch (error) {
     console.error('Apple Sign-in Error:', error);
     res.status(400).json({ error: 'Apple authentication failed' });
+  }
+});
+
+// Phantom Wallet Signup/Login Route - USES EXISTING wallet
+router.post('/auth/phantom', async (req, res) => {
+  try {
+    const { walletAddress, signature } = req.body;
+    
+    if (!walletAddress) {
+      return res.status(400).json({ error: 'Wallet address required' });
+    }
+    
+    // Check if user already exists with this wallet
+    let existingUser = await storage.getUserByWallet(walletAddress);
+    
+    if (existingUser) {
+      // User exists, just login
+      const token = jwt.sign({ userId: existingUser.id, email: existingUser.email }, JWT_SECRET);
+      
+      res.json({
+        token,
+        user: {
+          id: existingUser.id,
+          email: existingUser.email,
+          fullName: existingUser.fullName,
+          balance: existingUser.balance,
+          stakedBalance: existingUser.stakedBalance,
+          walletAddress: existingUser.walletAddress,
+        }
+      });
+      return;
+    }
+    
+    // Create new user with Phantom wallet address
+    const newUser = await storage.createUser({
+      fullName: `Phantom User ${walletAddress.slice(0, 6)}`,
+      email: `phantom-${walletAddress}@usvtoken.com`, // Generate unique email
+      password: await bcrypt.hash('phantom-user-' + walletAddress, 10), // Secure placeholder password
+      balance: 0,  // Start with real balance of 0
+      stakedBalance: 0,  // Start with real staked balance of 0
+      walletAddress: walletAddress,  // USE EXISTING Phantom wallet
+      isVerified: true,  // Phantom users are considered verified
+      twoFactorEnabled: false,
+      faceIdEnabled: false,
+      pushNotifications: true,
+      emailNotifications: false, // Default false for phantom users
+      preferredLanguage: "en",
+    });
+    
+    console.log('👻 Phantom signup: Using existing wallet:', walletAddress);
+    
+    // Generate JWT token
+    const token = jwt.sign({ userId: newUser.id, email: newUser.email }, JWT_SECRET);
+    
+    res.json({
+      token,
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        fullName: newUser.fullName,
+        balance: newUser.balance,
+        stakedBalance: newUser.stakedBalance,
+        walletAddress: newUser.walletAddress,
+      }
+    });
+    
+  } catch (error) {
+    console.error('Phantom authentication error:', error);
+    res.status(400).json({ error: 'Phantom wallet authentication failed' });
   }
 });
 
