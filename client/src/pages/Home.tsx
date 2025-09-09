@@ -151,8 +151,8 @@ export default function Home() {
             className="bg-black/40 backdrop-blur-sm rounded-3xl p-5 cursor-pointer border border-purple-500/20"
           >
             <div className="flex items-center space-x-2 mb-3">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <span className="text-purple-600 font-bold text-xs">USV</span>
+              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center p-1">
+                <img src="/attached_assets/image_1757431326277.png" alt="USV" className="w-full h-full object-contain" />
               </div>
               <div className="flex-1">
                 <p className="text-white text-xs font-medium">Ultra Smooth Vape</p>
