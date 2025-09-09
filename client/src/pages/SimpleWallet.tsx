@@ -3,15 +3,9 @@ import { ArrowLeft, Copy, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { useLocation } from 'wouter';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useToast } from '@/hooks/use-toast';
+import { realPhantomWallet, refreshRealWalletBalances, type TokenAccount } from '@/lib/realSolana';
 
-interface TokenData {
-  mint: string;
-  symbol: string;
-  name: string;
-  balance: number;
-  decimals: number;
-  isNative: boolean;
-}
+// Remove interface - using TokenAccount from realSolana
 
 export default function SimpleWallet() {
   const [, setLocation] = useLocation();
@@ -20,7 +14,7 @@ export default function SimpleWallet() {
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
-  const [tokens, setTokens] = useState<TokenData[]>([]);
+  const [tokens, setTokens] = useState<TokenAccount[]>([]);
   const [totalValue, setTotalValue] = useState(0);
 
   // Initialize wallet connection and load balances
@@ -30,68 +24,86 @@ export default function SimpleWallet() {
 
   const initializeWallet = async () => {
     try {
-      // Simulate wallet connection for testing
-      setWalletAddress('C3YEqRNvJN696v3ZcXndjnekCai3cL7zrutLN9FNDpjn');
+      console.log('🚀 Connecting to REAL Phantom wallet...');
       
-      // Add some mock tokens for testing
-      const mockTokens = [
-        {
-          mint: 'So11111111111111111111111111111111111111112',
-          symbol: 'SOL',
-          name: 'Solana',
-          balance: 0.5, // Mock balance - will be replaced with real data
-          decimals: 9,
-          isNative: true
-        },
-        {
-          mint: '8zGuJQqwhZafTah7Uc7Z4tXRnguqkn5KLFAP8oV6PHe2',
-          symbol: 'USV',
-          name: 'Ultra Smooth Vape',
-          balance: 1000,
-          decimals: 6,
-          isNative: false
-        }
-      ];
+      // Connect to REAL Phantom wallet
+      const result = await realPhantomWallet.connect();
       
-      setTokens(mockTokens);
-      setTotalValue(115); // 0.5 SOL * 230
-      
-      toast({
-        title: "🚀 Wallet Connected",
-        description: "Ready for blockchain integration",
-      });
+      if (result.success && result.publicKey) {
+        setWalletAddress(result.publicKey);
+        console.log('✅ Connected to wallet:', result.publicKey);
+        
+        // Load REAL balances immediately
+        await loadRealBalances(result.publicKey);
+        
+        toast({
+          title: "🦄 REAL Wallet Connected!",
+          description: `Connected to ${result.publicKey.slice(0, 8)}...`,
+        });
+      } else {
+        throw new Error(result.error || 'Failed to connect');
+      }
     } catch (error) {
-      console.error('Failed to initialize wallet:', error);
+      console.error('❌ Failed to connect wallet:', error);
       toast({
-        title: "⚠️ Connection Issue",
-        description: "Using demo mode",
+        title: "❌ Connection Failed",
+        description: "Please install Phantom wallet and try again",
         variant: "destructive"
       });
     }
   };
 
-  const refreshBalances = async (address?: string) => {
+  const loadRealBalances = async (address: string) => {
     setIsRefreshing(true);
     
     try {
-      // TODO: Implement real Solana balance fetching
-      // For now, simulate refresh
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('🔄 Loading REAL balances from Solana devnet...');
+      
+      // Fetch REAL token balances from Solana devnet
+      const realTokens = await refreshRealWalletBalances(address);
+      setTokens(realTokens);
+      
+      // Calculate real total value
+      const totalValue = realTokens.reduce((sum, token) => {
+        if (token.isNative && token.balance > 0) {
+          return sum + (token.balance * 230); // SOL price estimate
+        }
+        return sum;
+      }, 0);
+      setTotalValue(totalValue);
       
       toast({
-        title: "🔄 Refresh Complete",
-        description: "Blockchain integration coming soon!",
+        title: "💰 REAL Balances Loaded!",
+        description: `Found ${realTokens.length} tokens from devnet blockchain`,
       });
+      
+      console.log('✅ REAL balances loaded:', realTokens);
     } catch (error) {
-      console.error('Failed to refresh balances:', error);
+      console.error('❌ Failed to load real balances:', error);
       toast({
-        title: "❌ Refresh Failed", 
-        description: "Will implement real blockchain soon",
+        title: "❌ Balance Load Failed",
+        description: "Failed to fetch from Solana devnet",
         variant: "destructive"
       });
     } finally {
       setIsRefreshing(false);
     }
+  };
+
+  const refreshBalances = async (address?: string) => {
+    if (!address && !walletAddress) {
+      toast({
+        title: "❌ No Wallet Connected",
+        description: "Please connect your Phantom wallet first",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const addressToUse = address || walletAddress!;
+    console.log('🔄 Refreshing REAL balances from devnet...');
+    
+    await loadRealBalances(addressToUse);
   };
 
   const copyToClipboard = async (text: string) => {
@@ -117,7 +129,7 @@ export default function SimpleWallet() {
     }
   };
 
-  const handleAssetClick = (token: TokenData) => {
+  const handleAssetClick = (token: TokenAccount) => {
     setSelectedAsset(token.mint);
   };
 
