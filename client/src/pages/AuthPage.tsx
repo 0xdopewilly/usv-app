@@ -163,11 +163,22 @@ export default function AuthPage() {
       }
     } catch (error) {
       console.error('Apple Sign-In Error:', error);
-      toast({
-        title: "Apple Sign-In Failed",
-        description: "Unable to sign in with Apple. Please try email authentication.",
-        variant: "destructive",
-      });
+      
+      // Check if it's an invalid_client error (common in development)
+      const errorMessage = error.toString();
+      if (errorMessage.includes('invalid_client') || errorMessage.includes('Invalid client')) {
+        toast({
+          title: "Apple Developer Setup Required",
+          description: "Apple Sign-In needs a real Apple Client ID from your Developer Account ($99/year). Use Google Sign-In or email for now.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Apple Sign-In Failed",
+          description: "Unable to sign in with Apple. Please try Google Sign-In or email authentication.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setAppleLoading(false);
     }
