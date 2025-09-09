@@ -205,8 +205,8 @@ export default function SimpleWallet() {
         <div className="px-6 pb-6">
           <div className="text-center mb-6">
             <div className="flex items-center justify-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold">USV</span>
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-2">
+                <img src="@assets/image_1757431326277.png" alt="USV" className="w-full h-full object-contain" />
               </div>
               <h2 className="text-white text-4xl font-bold">
                 {hideBalance ? '••••••' : `$${totalValue.toFixed(2)}`}
