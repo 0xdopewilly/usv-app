@@ -1,19 +1,29 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Mail, Apple, ArrowLeft } from 'lucide-react';
+import { FaGoogle } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import ConnectWallet from '@/components/ConnectWallet';
 
-// Apple Sign-In Configuration
+// Apple Sign-In & Google Sign-In Configuration
 declare global {
   interface Window {
     AppleID: {
       auth: {
         init: (config: any) => void;
         signIn: () => Promise<any>;
+      };
+    };
+    google: {
+      accounts: {
+        id: {
+          initialize: (config: any) => void;
+          prompt: (callback?: any) => void;
+          renderButton: (element: any, options: any) => void;
+        };
       };
     };
   }
@@ -27,19 +37,21 @@ export default function AuthPage() {
   const [fullName, setFullName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   
   const { login, signup } = useAuth();
   const { toast } = useToast();
 
-  // Initialize Apple Sign-In SDK
+  // Initialize Apple Sign-In & Google Sign-In SDKs
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
-    script.async = true;
-    script.onload = () => {
+    // Load Apple Sign-In
+    const appleScript = document.createElement('script');
+    appleScript.src = 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js';
+    appleScript.async = true;
+    appleScript.onload = () => {
       if (window.AppleID) {
         window.AppleID.auth.init({
-          clientId: process.env.VITE_APPLE_CLIENT_ID || 'com.usvtoken.webapp', // Replace with your actual Apple Client ID
+          clientId: import.meta.env.VITE_APPLE_CLIENT_ID || 'com.usvtoken.webapp',
           scope: 'name email',
           redirectURI: window.location.origin + '/auth/apple/callback',
           state: 'apple-signin',
@@ -47,11 +59,21 @@ export default function AuthPage() {
         });
       }
     };
-    document.head.appendChild(script);
+    document.head.appendChild(appleScript);
+
+    // Load Google Sign-In
+    const googleScript = document.createElement('script');
+    googleScript.src = 'https://accounts.google.com/gsi/client';
+    googleScript.async = true;
+    googleScript.defer = true;
+    document.head.appendChild(googleScript);
 
     return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
+      if (appleScript.parentNode) {
+        appleScript.parentNode.removeChild(appleScript);
+      }
+      if (googleScript.parentNode) {
+        googleScript.parentNode.removeChild(googleScript);
       }
     };
   }, []);
@@ -148,6 +170,73 @@ export default function AuthPage() {
       });
     } finally {
       setAppleLoading(false);
+    }
+  };
+
+  // REAL Google Sign-In Implementation
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
+    try {
+      if (!window.google) {
+        throw new Error('Google Sign-In SDK not loaded');
+      }
+
+      // Initialize Google Sign-In
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your-google-client-id.apps.googleusercontent.com',
+        callback: async (response: any) => {
+          try {
+            // Send the Google ID token to your backend for verification
+            const backendResponse = await fetch('/api/auth/google', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id_token: response.credential
+              })
+            });
+
+            if (backendResponse.ok) {
+              const userData = await backendResponse.json();
+              // Use your existing auth system to log the user in
+              await login(userData.email, userData.password || 'google-signin');
+              
+              toast({
+                title: "Welcome!",
+                description: "Successfully signed in with Google",
+              });
+            } else {
+              throw new Error('Google authentication failed on server');
+            }
+          } catch (error) {
+            console.error('Google Sign-In Callback Error:', error);
+            toast({
+              title: "Google Sign-In Failed",
+              description: "Unable to sign in with Google. Please try email authentication.",
+              variant: "destructive",
+            });
+          } finally {
+            setGoogleLoading(false);
+          }
+        }
+      });
+
+      // Prompt the sign-in
+      window.google.accounts.id.prompt((notification: any) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          // Fallback: create manual sign-in button
+          console.log('Google prompt not displayed, using manual flow');
+        }
+      });
+    } catch (error) {
+      console.error('Google Sign-In Error:', error);
+      toast({
+        title: "Google Sign-In Failed",
+        description: "Unable to initialize Google Sign-In. Please try email authentication.",
+        variant: "destructive",
+      });
+      setGoogleLoading(false);
     }
   };
 
@@ -294,6 +383,18 @@ export default function AuthPage() {
           transition={{ duration: 0.6, delay: 1.1 }}
           className="space-y-4"
         >
+          {/* REAL Google Sign In */}
+          <Button
+            variant="outline"
+            onClick={handleGoogleSignIn}
+            disabled={googleLoading}
+            className="w-full bg-white/10 border-gray-600 text-white py-4 rounded-2xl hover:bg-white/20 transition-all duration-300"
+            data-testid="button-google-signin"
+          >
+            <FaGoogle className="w-5 h-5 mr-3 text-red-400" />
+            {googleLoading ? 'Connecting to Google...' : 'Continue with Google'}
+          </Button>
+
           {/* REAL Apple Sign In */}
           <Button
             variant="outline"
