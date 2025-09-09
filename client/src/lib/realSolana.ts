@@ -1,13 +1,17 @@
 // REAL Solana Web3 integration for browser
+interface PhantomWalletType {
+  isPhantom?: boolean;
+  publicKey?: any;
+  isConnected?: boolean;
+  connect(): Promise<{ publicKey: any }>;
+  disconnect(): Promise<void>;
+  request(method: string, params?: any): Promise<any>;
+}
+
 declare global {
   interface Window {
-    solana?: {
-      isPhantom?: boolean;
-      publicKey?: any;
-      isConnected?: boolean;
-      connect(): Promise<{ publicKey: any }>;
-      disconnect(): Promise<void>;
-      request(method: string, params?: any): Promise<any>;
+    phantom?: {
+      solana?: PhantomWalletType;
     };
   }
 }
@@ -31,7 +35,7 @@ export class RealPhantomWallet {
 
   // Check if Phantom is installed
   isInstalled(): boolean {
-    return typeof window !== 'undefined' && window.solana?.isPhantom === true;
+    return typeof window !== 'undefined' && window.phantom?.solana?.isPhantom === true;
   }
 
   // Connect to REAL Phantom wallet
@@ -44,7 +48,12 @@ export class RealPhantomWallet {
         };
       }
 
-      const response = await window.solana!.connect();
+      const phantom = window.phantom?.solana;
+      if (!phantom) {
+        throw new Error('Phantom not available');
+      }
+
+      const response = await phantom.connect();
       this.publicKey = response.publicKey.toString();
       this.isConnected = true;
       
@@ -65,8 +74,9 @@ export class RealPhantomWallet {
 
   // Disconnect wallet
   async disconnect(): Promise<void> {
-    if (window.solana && this.isConnected) {
-      await window.solana.disconnect();
+    const phantom = window.phantom?.solana;
+    if (phantom && this.isConnected) {
+      await phantom.disconnect();
       this.isConnected = false;
       this.publicKey = null;
       console.log('🦄 Phantom wallet disconnected');
