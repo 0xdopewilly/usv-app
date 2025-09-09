@@ -251,5 +251,5 @@ export class MemStorage implements IStorage {
   }
 }
 
-// Switch to real database instead of memory storage
-export const storage = new DatabaseStorage();
+// Using in-memory storage (working) instead of DatabaseStorage (broken connection)
+export const storage = new MemStorage();

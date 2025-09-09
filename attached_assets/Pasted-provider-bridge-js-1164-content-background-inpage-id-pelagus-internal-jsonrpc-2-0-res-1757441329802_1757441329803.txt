@@ -1,0 +1,117 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x9"}}
+content.js:2 Check phishing by URL: Passed.
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Backpack couldn't override `window.ethereum`.
+vVs @ injected.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+injected.js:1 TronLink initiated
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. Object
+(anonymous) @ script.bundle.js:52
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. Object
+(anonymous) @ script.bundle.js:52
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+(index):1 Error while trying to use the following icon from the Manifest: https://e295c4c4-fe44-4b77-89b8-2440b3b21124.spock.prod.repl.run/icon-144.png (Download error or resource isn't a valid image)
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-NwYfERze.js:163 🔐 Auth attempt: Object
+index-NwYfERze.js:163 📝 Attempting signup...
+index-NwYfERze.js:163 🌐 API Request: POST /api/auth/signup Object
+/api/auth/signup:1  Failed to load resource: the server responded with a status of 400 ()
+index-NwYfERze.js:163 📡 API Response: 400 
+index-NwYfERze.js:163 ❌ API Error 400: Error connecting to database: fetch failed
+Wk @ index-NwYfERze.js:163
+index-NwYfERze.js:163 ❌ Auth error: Error: Error connecting to database: fetch failed
+    at Wk (index-NwYfERze.js:163:23302)
+    at async Gy (index-NwYfERze.js:163:23676)
+    at async Object.mutationFn (index-NwYfERze.js:163:24487)
+g @ index-NwYfERze.js:163
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-NwYfERze.js:163 🔐 Auth attempt: {isLogin: false, email: 'demo@usvtoken.com', passwordLength: 11, fullName: 'sMOOTTH'}
+index-NwYfERze.js:163 📝 Attempting signup...
+index-NwYfERze.js:163 🌐 API Request: POST /api/auth/signup {email: 'demo@usvtoken.com', password: 'password123', fullName: 'sMOOTTH', acceptTerms: true}
+traffic.js:1  POST https://e295c4c4-fe44-4b77-89b8-2440b3b21124.spock.prod.repl.run/api/auth/signup 400 (Bad Request)
+(anonymous) @ traffic.js:1
+fetch @ traffic.js:1
+_$initInterceptor.s.fetch @ requests.js:1
+value @ injected.js:1
+Gy @ index-NwYfERze.js:163
+mutationFn @ index-NwYfERze.js:163
+fn @ index-NwYfERze.js:48
+m @ index-NwYfERze.js:48
+start @ index-NwYfERze.js:48
+execute @ index-NwYfERze.js:48
+await in execute
+mutate @ index-NwYfERze.js:48
+u @ index-NwYfERze.js:163
+g @ index-NwYfERze.js:163
+YD @ index-NwYfERze.js:37
+ZD @ index-NwYfERze.js:37
+JD @ index-NwYfERze.js:37
+A1 @ index-NwYfERze.js:37
+S_ @ index-NwYfERze.js:37
+(anonymous) @ index-NwYfERze.js:37
+Mb @ index-NwYfERze.js:40
+KC @ index-NwYfERze.js:37
+wm @ index-NwYfERze.js:37
+ab @ index-NwYfERze.js:37
+mL @ index-NwYfERze.js:37
+index-NwYfERze.js:163 📡 API Response: 400 
+index-NwYfERze.js:163 ❌ API Error 400: Error connecting to database: fetch failed
+Wk @ index-NwYfERze.js:163
+await in Wk
+Gy @ index-NwYfERze.js:163
+await in Gy
+mutationFn @ index-NwYfERze.js:163
+fn @ index-NwYfERze.js:48
+m @ index-NwYfERze.js:48
+start @ index-NwYfERze.js:48
+execute @ index-NwYfERze.js:48
+await in execute
+mutate @ index-NwYfERze.js:48
+u @ index-NwYfERze.js:163
+g @ index-NwYfERze.js:163
+YD @ index-NwYfERze.js:37
+ZD @ index-NwYfERze.js:37
+JD @ index-NwYfERze.js:37
+A1 @ index-NwYfERze.js:37
+S_ @ index-NwYfERze.js:37
+(anonymous) @ index-NwYfERze.js:37
+Mb @ index-NwYfERze.js:40
+KC @ index-NwYfERze.js:37
+wm @ index-NwYfERze.js:37
+ab @ index-NwYfERze.js:37
+mL @ index-NwYfERze.js:37
+index-NwYfERze.js:163 ❌ Auth error: Error: Error connecting to database: fetch failed
+    at Wk (index-NwYfERze.js:163:23302)
+    at async Gy (index-NwYfERze.js:163:23676)
+    at async Object.mutationFn (index-NwYfERze.js:163:24487)
+g @ index-NwYfERze.js:163
+await in g
+YD @ index-NwYfERze.js:37
+ZD @ index-NwYfERze.js:37
+JD @ index-NwYfERze.js:37
+A1 @ index-NwYfERze.js:37
+S_ @ index-NwYfERze.js:37
+(anonymous) @ index-NwYfERze.js:37
+Mb @ index-NwYfERze.js:40
+KC @ index-NwYfERze.js:37
+wm @ index-NwYfERze.js:37
+ab @ index-NwYfERze.js:37
+mL @ index-NwYfERze.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
