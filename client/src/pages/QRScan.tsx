@@ -125,6 +125,7 @@ class RealQRScanner {
 }
 
 export default function QRScan() {
+  console.log('🚀 QRScan component mounted!');
   const [, setLocation] = useLocation();
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [flashOn, setFlashOn] = useState(false);
@@ -247,38 +248,15 @@ export default function QRScan() {
       if (videoRef.current) {
         console.log('🎥 Video element found, setting up stream...');
         
-        // Set video properties first
+        // Clean camera setup
         videoRef.current.muted = true;
         videoRef.current.playsInline = true;
         videoRef.current.autoplay = true;
-        
-        // Set up event handlers before assigning stream
-        videoRef.current.onloadedmetadata = () => {
-          console.log('🎥 Video metadata loaded');
-          if (videoRef.current) {
-            console.log('🎥 Video dimensions:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
-            setScanning(true);
-            qrScannerRef.current = new RealQRScanner(videoRef.current, handleQRDetected);
-            qrScannerRef.current.start();
-          }
-        };
-
-        videoRef.current.oncanplay = () => {
-          console.log('🎥 Video can play - forcing play');
-          if (videoRef.current) {
-            videoRef.current.play().catch(console.error);
-          }
-        };
-
-        videoRef.current.onerror = (e) => {
-          console.error('🎥 Video error:', e);
-        };
-
-        // Minimal camera setup - no alerts, no extra debugging
         videoRef.current.srcObject = stream;
         
-        // Wait for video to be ready before starting scanner
+        // Single event handler for when video is ready
         videoRef.current.onloadedmetadata = () => {
+          console.log('🎥 Video ready, dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
           if (videoRef.current && videoRef.current.videoWidth > 0) {
             setScanning(true);
             qrScannerRef.current = new RealQRScanner(videoRef.current, handleQRDetected);
@@ -287,8 +265,8 @@ export default function QRScan() {
         };
 
         // Try to play the video
-        videoRef.current.play().catch(() => {
-          // If autoplay fails, scanning will start when user interacts
+        videoRef.current.play().catch((playError) => {
+          console.log('🎥 Autoplay failed, will need user interaction:', playError);
         });
       }
       
@@ -297,7 +275,7 @@ export default function QRScan() {
       setHasPermission(false);
       toast({
         title: "Camera Access Issue",
-        description: `Camera access failed: ${error.message}. Please check browser permissions.`,
+        description: `Camera access failed: ${error instanceof Error ? error.message : 'Unknown error'}. Please check browser permissions.`,
         variant: "destructive",
       });
     }
