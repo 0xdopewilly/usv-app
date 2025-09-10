@@ -42,10 +42,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
   const queryClient = useQueryClient();
 
-  const { data: user, isLoading } = useQuery({
+  // Debug logging for auth state
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    console.log('🔍 Auth Debug:', { storedToken, currentToken: token });
+  }, [token]);
+
+  const { data: user, isLoading, error } = useQuery({
     queryKey: ['/api/user/profile'],
     enabled: !!token,
+    retry: false,
   });
+
+  // Debug logging for user query
+  useEffect(() => {
+    console.log('🔍 User Query Debug:', { user, isLoading, error, hasToken: !!token });
+  }, [user, isLoading, error, token]);
 
   const loginMutation = useMutation({
     mutationFn: async ({ email, password }: { email: string; password: string }) => {
@@ -108,21 +120,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Set the authorization header for future requests
     if (token) {
+      console.log('🔍 Setting up query client with token:', token.substring(0, 10) + '...');
       queryClient.setDefaultOptions({
         queries: {
           queryFn: async ({ queryKey }) => {
-            const res = await fetch(queryKey.join("/") as string, {
+            const url = queryKey.join("/") as string;
+            console.log('🔍 Making API call to:', url, 'with token:', token.substring(0, 10) + '...');
+            const res = await fetch(url, {
               credentials: "include",
               headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
               }
             });
+            console.log('🔍 API Response:', res.status, res.statusText);
             if (!res.ok) {
               const text = (await res.text()) || res.statusText;
+              console.error('🔍 API Error:', text);
               throw new Error(`${res.status}: ${text}`);
             }
-            return await res.json();
+            const data = await res.json();
+            console.log('🔍 API Data:', data);
+            return data;
           }
         }
       });
