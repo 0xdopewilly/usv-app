@@ -51,6 +51,7 @@ export class MemStorage implements IStorage {
         address: "123 Main St, New York, NY 10001",
         latitude: 40.7128,
         longitude: -74.0060,
+        rating: 4.5,
         isPartner: true,
         qrCodes: [],
       },
@@ -59,6 +60,7 @@ export class MemStorage implements IStorage {
         address: "456 Broadway, New York, NY 10013",
         latitude: 40.7209,
         longitude: -74.0007,
+        rating: 4.8,
         isPartner: true,
         qrCodes: [],
       },
@@ -67,6 +69,7 @@ export class MemStorage implements IStorage {
         address: "789 5th Ave, New York, NY 10022",
         latitude: 40.7614,
         longitude: -73.9776,
+        rating: 4.2,
         isPartner: false,
         qrCodes: [],
       }
