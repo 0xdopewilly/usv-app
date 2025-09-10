@@ -322,7 +322,7 @@ export default function AuthPage() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex justify-center mb-8"
         >
-          <img src="/usv-logo.png" alt="USV" className="w-20 h-20 object-contain rounded-2xl" />
+          <img src="/usv-logo.png" alt="USV" className="w-20 h-20 object-contain" />
         </motion.div>
 
         {/* Title */}
