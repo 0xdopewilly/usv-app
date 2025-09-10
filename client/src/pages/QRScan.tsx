@@ -274,23 +274,22 @@ export default function QRScan() {
           console.error('🎥 Video error:', e);
         };
 
-        // Try direct approach
-        try {
-          videoRef.current.srcObject = stream;
-          console.log('🎥 Stream assigned directly');
-          
-          // Alert the user for debugging
-          alert('🎥 Stream connected - check if video appears');
-          
-          videoRef.current.play().catch(error => {
-            alert('🎥 Play error: ' + error.message);
-            console.error('🎥 Play failed:', error);
-          });
-          
-        } catch (err) {
-          alert('🎥 srcObject error: ' + err.message);
-          console.error('🎥 srcObject error:', err);
-        }
+        // Minimal camera setup - no alerts, no extra debugging
+        videoRef.current.srcObject = stream;
+        
+        // Wait for video to be ready before starting scanner
+        videoRef.current.onloadedmetadata = () => {
+          if (videoRef.current && videoRef.current.videoWidth > 0) {
+            setScanning(true);
+            qrScannerRef.current = new RealQRScanner(videoRef.current, handleQRDetected);
+            qrScannerRef.current.start();
+          }
+        };
+
+        // Try to play the video
+        videoRef.current.play().catch(() => {
+          // If autoplay fails, scanning will start when user interacts
+        });
       }
       
     } catch (error) {
@@ -391,33 +390,16 @@ export default function QRScan() {
         </Button>
       </div>
 
-      {/* Camera Feed - Show placeholder text to verify positioning */}
-      <div className="absolute inset-0 w-full h-full bg-gray-800 flex items-center justify-center z-0">
-        <p className="text-white text-lg">Camera Feed Area</p>
-      </div>
-      
+      {/* Camera Feed */}
       <video
         ref={videoRef}
         autoPlay
         playsInline
         muted
-        className="absolute inset-0 w-full h-full object-cover z-5"
-        style={{ 
-          transform: 'scaleX(-1)',
-          background: 'red',
-          border: '2px solid yellow'
-        }}
-        onLoadedData={() => console.log('🎥 Video data loaded')}
-        onPlay={() => console.log('🎥 Video play event')}
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ transform: 'scaleX(-1)' }}
       />
 
-      {/* Debug Info - Always show to see what's happening */}
-      <div className="absolute top-20 left-4 z-30 bg-black/70 text-white p-2 rounded text-xs">
-        <div>Permission: {hasPermission?.toString()}</div>
-        <div>Scanning: {scanning.toString()}</div>
-        <div>Stream: {streamRef.current ? 'Active' : 'None'}</div>
-        <div>Video Ready: {videoRef.current?.readyState}</div>
-      </div>
 
       {/* Scanning Overlay */}
       {scanning && !qrDetected && (
