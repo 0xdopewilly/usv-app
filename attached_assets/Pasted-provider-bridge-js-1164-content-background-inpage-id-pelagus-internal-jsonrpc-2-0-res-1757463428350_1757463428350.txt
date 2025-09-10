@@ -1,0 +1,104 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x9"}}
+content.js:2 Check phishing by URL: Passed.
+index-fpQzDWJd.js:163 🔍 Auth Debug: {storedToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…DAzfQ.18CviTHX6V0Ba2Qkndd6W4OhAhBv8CHUaJ08tlBWokg', currentToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…DAzfQ.18CviTHX6V0Ba2Qkndd6W4OhAhBv8CHUaJ08tlBWokg'}
+index-fpQzDWJd.js:163 🔍 User Query Debug: {user: undefined, isLoading: true, error: null, hasToken: true}
+index-fpQzDWJd.js:163 🔍 Setting up query client with token: eyJhbGciOi...
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. {type: 'sender-wallet-providerResult', method: 'sender_getProviderState', params: Array(0), notificationId: 1757463398894687, response: {…}}
+(anonymous) @ script.bundle.js:52
+d @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+Promise.then
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+n @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+index-fpQzDWJd.js:163 🔍 User Query Debug: {user: undefined, isLoading: false, error: Error: Missing queryFn: '["/api/user/profile"]'
+    at https://usv-app.replit.app/assets/index-fpQz…, hasToken: true}
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. {type: 'sender-wallet-providerResult', method: 'sender_getProviderState', params: Array(0), notificationId: 1757463400018962, response: {…}}
+(anonymous) @ script.bundle.js:52
+d @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+Promise.then
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+n @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+initSelectedAddress @ injected.js:1
+initEthereumProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+getInitTronWeb @ injected.js:1
+initTronProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+_initRequest @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 TronLink initiated
+injected.js:1 Backpack couldn't override `window.ethereum`.
+vVs @ injected.js:1
+yVs @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+(index):1 Error while trying to use the following icon from the Manifest: https://usv-app.replit.app/icon-144.png (Download error or resource isn't a valid image)
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
