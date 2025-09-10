@@ -248,15 +248,29 @@ export default function QRScan() {
         videoRef.current.srcObject = stream;
         console.log('🎥 Video element configured');
         
+        // Force video to play on mobile
+        videoRef.current.play().catch(error => {
+          console.error('🎥 Video play error:', error);
+        });
+
         // Initialize REAL QR Scanner once video is loaded
         videoRef.current.onloadedmetadata = () => {
           console.log('🎥 Video metadata loaded, starting scanner');
+          console.log('🎥 Video dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
           setScanning(true);
           qrScannerRef.current = new RealQRScanner(videoRef.current!, handleQRDetected);
           qrScannerRef.current.start();
         };
 
-        // Add error handling for video
+        // Add more comprehensive video event handlers
+        videoRef.current.oncanplay = () => {
+          console.log('🎥 Video can play');
+        };
+
+        videoRef.current.onplaying = () => {
+          console.log('🎥 Video is playing');
+        };
+
         videoRef.current.onerror = (e) => {
           console.error('🎥 Video error:', e);
         };
@@ -367,18 +381,21 @@ export default function QRScan() {
         playsInline
         muted
         webkit-playsinline="true"
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ transform: 'scaleX(-1)' }} // Mirror the video for better UX
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        style={{ 
+          transform: 'scaleX(-1)',
+          display: 'block',
+          backgroundColor: 'transparent'
+        }}
       />
 
-      {/* Debug Info for Development */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="absolute top-20 left-4 z-30 bg-black/70 text-white p-2 rounded text-xs">
-          <div>Permission: {hasPermission?.toString()}</div>
-          <div>Scanning: {scanning.toString()}</div>
-          <div>Stream: {streamRef.current ? 'Active' : 'None'}</div>
-        </div>
-      )}
+      {/* Debug Info - Always show to see what's happening */}
+      <div className="absolute top-20 left-4 z-30 bg-black/70 text-white p-2 rounded text-xs">
+        <div>Permission: {hasPermission?.toString()}</div>
+        <div>Scanning: {scanning.toString()}</div>
+        <div>Stream: {streamRef.current ? 'Active' : 'None'}</div>
+        <div>Video Ready: {videoRef.current?.readyState}</div>
+      </div>
 
       {/* Scanning Overlay */}
       {scanning && !qrDetected && (
