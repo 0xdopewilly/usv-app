@@ -503,7 +503,7 @@ router.post('/transactions/withdraw', authenticateToken, async (req: any, res) =
       return res.status(404).json({ error: 'User not found' });
     }
 
-    if (user.balance < data.amount) {
+    if ((user.balance ?? 0) < data.amount) {
       return res.status(400).json({ error: 'Insufficient balance' });
     }
 
@@ -519,7 +519,7 @@ router.post('/transactions/withdraw', authenticateToken, async (req: any, res) =
 
     // Update user balance
     await storage.updateUser(req.user.userId, {
-      balance: user.balance - data.amount,
+      balance: (user.balance ?? 0) - data.amount,
     });
 
     res.json(transaction);
@@ -546,7 +546,7 @@ router.post('/qr/claim', authenticateToken, async (req: any, res) => {
     // Update QR code as claimed
     await storage.updateQRCode(qrCode.id, {
       claimedBy: req.user.userId,
-      claimedAt: new Date().toISOString(),
+      claimedAt: new Date(),
       isActive: false,
     });
 
@@ -554,7 +554,7 @@ router.post('/qr/claim', authenticateToken, async (req: any, res) => {
     const transaction = await storage.createTransaction({
       userId: req.user.userId,
       type: 'claim',
-      amount: qrCode.tokenReward,
+      amount: qrCode.tokenReward ?? 0,
       token: 'USV',
       status: 'completed',
     });
@@ -563,7 +563,7 @@ router.post('/qr/claim', authenticateToken, async (req: any, res) => {
     const user = await storage.getUserById(req.user.userId);
     if (user) {
       await storage.updateUser(req.user.userId, {
-        balance: user.balance + qrCode.tokenReward,
+        balance: (user.balance ?? 0) + (qrCode.tokenReward ?? 0),
       });
     }
 
@@ -841,7 +841,7 @@ router.post('/qr/scan', authenticateToken, async (req: any, res) => {
         const user = await storage.getUserById(req.user.userId);
         if (user) {
           await storage.updateUser(req.user.userId, {
-            balance: user.balance + reward
+            balance: (user.balance ?? 0) + reward
           });
           
           // Create transaction record
@@ -860,7 +860,7 @@ router.post('/qr/scan', authenticateToken, async (req: any, res) => {
             success: true,
             reward,
             message: `Earned ${reward} USV tokens!`,
-            newBalance: user.balance + reward
+            newBalance: (user.balance ?? 0) + reward
           });
         }
       }
@@ -880,13 +880,13 @@ router.post('/qr/scan', authenticateToken, async (req: any, res) => {
     if (user) {
       // Update user balance
       await storage.updateUser(req.user.userId, {
-        balance: user.balance + reward
+        balance: (user.balance ?? 0) + reward
       });
       
       // Mark QR as claimed
       await storage.updateQRCode(qrData, {
         claimedBy: req.user.userId,
-        claimedAt: new Date().toISOString()
+        claimedAt: new Date()
       });
       
       // Create transaction record
@@ -905,7 +905,7 @@ router.post('/qr/scan', authenticateToken, async (req: any, res) => {
         success: true,
         reward,
         message: `Earned ${reward} USV tokens from ${qrCode.productId}!`,
-        newBalance: user.balance + reward,
+        newBalance: (user.balance ?? 0) + reward,
         product: qrCode.productId
       });
     } else {
@@ -933,13 +933,13 @@ router.post('/user/transfer', authenticateToken, async (req: any, res) => {
     }
 
     // Check sufficient balance
-    if (user.balance < amount) {
+    if ((user.balance ?? 0) < amount) {
       return res.status(400).json({ error: 'Insufficient balance' });
     }
 
     // Update sender balance
     const updatedSender = await storage.updateUser(req.user.userId, {
-      balance: user.balance - amount
+      balance: (user.balance ?? 0) - amount
     });
 
     // Create transaction record

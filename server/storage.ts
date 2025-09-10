@@ -34,6 +34,20 @@ export interface IStorage {
   getVapeStoreById(id: string): Promise<VapeStore | null>;
 }
 
+// Helper function to convert undefined to null for Drizzle compatibility
+function convertUndefinedToNull<T>(obj: T): T {
+  if (obj === null || obj === undefined) return obj;
+  if (typeof obj !== 'object') return obj;
+  
+  const result = { ...obj } as any;
+  for (const key in result) {
+    if (result[key] === undefined) {
+      result[key] = null;
+    }
+  }
+  return result;
+}
+
 export class MemStorage implements IStorage {
   private users: Map<string, User> = new Map();
   private transactions: Map<string, Transaction> = new Map();
@@ -103,11 +117,11 @@ export class MemStorage implements IStorage {
   // User operations
   async createUser(userData: InsertUser): Promise<User> {
     const id = this.generateId();
-    const user: User = {
+    const user: User = convertUndefinedToNull({
       ...userData,
       id,
-      createdAt: new Date().toISOString(),
-    };
+      createdAt: new Date(),
+    }) as User;
     this.users.set(id, user);
     return user;
   }
@@ -146,11 +160,11 @@ export class MemStorage implements IStorage {
   // Transaction operations
   async createTransaction(transactionData: InsertTransaction): Promise<Transaction> {
     const id = this.generateId();
-    const transaction: Transaction = {
+    const transaction: Transaction = convertUndefinedToNull({
       ...transactionData,
       id,
-      createdAt: new Date().toISOString(),
-    };
+      createdAt: new Date(),
+    }) as Transaction;
     this.transactions.set(id, transaction);
     return transaction;
   }
@@ -158,7 +172,7 @@ export class MemStorage implements IStorage {
   async getTransactionsByUserId(userId: string): Promise<Transaction[]> {
     return Array.from(this.transactions.values())
       .filter(tx => tx.userId === userId)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
   async updateTransaction(id: string, updates: Partial<Transaction>): Promise<Transaction> {
@@ -173,11 +187,11 @@ export class MemStorage implements IStorage {
   // NFT operations
   async createNFT(nftData: InsertNFT): Promise<NFT> {
     const id = this.generateId();
-    const nft: NFT = {
+    const nft: NFT = convertUndefinedToNull({
       ...nftData,
       id,
-      createdAt: new Date().toISOString(),
-    };
+      createdAt: new Date(),
+    }) as NFT;
     this.nfts.set(id, nft);
     return nft;
   }
@@ -185,7 +199,7 @@ export class MemStorage implements IStorage {
   async getNFTsByUserId(userId: string): Promise<NFT[]> {
     return Array.from(this.nfts.values())
       .filter(nft => nft.userId === userId)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
   async getNFTById(id: string): Promise<NFT | null> {
@@ -204,11 +218,11 @@ export class MemStorage implements IStorage {
   // QR Code operations
   async createQRCode(qrCodeData: InsertQRCode): Promise<QRCode> {
     const id = this.generateId();
-    const qrCode: QRCode = {
+    const qrCode: QRCode = convertUndefinedToNull({
       ...qrCodeData,
       id,
-      createdAt: new Date().toISOString(),
-    };
+      createdAt: new Date(),
+    }) as QRCode;
     this.qrCodes.set(id, qrCode);
     return qrCode;
   }
@@ -238,11 +252,11 @@ export class MemStorage implements IStorage {
   // Vape Store operations
   async createVapeStore(storeData: InsertVapeStore): Promise<VapeStore> {
     const id = this.generateId();
-    const store: VapeStore = {
+    const store: VapeStore = convertUndefinedToNull({
       ...storeData,
       id,
-      createdAt: new Date().toISOString(),
-    };
+      createdAt: new Date(),
+    }) as VapeStore;
     this.vapeStores.set(id, store);
     return store;
   }
