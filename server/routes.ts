@@ -796,6 +796,23 @@ router.post('/verify/2fa', authenticateToken, async (req: any, res) => {
   }
 });
 
+// User profile endpoint - needed for auth system
+router.get('/user/profile', authenticateToken, async (req: any, res) => {
+  try {
+    const user = await storage.getUserById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Return user profile without password
+    const { password, ...userProfile } = user;
+    res.json(userProfile);
+  } catch (error) {
+    console.error('Profile fetch error:', error);
+    res.status(500).json({ error: 'Failed to fetch user profile' });
+  }
+});
+
 export function registerRoutes(app: any) {
   app.use('/api', router);
   return app;

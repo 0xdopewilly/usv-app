@@ -222,12 +222,12 @@ export default function AuthPage() {
               const userData = await backendResponse.json();
               console.log('✅ Google backend success:', userData);
               
-              // Store the JWT token and user data directly (don't use login function)
-              localStorage.setItem('authToken', userData.token);
-              localStorage.setItem('userData', JSON.stringify(userData.user));
+              // Use the existing auth system properly by triggering login success
+              // Store token the way the auth system expects
+              localStorage.setItem('token', userData.token);
               
-              // Refresh the page to update auth state
-              window.location.reload();
+              // Force page refresh to trigger auth state update
+              window.location.href = '/';
               
               toast({
                 title: "Welcome!",
