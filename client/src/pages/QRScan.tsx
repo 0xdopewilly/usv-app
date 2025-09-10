@@ -245,35 +245,52 @@ export default function QRScan() {
       streamRef.current = stream;
       
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        console.log('🎥 Video element configured');
+        console.log('🎥 Video element found, setting up stream...');
         
-        // Force video to play on mobile
-        videoRef.current.play().catch(error => {
-          console.error('🎥 Video play error:', error);
-        });
-
-        // Initialize REAL QR Scanner once video is loaded
+        // Set video properties first
+        videoRef.current.muted = true;
+        videoRef.current.playsInline = true;
+        videoRef.current.autoplay = true;
+        
+        // Set up event handlers before assigning stream
         videoRef.current.onloadedmetadata = () => {
-          console.log('🎥 Video metadata loaded, starting scanner');
-          console.log('🎥 Video dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
-          setScanning(true);
-          qrScannerRef.current = new RealQRScanner(videoRef.current!, handleQRDetected);
-          qrScannerRef.current.start();
+          console.log('🎥 Video metadata loaded');
+          if (videoRef.current) {
+            console.log('🎥 Video dimensions:', videoRef.current.videoWidth, 'x', videoRef.current.videoHeight);
+            setScanning(true);
+            qrScannerRef.current = new RealQRScanner(videoRef.current, handleQRDetected);
+            qrScannerRef.current.start();
+          }
         };
 
-        // Add more comprehensive video event handlers
         videoRef.current.oncanplay = () => {
-          console.log('🎥 Video can play');
-        };
-
-        videoRef.current.onplaying = () => {
-          console.log('🎥 Video is playing');
+          console.log('🎥 Video can play - forcing play');
+          if (videoRef.current) {
+            videoRef.current.play().catch(console.error);
+          }
         };
 
         videoRef.current.onerror = (e) => {
           console.error('🎥 Video error:', e);
         };
+
+        // Try direct approach
+        try {
+          videoRef.current.srcObject = stream;
+          console.log('🎥 Stream assigned directly');
+          
+          // Alert the user for debugging
+          alert('🎥 Stream connected - check if video appears');
+          
+          videoRef.current.play().catch(error => {
+            alert('🎥 Play error: ' + error.message);
+            console.error('🎥 Play failed:', error);
+          });
+          
+        } catch (err) {
+          alert('🎥 srcObject error: ' + err.message);
+          console.error('🎥 srcObject error:', err);
+        }
       }
       
     } catch (error) {
@@ -374,19 +391,24 @@ export default function QRScan() {
         </Button>
       </div>
 
-      {/* Camera Feed */}
+      {/* Camera Feed - Show placeholder text to verify positioning */}
+      <div className="absolute inset-0 w-full h-full bg-gray-800 flex items-center justify-center z-0">
+        <p className="text-white text-lg">Camera Feed Area</p>
+      </div>
+      
       <video
         ref={videoRef}
         autoPlay
         playsInline
         muted
-        webkit-playsinline="true"
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        className="absolute inset-0 w-full h-full object-cover z-5"
         style={{ 
           transform: 'scaleX(-1)',
-          display: 'block',
-          backgroundColor: 'transparent'
+          background: 'red',
+          border: '2px solid yellow'
         }}
+        onLoadedData={() => console.log('🎥 Video data loaded')}
+        onPlay={() => console.log('🎥 Video play event')}
       />
 
       {/* Debug Info - Always show to see what's happening */}
