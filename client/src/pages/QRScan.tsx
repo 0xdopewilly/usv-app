@@ -224,35 +224,50 @@ export default function QRScan() {
 
   const requestCameraPermission = async () => {
     try {
+      console.log('🎥 Requesting camera access...');
+      
+      // Check if getUserMedia is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Camera not supported on this device');
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { 
           facingMode: { ideal: 'environment' }, // Use back camera for scanning
-          width: { ideal: 1920, min: 1280 },
-          height: { ideal: 1080, min: 720 }
+          width: { ideal: 1280, min: 640 },
+          height: { ideal: 720, min: 480 }
         },
         audio: false
       });
       
+      console.log('🎥 Camera access granted, stream:', stream);
       setHasPermission(true);
       streamRef.current = stream;
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        console.log('🎥 Video element configured');
         
         // Initialize REAL QR Scanner once video is loaded
         videoRef.current.onloadedmetadata = () => {
+          console.log('🎥 Video metadata loaded, starting scanner');
           setScanning(true);
           qrScannerRef.current = new RealQRScanner(videoRef.current!, handleQRDetected);
           qrScannerRef.current.start();
         };
+
+        // Add error handling for video
+        videoRef.current.onerror = (e) => {
+          console.error('🎥 Video error:', e);
+        };
       }
       
     } catch (error) {
+      console.error('🎥 Camera access error:', error);
       setHasPermission(false);
-      console.error('Camera access error:', error);
       toast({
-        title: "Camera Access Denied",
-        description: "Please allow camera access to scan QR codes",
+        title: "Camera Access Issue",
+        description: `Camera access failed: ${error.message}. Please check browser permissions.`,
         variant: "destructive",
       });
     }
@@ -351,8 +366,19 @@ export default function QRScan() {
         autoPlay
         playsInline
         muted
+        webkit-playsinline="true"
         className="absolute inset-0 w-full h-full object-cover"
+        style={{ transform: 'scaleX(-1)' }} // Mirror the video for better UX
       />
+
+      {/* Debug Info for Development */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="absolute top-20 left-4 z-30 bg-black/70 text-white p-2 rounded text-xs">
+          <div>Permission: {hasPermission?.toString()}</div>
+          <div>Scanning: {scanning.toString()}</div>
+          <div>Stream: {streamRef.current ? 'Active' : 'None'}</div>
+        </div>
+      )}
 
       {/* Scanning Overlay */}
       {scanning && !qrDetected && (
