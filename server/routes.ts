@@ -68,7 +68,10 @@ async function verifyGoogleToken(idToken: string): Promise<{ email: string; name
 }
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
 
 // Middleware to verify JWT token
 const authenticateToken = (req: any, res: any, next: any) => {
@@ -89,7 +92,7 @@ const authenticateToken = (req: any, res: any, next: any) => {
 // Auth routes
 router.post('/auth/signup', async (req, res) => {
   try {
-    console.log('🔵 Signup request body:', req.body);
+    console.log('🔵 Signup request received for registration');
     
     // Check if request body exists
     if (!req.body) {
@@ -168,7 +171,7 @@ router.post('/auth/signup', async (req, res) => {
 
 router.post('/auth/login', async (req, res) => {
   try {
-    console.log('🔵 Login request body:', req.body);
+    console.log('🔵 Login request received');
     
     // Check if request body exists
     if (!req.body) {
@@ -294,7 +297,7 @@ router.post('/auth/apple', async (req, res) => {
 // REAL Google Sign-In route
 router.post('/auth/google', async (req, res) => {
   try {
-    console.log('🔍 Google auth request received:', { body: req.body });
+    console.log('🔍 Google auth request received');
     const { id_token } = req.body;
     
     if (!id_token) {
