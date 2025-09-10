@@ -52,6 +52,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryKey: ['/api/user/profile'],
     enabled: !!token,
     retry: false,
+    queryFn: async () => {
+      if (!token) throw new Error('No token available');
+      
+      const res = await fetch('/api/user/profile', {
+        credentials: "include",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log('🔍 Profile API Response:', res.status, res.statusText);
+      
+      if (!res.ok) {
+        const text = (await res.text()) || res.statusText;
+        console.error('🔍 Profile API Error:', text);
+        throw new Error(`${res.status}: ${text}`);
+      }
+      
+      const data = await res.json();
+      console.log('🔍 Profile API Data:', data);
+      return data;
+    }
   });
 
   // Debug logging for user query
@@ -116,37 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, 100);
   };
 
-  // Update Authorization header when token changes
-  useEffect(() => {
-    // Set the authorization header for future requests
-    if (token) {
-      console.log('🔍 Setting up query client with token:', token.substring(0, 10) + '...');
-      queryClient.setDefaultOptions({
-        queries: {
-          queryFn: async ({ queryKey }) => {
-            const url = queryKey.join("/") as string;
-            console.log('🔍 Making API call to:', url, 'with token:', token.substring(0, 10) + '...');
-            const res = await fetch(url, {
-              credentials: "include",
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              }
-            });
-            console.log('🔍 API Response:', res.status, res.statusText);
-            if (!res.ok) {
-              const text = (await res.text()) || res.statusText;
-              console.error('🔍 API Error:', text);
-              throw new Error(`${res.status}: ${text}`);
-            }
-            const data = await res.json();
-            console.log('🔍 API Data:', data);
-            return data;
-          }
-        }
-      });
-    }
-  }, [token, queryClient]);
+  // No longer needed since we define queryFn directly in useQuery
 
   return (
     <AuthContext.Provider
