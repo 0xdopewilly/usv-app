@@ -10,6 +10,7 @@ import SimpleWallet from "@/pages/SimpleWallet";
 import SimpleSend from "@/pages/SimpleSend";
 import Settings from "@/pages/Settings";
 import SimpleNFT from "@/pages/SimpleNFT";
+import QRScan from "@/pages/QRScan";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -39,6 +40,7 @@ function AppRouter() {
         <Route path="/" component={Home} />
         <Route path="/wallet" component={SimpleWallet} />
         <Route path="/send" component={SimpleSend} />
+        <Route path="/qr-scan" component={QRScan} />
         <Route path="/nft-portfolio" component={SimpleNFT} />
         <Route path="/settings" component={Settings} />
         <Route component={NotFound} />
