@@ -1,5 +1,101 @@
 import { z } from "zod";
+import { pgTable, varchar, boolean, numeric, timestamp, text, jsonb } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
 
+// Drizzle table definitions (database schema)
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey(),
+  email: varchar("email").notNull().unique(),
+  fullName: varchar("full_name").notNull(),
+  password: varchar("password").notNull(),
+  walletAddress: varchar("wallet_address"),
+  balance: numeric("balance").default('0'),
+  stakedBalance: numeric("staked_balance").default('0'),
+  isVerified: boolean("is_verified").default(false),
+  twoFactorEnabled: boolean("two_factor_enabled").default(false),
+  faceIdEnabled: boolean("face_id_enabled").default(false),
+  pushNotifications: boolean("push_notifications").default(true),
+  emailNotifications: boolean("email_notifications").default(true),
+  preferredLanguage: varchar("preferred_language").default('en'),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const transactions = pgTable("transactions", {
+  id: varchar("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  type: varchar("type").notNull(),
+  amount: numeric("amount").notNull(),
+  token: varchar("token").default('USV'),
+  status: varchar("status").notNull(),
+  toAddress: varchar("to_address"),
+  fromAddress: varchar("from_address"),
+  txHash: varchar("tx_hash"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const nfts = pgTable("nfts", {
+  id: varchar("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  tokenId: varchar("token_id").notNull(),
+  name: varchar("name").notNull(),
+  description: text("description").notNull(),
+  image: varchar("image").notNull(),
+  collection: varchar("collection").notNull(),
+  mintAddress: varchar("mint_address").notNull(),
+  floorPrice: numeric("floor_price").notNull(),
+  lastSalePrice: numeric("last_sale_price"),
+  isStaked: boolean("is_staked").default(false),
+  attributes: jsonb("attributes").default([]),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const qrCodes = pgTable("qr_codes", {
+  id: varchar("id").primaryKey(),
+  code: varchar("code").notNull().unique(),
+  storeId: varchar("store_id").notNull(),
+  productId: varchar("product_id").notNull(),
+  isActive: boolean("is_active").default(true),
+  scannedBy: varchar("scanned_by"),
+  scannedAt: timestamp("scanned_at"),
+  claimedAt: timestamp("claimed_at"),
+  tokenReward: numeric("token_reward").default('25'),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const vapeStores = pgTable("vape_stores", {
+  id: varchar("id").primaryKey(),
+  name: varchar("name").notNull(),
+  address: varchar("address").notNull(),
+  latitude: numeric("latitude").notNull(),
+  longitude: numeric("longitude").notNull(),
+  isPartner: boolean("is_partner").default(false),
+  qrCodes: jsonb("qr_codes").default([]),
+  phone: varchar("phone"),
+  hours: varchar("hours"),
+  rating: numeric("rating").default('4.5'),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Generate Drizzle Zod schemas for type-safe validation
+export const insertUserSchema = createInsertSchema(users);
+export const insertTransactionSchema = createInsertSchema(transactions);
+export const insertNFTSchema = createInsertSchema(nfts);
+export const insertQRCodeSchema = createInsertSchema(qrCodes);
+export const insertVapeStoreSchema = createInsertSchema(vapeStores);
+
+// TypeScript types
+export type User = typeof users.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
+export type Transaction = typeof transactions.$inferSelect;
+export type InsertTransaction = typeof transactions.$inferInsert;
+export type NFT = typeof nfts.$inferSelect;
+export type InsertNFT = typeof nfts.$inferInsert;
+export type QRCode = typeof qrCodes.$inferSelect;
+export type InsertQRCode = typeof qrCodes.$inferInsert;
+export type VapeStore = typeof vapeStores.$inferSelect;
+export type InsertVapeStore = typeof vapeStores.$inferInsert;
+
+// Legacy Zod schemas (keeping for backward compatibility)
 // User schema
 export const userSchema = z.object({
   id: z.string(),

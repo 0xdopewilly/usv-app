@@ -1,5 +1,7 @@
 import { User, Transaction, NFT, QRCode, VapeStore, InsertUser, InsertTransaction, InsertNFT, InsertQRCode, InsertVapeStore } from '../shared/schema';
-import { DatabaseStorage } from './db/storage';
+import { db } from './db';
+import { eq } from 'drizzle-orm';
+import { users, transactions, nfts, qrCodes, vapeStores } from '../shared/schema';
 
 export interface IStorage {
   // User operations
@@ -254,5 +256,135 @@ export class MemStorage implements IStorage {
   }
 }
 
-// Using in-memory storage (working) instead of DatabaseStorage (broken connection)
-export const storage = new MemStorage();
+// DatabaseStorage implementation using PostgreSQL - blueprint:javascript_database
+export class DatabaseStorage implements IStorage {
+  // User operations
+  async createUser(userData: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .returning();
+    return user;
+  }
+
+  async getUserById(id: string): Promise<User | null> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || null;
+  }
+
+  async getUserByEmail(email: string): Promise<User | null> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || null;
+  }
+
+  async getUserByWallet(walletAddress: string): Promise<User | null> {
+    const [user] = await db.select().from(users).where(eq(users.walletAddress, walletAddress));
+    return user || null;
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
+    return user;
+  }
+
+  // Transaction operations
+  async createTransaction(transactionData: InsertTransaction): Promise<Transaction> {
+    const [transaction] = await db
+      .insert(transactions)
+      .values(transactionData)
+      .returning();
+    return transaction;
+  }
+
+  async getTransactionsByUserId(userId: string): Promise<Transaction[]> {
+    return await db.select().from(transactions).where(eq(transactions.userId, userId));
+  }
+
+  async updateTransaction(id: string, updates: Partial<Transaction>): Promise<Transaction> {
+    const [transaction] = await db
+      .update(transactions)
+      .set(updates)
+      .where(eq(transactions.id, id))
+      .returning();
+    return transaction;
+  }
+
+  // NFT operations
+  async createNFT(nftData: InsertNFT): Promise<NFT> {
+    const [nft] = await db
+      .insert(nfts)
+      .values(nftData)
+      .returning();
+    return nft;
+  }
+
+  async getNFTsByUserId(userId: string): Promise<NFT[]> {
+    return await db.select().from(nfts).where(eq(nfts.userId, userId));
+  }
+
+  async getNFTById(id: string): Promise<NFT | null> {
+    const [nft] = await db.select().from(nfts).where(eq(nfts.id, id));
+    return nft || null;
+  }
+
+  async updateNFT(id: string, updates: Partial<NFT>): Promise<NFT> {
+    const [nft] = await db
+      .update(nfts)
+      .set(updates)
+      .where(eq(nfts.id, id))
+      .returning();
+    return nft;
+  }
+
+  // QR Code operations
+  async createQRCode(qrCodeData: InsertQRCode): Promise<QRCode> {
+    const [qrCode] = await db
+      .insert(qrCodes)
+      .values(qrCodeData)
+      .returning();
+    return qrCode;
+  }
+
+  async getQRCode(code: string): Promise<QRCode | null> {
+    const [qrCode] = await db.select().from(qrCodes).where(eq(qrCodes.code, code));
+    return qrCode || null;
+  }
+
+  async getQRCodeByCode(code: string): Promise<QRCode | null> {
+    return this.getQRCode(code);
+  }
+
+  async updateQRCode(id: string, updates: Partial<QRCode>): Promise<QRCode> {
+    const [qrCode] = await db
+      .update(qrCodes)
+      .set(updates)
+      .where(eq(qrCodes.id, id))
+      .returning();
+    return qrCode;
+  }
+
+  // Vape Store operations
+  async createVapeStore(storeData: InsertVapeStore): Promise<VapeStore> {
+    const [store] = await db
+      .insert(vapeStores)
+      .values(storeData)
+      .returning();
+    return store;
+  }
+
+  async getAllVapeStores(): Promise<VapeStore[]> {
+    return await db.select().from(vapeStores);
+  }
+
+  async getVapeStoreById(id: string): Promise<VapeStore | null> {
+    const [store] = await db.select().from(vapeStores).where(eq(vapeStores.id, id));
+    return store || null;
+  }
+}
+
+// Switch to DatabaseStorage to fix wallet address persistence issue
+export const storage = new DatabaseStorage();
