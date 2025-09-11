@@ -211,20 +211,8 @@ export default function QRScan() {
   };
 
   useEffect(() => {
-    console.log('🔥 QRScan useEffect running - about to request camera');
-    
-    // Wait for video element to be available before requesting camera
-    const checkVideoElement = () => {
-      if (videoRef.current) {
-        console.log('🎥 Video element ready, requesting camera...');
-        requestCameraPermission();
-      } else {
-        console.log('🎥 Video element not ready, retrying in 100ms...');
-        setTimeout(checkVideoElement, 100);
-      }
-    };
-    
-    checkVideoElement();
+    console.log('🔥 QRScan useEffect running - requesting camera immediately');
+    requestCameraPermission();
     
     return () => {
       // Cleanup camera stream when component unmounts
@@ -258,56 +246,54 @@ export default function QRScan() {
       console.log('🎥 Camera access granted, stream:', stream);
       streamRef.current = stream;
       
-      if (videoRef.current) {
-        console.log('🎥 Video element found, setting up stream...');
-        
-        // Clean camera setup with detailed logging
-        videoRef.current.muted = true;
-        videoRef.current.playsInline = true;
-        videoRef.current.autoplay = true;
-        
-        console.log('🎥 Assigning stream to video element...');
-        videoRef.current.srcObject = stream;
-        
-        // Single event handler for when video is ready
-        videoRef.current.onloadedmetadata = () => {
-          console.log('🎥 Video metadata loaded! Dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
-          if (videoRef.current && videoRef.current.videoWidth > 0) {
-            console.log('🎥 Starting QR scanner...');
-            setScanning(true);
-            qrScannerRef.current = new RealQRScanner(videoRef.current, handleQRDetected);
-            qrScannerRef.current.start();
-          } else {
-            console.error('🎥 Video dimensions are 0 - video not ready');
-          }
-        };
+      // Set permission first to render the video element
+      setHasPermission(true);
+      
+      // Wait for video element to be rendered, then set up stream
+      const setupVideoStream = () => {
+        if (videoRef.current) {
+          console.log('🎥 Video element found, setting up stream...');
+          
+          // Clean camera setup with detailed logging
+          videoRef.current.muted = true;
+          videoRef.current.playsInline = true;
+          videoRef.current.autoplay = true;
+          
+          console.log('🎥 Assigning stream to video element...');
+          videoRef.current.srcObject = stream;
+          
+          // Single event handler for when video is ready
+          videoRef.current.onloadedmetadata = () => {
+            console.log('🎥 Video metadata loaded! Dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
+            if (videoRef.current && videoRef.current.videoWidth > 0) {
+              console.log('🎥 Starting QR scanner...');
+              setScanning(true);
+              qrScannerRef.current = new RealQRScanner(videoRef.current, handleQRDetected);
+              qrScannerRef.current.start();
+            } else {
+              console.error('🎥 Video dimensions are 0 - video not ready');
+            }
+          };
 
-        videoRef.current.onerror = (error) => {
-          console.error('🎥 Video element error:', error);
-        };
+          videoRef.current.onerror = (error) => {
+            console.error('🎥 Video element error:', error);
+          };
 
-        // Try to play the video
-        console.log('🎥 Attempting to play video...');
-        videoRef.current.play().then(() => {
-          console.log('🎥 Video playing successfully!');
-          // Set permission AFTER video is playing to prevent re-mount loop
-          if (hasPermission !== true) {
-            setHasPermission(true);
-          }
-        }).catch((playError) => {
-          console.error('🎥 Video play failed:', playError);
-          // Set permission even if play fails, as video element is set up
-          if (hasPermission !== true) {
-            setHasPermission(true);
-          }
-        });
-      } else {
-        console.error('🎥 No video element found!');
-        // Set permission anyway for UI purposes
-        if (hasPermission !== true) {
-          setHasPermission(true);
+          // Try to play the video
+          console.log('🎥 Attempting to play video...');
+          videoRef.current.play().then(() => {
+            console.log('🎥 Video playing successfully!');
+          }).catch((playError) => {
+            console.error('🎥 Video play failed:', playError);
+          });
+        } else {
+          console.log('🎥 Video element not ready yet, retrying in 100ms...');
+          setTimeout(setupVideoStream, 100);
         }
-      }
+      };
+      
+      // Start trying to set up video stream
+      setTimeout(setupVideoStream, 100);
       
     } catch (error) {
       console.error('🎥 Camera access error:', error);
