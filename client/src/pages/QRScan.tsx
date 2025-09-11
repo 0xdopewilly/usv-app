@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Flashlight, FlashlightOff, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Flashlight, FlashlightOff, CheckCircle, Camera, QrCode } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import BottomNavigation from '@/components/BottomNavigation';
@@ -96,8 +96,21 @@ export default function QRScan() {
   };
 
   useEffect(() => {
-    console.log('🔥 QRScan useEffect running - setting up QR scanner');
-    setupQRScanner();
+    console.log('🔥 QRScan useEffect running - checking environment');
+    
+    // Check if we're in an iframe (Replit preview) or insecure context
+    const isIframe = window.top !== window.self;
+    const isSecure = window.isSecureContext;
+    
+    console.log('🌍 Environment check:', { isIframe, isSecure });
+    
+    if (isIframe) {
+      console.log('📱 Running in iframe - camera permissions blocked');
+      setHasPermission(false);
+    } else if (!isSecure) {
+      console.log('🔒 Insecure context - camera requires HTTPS');
+      setHasPermission(false);
+    }
     
     return () => {
       // Cleanup QR scanner when component unmounts
@@ -108,9 +121,15 @@ export default function QRScan() {
     };
   }, []);
 
-  const setupQRScanner = async () => {
+  const startCamera = async () => {
     try {
-      console.log('🎯 Setting up QR scanner...');
+      console.log('🎯 Starting camera with user gesture...');
+      
+      // Check camera availability first
+      const hasCamera = await QrScanner.hasCamera();
+      if (!hasCamera) {
+        throw new Error('No camera found on device');
+      }
       
       // Wait for video element to be available
       const waitForVideo = () => {
@@ -144,8 +163,14 @@ export default function QRScan() {
         }
       );
       
-      console.log('🎯 Starting QR scanner...');
-      await qrScannerRef.current.start();
+      // Start with timeout to prevent hanging
+      console.log('🎯 Starting QR scanner with 5s timeout...');
+      const startPromise = qrScannerRef.current.start();
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Camera permission timeout')), 5000)
+      );
+      
+      await Promise.race([startPromise, timeoutPromise]);
       console.log('🎯 QR Scanner started successfully!');
       
       setHasPermission(true);
@@ -154,11 +179,21 @@ export default function QRScan() {
     } catch (error) {
       console.error('🎯 QR Scanner setup failed:', error);
       setHasPermission(false);
-      toast({
-        title: "Camera Access Required",
-        description: "Please allow camera access to scan QR codes and earn USV tokens.",
-        variant: "destructive",
-      });
+      
+      // Try fallback approach
+      if (error instanceof Error && error.message.includes('timeout')) {
+        toast({
+          title: "Camera Permission Timeout",
+          description: "Camera access is taking too long. Try opening in a new tab or allow camera permissions.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Camera Access Required",
+          description: "Please allow camera access to scan QR codes and earn USV tokens.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -295,9 +330,19 @@ export default function QRScan() {
   if (hasPermission === null) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p>Requesting camera permission...</p>
+        <div className="text-center text-white max-w-sm mx-auto px-6">
+          <QrCode className="h-16 w-16 text-blue-400 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-4">Ready to Scan QR Codes</h2>
+          <p className="text-gray-300 mb-6">Tap the button below to start your camera and begin scanning for USV tokens!</p>
+          
+          <button
+            onClick={startCamera}
+            data-testid="button-start-camera"
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105"
+          >
+            <Camera className="inline h-5 w-5 mr-2" />
+            Start Camera
+          </button>
         </div>
       </div>
     );
