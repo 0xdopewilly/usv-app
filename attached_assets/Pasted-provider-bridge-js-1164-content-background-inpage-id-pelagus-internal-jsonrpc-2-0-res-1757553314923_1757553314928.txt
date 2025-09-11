@@ -1,0 +1,41 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+content.js:2 Check phishing by URL: Passed.
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x2328"}}
+index-B_9m-O3h.js:178 🔍 Auth Debug: Object
+index-B_9m-O3h.js:178 🔍 User Query Debug: Object
+injected.js:1 Backpack couldn't override `window.ethereum`.
+vVs @ injected.js:1
+index-B_9m-O3h.js:178 🔍 Profile API Response: 200 
+index-B_9m-O3h.js:178 🔍 Profile API Data: Object
+index-B_9m-O3h.js:246 🚀 Real-time price updates started (every 8s)
+index-B_9m-O3h.js:178 🔍 User Query Debug: Object
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+injected.js:1 TronLink initiated
+index-B_9m-O3h.js:246 💰 Real-time prices updated: Object
+index-B_9m-O3h.js:246 📈 Prices updated: Object
+usv-app.replit.app/:1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+usv-app.replit.app/:1 Error while trying to use the following icon from the Manifest: https://usv-app.replit.app/icon-144.png (Download error or resource isn't a valid image)
+index-B_9m-O3h.js:286 🚀 QRScan component mounted!
+index-B_9m-O3h.js:246 ⏸️ Real-time price updates stopped
+index-B_9m-O3h.js:286 🔥 QRScan useEffect running - about to request camera
+index-B_9m-O3h.js:286 🎥 Requesting camera access...
+index-B_9m-O3h.js:286 🎥 Camera access granted, stream: MediaStream
+index-B_9m-O3h.js:286 🎥 No video element found!
+g @ index-B_9m-O3h.js:286
+index-B_9m-O3h.js:286 🚀 QRScan component mounted!
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}

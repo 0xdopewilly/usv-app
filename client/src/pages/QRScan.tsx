@@ -212,7 +212,20 @@ export default function QRScan() {
 
   useEffect(() => {
     console.log('🔥 QRScan useEffect running - about to request camera');
-    requestCameraPermission();
+    
+    // Wait for video element to be available before requesting camera
+    const checkVideoElement = () => {
+      if (videoRef.current) {
+        console.log('🎥 Video element ready, requesting camera...');
+        requestCameraPermission();
+      } else {
+        console.log('🎥 Video element not ready, retrying in 100ms...');
+        setTimeout(checkVideoElement, 100);
+      }
+    };
+    
+    checkVideoElement();
+    
     return () => {
       // Cleanup camera stream when component unmounts
       if (streamRef.current) {
