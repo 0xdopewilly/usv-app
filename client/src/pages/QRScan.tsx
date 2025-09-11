@@ -125,41 +125,21 @@ export default function QRScan() {
     try {
       console.log('🎯 Starting camera with user gesture...');
       
-      // Check camera availability with timeout
-      console.log('📷 Checking camera availability...');
-      const cameraCheckPromise = QrScanner.hasCamera();
-      const cameraTimeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Camera check timeout')), 3000)
-      );
+      // Set permission to true first so video element renders
+      setHasPermission(true);
       
-      const hasCamera = await Promise.race([cameraCheckPromise, cameraTimeoutPromise]);
-      console.log('📷 Camera availability check result:', hasCamera);
+      // Wait a brief moment for video element to render
+      await new Promise(resolve => setTimeout(resolve, 200));
       
-      if (!hasCamera) {
-        throw new Error('No camera found on device');
+      if (!videoRef.current) {
+        throw new Error('Video element not available');
       }
       
-      // Wait for video element to be available
-      console.log('🎥 Waiting for video element...');
-      const waitForVideo = () => {
-        return new Promise<void>((resolve) => {
-          if (videoRef.current) {
-            resolve();
-          } else {
-            setTimeout(() => {
-              waitForVideo().then(resolve);
-            }, 100);
-          }
-        });
-      };
-      
-      await waitForVideo();
-      console.log('🎥 Video element ready for QR scanner');
+      console.log('🎥 Video element ready, creating QR scanner...');
       
       // Create QR scanner with the video element
-      console.log('🎯 Creating QR scanner instance...');
       qrScannerRef.current = new QrScanner(
-        videoRef.current!,
+        videoRef.current,
         (result) => {
           console.log('🎯 QR Code detected:', result.data);
           handleQRDetected(result.data);
@@ -168,48 +148,25 @@ export default function QRScan() {
           highlightScanRegion: true,
           highlightCodeOutline: true,
           preferredCamera: 'environment',
-          maxScansPerSecond: 5,
-          returnDetailedScanResult: true
+          maxScansPerSecond: 5
         }
       );
       
-      // Start with timeout to prevent hanging
-      console.log('🎯 Starting QR scanner with 5s timeout...');
-      const startPromise = qrScannerRef.current.start();
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Camera permission timeout')), 5000)
-      );
-      
-      await Promise.race([startPromise, timeoutPromise]);
+      // Start QR scanner
+      console.log('🎯 Starting QR scanner...');
+      await qrScannerRef.current.start();
       console.log('🎯 QR Scanner started successfully!');
       
-      setHasPermission(true);
       setScanning(true);
       
     } catch (error) {
-      console.error('🎯 QR Scanner setup failed:', error);
+      console.error('🎯 QR Scanner failed:', error);
       setHasPermission(false);
-      
-      // Try fallback approach
-      if (error instanceof Error && error.message.includes('timeout')) {
-        toast({
-          title: "Camera Permission Timeout",
-          description: "Camera access is taking too long. Try opening in a new tab or allow camera permissions.",
-          variant: "destructive",
-        });
-      } else if (error instanceof Error && error.message.includes('Camera check timeout')) {
-        toast({
-          title: "Camera Check Failed",
-          description: "Unable to detect camera. Please try opening in a new tab.",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Camera Access Required",
-          description: "Please allow camera access to scan QR codes and earn USV tokens.",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Camera Access Required",
+        description: "Please allow camera access to scan QR codes and earn USV tokens.",
+        variant: "destructive",
+      });
     }
   };
 

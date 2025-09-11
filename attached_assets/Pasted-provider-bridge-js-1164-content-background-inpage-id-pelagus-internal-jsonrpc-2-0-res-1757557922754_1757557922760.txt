@@ -1,0 +1,56 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x2328"}}
+content.js:2 Check phishing by URL: Passed.
+index-BPGSLpcA.js:183 🔍 Auth Debug: Object
+index-BPGSLpcA.js:183 🔍 User Query Debug: Object
+index-BPGSLpcA.js:183 🔍 Profile API Response: 200 
+index-BPGSLpcA.js:183 🔍 Profile API Data: Object
+index-BPGSLpcA.js:251 🚀 Real-time price updates started (every 8s)
+index-BPGSLpcA.js:183 🔍 User Query Debug: Object
+index-BPGSLpcA.js:251 💰 Real-time prices updated: Object
+index-BPGSLpcA.js:251 📈 Prices updated: Object
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Backpack couldn't override `window.ethereum`.
+vVs @ injected.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+injected.js:1 TronLink initiated
+index-BPGSLpcA.js:291 🚀 QRScan component mounted!
+index-BPGSLpcA.js:251 ⏸️ Real-time price updates stopped
+index-BPGSLpcA.js:291 🔥 QRScan useEffect running - checking environment
+index-BPGSLpcA.js:291 🌍 Environment check: Object
+qr-scan:1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+qr-scan:1 Error while trying to use the following icon from the Manifest: https://usv-app.replit.app/icon-144.png (Download error or resource isn't a valid image)
+index-BPGSLpcA.js:291 🎯 Starting camera with user gesture...
+index-BPGSLpcA.js:291 📷 Checking camera availability...
+index-BPGSLpcA.js:291 📷 Camera availability check result: true
+index-BPGSLpcA.js:291 🎥 Waiting for video element...
+index-BPGSLpcA.js:291 🎯 Starting camera with user gesture...
+index-BPGSLpcA.js:291 📷 Checking camera availability...
+index-BPGSLpcA.js:291 📷 Camera availability check result: true
+index-BPGSLpcA.js:291 🎥 Waiting for video element...
+index-BPGSLpcA.js:291 🎯 Starting camera with user gesture...
+index-BPGSLpcA.js:291 📷 Checking camera availability...
+index-BPGSLpcA.js:291 📷 Camera availability check result: true
+index-BPGSLpcA.js:291 🎥 Waiting for video element...
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-BPGSLpcA.js:291 🎯 Starting camera with user gesture...
+index-BPGSLpcA.js:291 📷 Checking camera availability...
+index-BPGSLpcA.js:291 📷 Camera availability check result: true
+index-BPGSLpcA.js:291 🎥 Waiting for video element...
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-BPGSLpcA.js:291 🎯 Starting camera with user gesture...
+index-BPGSLpcA.js:291 📷 Checking camera availability...
+index-BPGSLpcA.js:291 📷 Camera availability check result: true
+index-BPGSLpcA.js:291 🎥 Waiting for video element...
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
