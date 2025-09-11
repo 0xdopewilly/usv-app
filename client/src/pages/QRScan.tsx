@@ -6,123 +6,8 @@ import { Button } from '@/components/ui/button';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
+import QrScanner from 'qr-scanner';
 
-// REAL QR Scanner using getUserMedia and canvas analysis
-class RealQRScanner {
-  private video: HTMLVideoElement;
-  private canvas: HTMLCanvasElement;
-  private context: CanvasRenderingContext2D;
-  private scanning = false;
-  private onScanCallback: (data: string) => void;
-
-  constructor(video: HTMLVideoElement, onScan: (data: string) => void) {
-    this.video = video;
-    this.canvas = document.createElement('canvas');
-    this.context = this.canvas.getContext('2d')!;
-    this.onScanCallback = onScan;
-  }
-
-  // REAL QR detection using image processing
-  private detectQRFromFrame() {
-    if (!this.video.videoWidth || !this.video.videoHeight) return;
-    
-    this.canvas.width = this.video.videoWidth;
-    this.canvas.height = this.video.videoHeight;
-    this.context.drawImage(this.video, 0, 0);
-    
-    const imageData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
-    
-    // REAL QR pattern detection
-    const qrData = this.analyzeImageForQR(imageData);
-    if (qrData) {
-      this.onScanCallback(qrData);
-    }
-  }
-
-  // Advanced QR pattern detection - analyzes actual image data
-  private analyzeImageForQR(imageData: ImageData): string | null {
-    const data = imageData.data;
-    const width = imageData.width;
-    const height = imageData.height;
-    
-    // Convert to grayscale and detect high contrast patterns
-    let blackPixels = 0;
-    let whitePixels = 0;
-    let patterns: number[] = [];
-    
-    // Scan for QR finder patterns (the square patterns in corners)
-    for (let y = 0; y < height - 7; y += 4) {
-      for (let x = 0; x < width - 7; x += 4) {
-        const pattern = this.checkFinderPattern(data, x, y, width);
-        if (pattern > 0.8) { // High confidence finder pattern
-          patterns.push(pattern);
-        }
-      }
-    }
-    
-    // Count overall contrast
-    for (let i = 0; i < data.length; i += 4) {
-      const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
-      if (brightness < 80) blackPixels++;
-      else if (brightness > 180) whitePixels++;
-    }
-    
-    // If we detected finder patterns and high contrast
-    if (patterns.length >= 3 && blackPixels > 2000 && whitePixels > 2000) {
-      // Generate realistic QR data - in production you'd decode the actual QR
-      const qrCodes = [
-        `USV-REWARD-${Date.now()}`,
-        `VAPE-AUTH-${Math.random().toString(36).substr(2, 12)}`,
-        `USV-TOKEN-${Math.floor(Math.random() * 10000)}`,
-        `PRODUCT-${Math.random().toString(36).substr(2, 8).toUpperCase()}`
-      ];
-      return qrCodes[Math.floor(Math.random() * qrCodes.length)];
-    }
-    
-    return null;
-  }
-
-  // Check for QR finder pattern (7x7 pattern with specific ratio)
-  private checkFinderPattern(data: Uint8ClampedArray, startX: number, startY: number, width: number): number {
-    let blackCount = 0;
-    let whiteCount = 0;
-    
-    // Check 7x7 area for finder pattern characteristics
-    for (let y = 0; y < 7; y++) {
-      for (let x = 0; x < 7; x++) {
-        const idx = ((startY + y) * width + (startX + x)) * 4;
-        if (idx < data.length) {
-          const brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
-          
-          // Finder pattern has specific black/white structure
-          if ((y === 0 || y === 6) || (x === 0 || x === 6) || (y >= 2 && y <= 4 && x >= 2 && x <= 4)) {
-            if (brightness < 100) blackCount++;
-          } else {
-            if (brightness > 150) whiteCount++;
-          }
-        }
-      }
-    }
-    
-    // Return confidence score
-    return (blackCount + whiteCount) / 49; // Total pixels in 7x7
-  }
-
-  start() {
-    this.scanning = true;
-    const scan = () => {
-      if (this.scanning) {
-        this.detectQRFromFrame();
-        requestAnimationFrame(scan);
-      }
-    };
-    scan();
-  }
-
-  stop() {
-    this.scanning = false;
-  }
-}
 
 export default function QRScan() {
   console.log('🚀 QRScan component mounted!');
@@ -134,7 +19,7 @@ export default function QRScan() {
   const [processing, setProcessing] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const qrScannerRef = useRef<RealQRScanner | null>(null);
+  const qrScannerRef = useRef<QrScanner | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
 
@@ -268,7 +153,21 @@ export default function QRScan() {
             if (videoRef.current && videoRef.current.videoWidth > 0) {
               console.log('🎥 Starting QR scanner...');
               setScanning(true);
-              qrScannerRef.current = new RealQRScanner(videoRef.current, handleQRDetected);
+              
+              // Create real QR scanner instance
+              qrScannerRef.current = new QrScanner(
+                videoRef.current,
+                (result) => {
+                  console.log('🎯 QR Code detected:', result.data);
+                  handleQRDetected(result.data);
+                },
+                {
+                  highlightScanRegion: true,
+                  highlightCodeOutline: true,
+                  preferredCamera: 'environment'
+                }
+              );
+              
               qrScannerRef.current.start();
             } else {
               console.error('🎥 Video dimensions are 0 - video not ready');
@@ -399,8 +298,8 @@ export default function QRScan() {
         autoPlay
         playsInline
         muted
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ transform: 'scaleX(-1)' }}
+        className="absolute inset-0 w-full h-full object-contain bg-black"
+        data-testid="camera-video"
       />
 
 
