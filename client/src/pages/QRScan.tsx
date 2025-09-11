@@ -211,6 +211,7 @@ export default function QRScan() {
   };
 
   useEffect(() => {
+    console.log('🔥 QRScan useEffect running - about to request camera');
     requestCameraPermission();
     return () => {
       // Cleanup camera stream when component unmounts
