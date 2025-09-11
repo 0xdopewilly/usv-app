@@ -249,25 +249,37 @@ export default function QRScan() {
       if (videoRef.current) {
         console.log('🎥 Video element found, setting up stream...');
         
-        // Clean camera setup
+        // Clean camera setup with detailed logging
         videoRef.current.muted = true;
         videoRef.current.playsInline = true;
         videoRef.current.autoplay = true;
+        
+        console.log('🎥 Assigning stream to video element...');
         videoRef.current.srcObject = stream;
         
         // Single event handler for when video is ready
         videoRef.current.onloadedmetadata = () => {
-          console.log('🎥 Video ready, dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
+          console.log('🎥 Video metadata loaded! Dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
           if (videoRef.current && videoRef.current.videoWidth > 0) {
+            console.log('🎥 Starting QR scanner...');
             setScanning(true);
             qrScannerRef.current = new RealQRScanner(videoRef.current, handleQRDetected);
             qrScannerRef.current.start();
+          } else {
+            console.error('🎥 Video dimensions are 0 - video not ready');
           }
         };
 
+        videoRef.current.onerror = (error) => {
+          console.error('🎥 Video element error:', error);
+        };
+
         // Try to play the video
-        videoRef.current.play().catch((playError) => {
-          console.log('🎥 Autoplay failed, will need user interaction:', playError);
+        console.log('🎥 Attempting to play video...');
+        videoRef.current.play().then(() => {
+          console.log('🎥 Video playing successfully!');
+        }).catch((playError) => {
+          console.error('🎥 Video play failed:', playError);
         });
       }
       
