@@ -96,19 +96,71 @@ export default function QRScan() {
   };
 
   useEffect(() => {
-    console.log('🔥 QRScan useEffect running - requesting camera immediately');
-    requestCameraPermission();
+    console.log('🔥 QRScan useEffect running - setting up QR scanner');
+    setupQRScanner();
     
     return () => {
-      // Cleanup camera stream when component unmounts
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
+      // Cleanup QR scanner when component unmounts
       if (qrScannerRef.current) {
-        qrScannerRef.current.stop();
+        qrScannerRef.current.destroy();
+        qrScannerRef.current = null;
       }
     };
   }, []);
+
+  const setupQRScanner = async () => {
+    try {
+      console.log('🎯 Setting up QR scanner...');
+      
+      // Wait for video element to be available
+      const waitForVideo = () => {
+        return new Promise<void>((resolve) => {
+          if (videoRef.current) {
+            resolve();
+          } else {
+            setTimeout(() => {
+              waitForVideo().then(resolve);
+            }, 100);
+          }
+        });
+      };
+      
+      await waitForVideo();
+      console.log('🎥 Video element ready for QR scanner');
+      
+      // Create QR scanner with the video element
+      qrScannerRef.current = new QrScanner(
+        videoRef.current!,
+        (result) => {
+          console.log('🎯 QR Code detected:', result.data);
+          handleQRDetected(result.data);
+        },
+        {
+          highlightScanRegion: true,
+          highlightCodeOutline: true,
+          preferredCamera: 'environment',
+          maxScansPerSecond: 5,
+          returnDetailedScanResult: true
+        }
+      );
+      
+      console.log('🎯 Starting QR scanner...');
+      await qrScannerRef.current.start();
+      console.log('🎯 QR Scanner started successfully!');
+      
+      setHasPermission(true);
+      setScanning(true);
+      
+    } catch (error) {
+      console.error('🎯 QR Scanner setup failed:', error);
+      setHasPermission(false);
+      toast({
+        title: "Camera Access Required",
+        description: "Please allow camera access to scan QR codes and earn USV tokens.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const requestCameraPermission = async () => {
     try {
@@ -148,27 +200,39 @@ export default function QRScan() {
           videoRef.current.srcObject = stream;
           
           // Single event handler for when video is ready
-          videoRef.current.onloadedmetadata = () => {
+          videoRef.current.onloadedmetadata = async () => {
             console.log('🎥 Video metadata loaded! Dimensions:', videoRef.current?.videoWidth, 'x', videoRef.current?.videoHeight);
             if (videoRef.current && videoRef.current.videoWidth > 0) {
               console.log('🎥 Starting QR scanner...');
               setScanning(true);
               
-              // Create real QR scanner instance
-              qrScannerRef.current = new QrScanner(
-                videoRef.current,
-                (result) => {
-                  console.log('🎯 QR Code detected:', result.data);
-                  handleQRDetected(result.data);
-                },
-                {
-                  highlightScanRegion: true,
-                  highlightCodeOutline: true,
-                  preferredCamera: 'environment'
-                }
-              );
-              
-              qrScannerRef.current.start();
+              // Let QR scanner handle its own camera setup
+              try {
+                qrScannerRef.current = new QrScanner(
+                  videoRef.current,
+                  (result) => {
+                    console.log('🎯 QR Code detected:', result.data);
+                    handleQRDetected(result.data);
+                  },
+                  {
+                    highlightScanRegion: true,
+                    highlightCodeOutline: true,
+                    preferredCamera: 'environment',
+                    maxScansPerSecond: 5
+                  }
+                );
+                
+                // Start the QR scanner 
+                await qrScannerRef.current.start();
+                console.log('🎯 QR Scanner started successfully!');
+              } catch (qrError) {
+                console.error('🎯 QR Scanner failed:', qrError);
+                toast({
+                  title: "QR Scanner Error",
+                  description: "Failed to start QR scanner. Please try again.",
+                  variant: "destructive",
+                });
+              }
             } else {
               console.error('🎥 Video dimensions are 0 - video not ready');
             }
@@ -206,30 +270,24 @@ export default function QRScan() {
   };
 
   const toggleFlash = async () => {
-    if (streamRef.current) {
-      const videoTrack = streamRef.current.getVideoTracks()[0];
-      if (videoTrack && 'getCapabilities' in videoTrack) {
-        const capabilities = videoTrack.getCapabilities();
-        if ((capabilities as any).torch) {
-          try {
-            await videoTrack.applyConstraints({
-              advanced: [{ torch: !flashOn } as any]
-            });
-            setFlashOn(!flashOn);
-          } catch (error) {
-            toast({
-              title: "Flash not available",
-              description: "Your device doesn't support camera flash",
-              variant: "destructive",
-            });
-          }
+    if (qrScannerRef.current) {
+      try {
+        if (flashOn) {
+          await qrScannerRef.current.turnFlashOff();
+          setFlashOn(false);
+          console.log('🔦 Flash turned OFF');
         } else {
-          toast({
-            title: "Flash not supported",
-            description: "Your device doesn't support camera flash",
-            variant: "destructive",
-          });
+          await qrScannerRef.current.turnFlashOn();
+          setFlashOn(true);
+          console.log('🔦 Flash turned ON');
         }
+      } catch (error) {
+        console.error('🔦 Flash toggle failed:', error);
+        toast({
+          title: "Flash not available",
+          description: "Your device doesn't support camera flash",
+          variant: "destructive",
+        });
       }
     }
   };
@@ -298,7 +356,11 @@ export default function QRScan() {
         autoPlay
         playsInline
         muted
-        className="absolute inset-0 w-full h-full object-contain bg-black"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ 
+          objectPosition: 'center center',
+          transform: 'scale(1.1)', // Slight zoom to fill better
+        }}
         data-testid="camera-video"
       />
 
