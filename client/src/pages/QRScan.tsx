@@ -374,14 +374,10 @@ export default function QRScan() {
         autoPlay
         playsInline
         muted
-        className="absolute w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover"
         style={{ 
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%) scaleX(-1)',
           objectPosition: 'center center',
-          minHeight: '100%',
-          minWidth: '100%'
+          transform: 'scaleX(-1)'
         }}
         data-testid="camera-video"
       />
