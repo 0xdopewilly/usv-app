@@ -243,7 +243,6 @@ export default function QRScan() {
       });
       
       console.log('🎥 Camera access granted, stream:', stream);
-      setHasPermission(true);
       streamRef.current = stream;
       
       if (videoRef.current) {
@@ -278,9 +277,23 @@ export default function QRScan() {
         console.log('🎥 Attempting to play video...');
         videoRef.current.play().then(() => {
           console.log('🎥 Video playing successfully!');
+          // Set permission AFTER video is playing to prevent re-mount loop
+          if (hasPermission !== true) {
+            setHasPermission(true);
+          }
         }).catch((playError) => {
           console.error('🎥 Video play failed:', playError);
+          // Set permission even if play fails, as video element is set up
+          if (hasPermission !== true) {
+            setHasPermission(true);
+          }
         });
+      } else {
+        console.error('🎥 No video element found!');
+        // Set permission anyway for UI purposes
+        if (hasPermission !== true) {
+          setHasPermission(true);
+        }
       }
       
     } catch (error) {
