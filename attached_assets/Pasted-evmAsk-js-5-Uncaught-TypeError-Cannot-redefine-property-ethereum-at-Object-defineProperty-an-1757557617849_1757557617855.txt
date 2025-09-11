@@ -1,0 +1,51 @@
+evmAsk.js:5 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:5:5093)
+    at window.addEventListener.once (evmAsk.js:5:9013)
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x2328"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+content.js:2 Check phishing by URL: Passed.
+index-DSVqUoPs.js:183 🔍 Auth Debug: Object
+index-DSVqUoPs.js:183 🔍 User Query Debug: Object
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+injected.js:1 TronLink initiated
+injected.js:1 Backpack couldn't override `window.ethereum`.
+vVs @ injected.js:1
+usv-app.replit.app/:1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+usv-app.replit.app/:1 Error while trying to use the following icon from the Manifest: https://usv-app.replit.app/icon-144.png (Download error or resource isn't a valid image)
+index-DSVqUoPs.js:183 🔍 Profile API Response: 200 
+index-DSVqUoPs.js:183 🔍 Profile API Data: Object
+index-DSVqUoPs.js:251 🚀 Real-time price updates started (every 8s)
+index-DSVqUoPs.js:183 🔍 User Query Debug: Object
+index-DSVqUoPs.js:251 💰 Real-time prices updated: Object
+index-DSVqUoPs.js:251 📈 Prices updated: Object
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-DSVqUoPs.js:291 🚀 QRScan component mounted!
+index-DSVqUoPs.js:251 ⏸️ Real-time price updates stopped
+index-DSVqUoPs.js:291 🔥 QRScan useEffect running - checking environment
+index-DSVqUoPs.js:291 🌍 Environment check: Object
+index-DSVqUoPs.js:291 🎯 Starting camera with user gesture...
+index-DSVqUoPs.js:291 🎯 Starting camera with user gesture...
+index-DSVqUoPs.js:291 🎯 Starting camera with user gesture...
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-DSVqUoPs.js:291 🎯 Starting camera with user gesture...
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-DSVqUoPs.js:291 🎯 Starting camera with user gesture...
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-DSVqUoPs.js:291 🎯 Starting camera with user gesture...
+index-DSVqUoPs.js:291 🎯 Starting camera with user gesture...
+index-DSVqUoPs.js:291 🎯 Starting camera with user gesture...
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-DSVqUoPs.js:291 🎯 Starting camera with user gesture...
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}

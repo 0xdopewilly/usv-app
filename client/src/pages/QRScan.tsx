@@ -125,13 +125,22 @@ export default function QRScan() {
     try {
       console.log('🎯 Starting camera with user gesture...');
       
-      // Check camera availability first
-      const hasCamera = await QrScanner.hasCamera();
+      // Check camera availability with timeout
+      console.log('📷 Checking camera availability...');
+      const cameraCheckPromise = QrScanner.hasCamera();
+      const cameraTimeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Camera check timeout')), 3000)
+      );
+      
+      const hasCamera = await Promise.race([cameraCheckPromise, cameraTimeoutPromise]);
+      console.log('📷 Camera availability check result:', hasCamera);
+      
       if (!hasCamera) {
         throw new Error('No camera found on device');
       }
       
       // Wait for video element to be available
+      console.log('🎥 Waiting for video element...');
       const waitForVideo = () => {
         return new Promise<void>((resolve) => {
           if (videoRef.current) {
@@ -148,6 +157,7 @@ export default function QRScan() {
       console.log('🎥 Video element ready for QR scanner');
       
       // Create QR scanner with the video element
+      console.log('🎯 Creating QR scanner instance...');
       qrScannerRef.current = new QrScanner(
         videoRef.current!,
         (result) => {
@@ -185,6 +195,12 @@ export default function QRScan() {
         toast({
           title: "Camera Permission Timeout",
           description: "Camera access is taking too long. Try opening in a new tab or allow camera permissions.",
+          variant: "destructive",
+        });
+      } else if (error instanceof Error && error.message.includes('Camera check timeout')) {
+        toast({
+          title: "Camera Check Failed",
+          description: "Unable to detect camera. Please try opening in a new tab.",
           variant: "destructive",
         });
       } else {
