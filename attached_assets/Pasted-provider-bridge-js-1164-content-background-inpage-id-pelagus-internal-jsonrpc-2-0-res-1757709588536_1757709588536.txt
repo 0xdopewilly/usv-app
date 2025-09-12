@@ -1,0 +1,255 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x9"}}
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. Object
+(anonymous) @ script.bundle.js:52
+index-B6IAHft4.js:188 🔍 Auth Debug: Object
+index-B6IAHft4.js:188 🔍 User Query Debug: Object
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. Object
+(anonymous) @ script.bundle.js:52
+content.js:2 Check phishing by URL: Passed.
+/api/user/profile:1  Failed to load resource: the server responded with a status of 403 ()
+index-B6IAHft4.js:188 🔍 Profile API Response: 403 
+index-B6IAHft4.js:188 🔍 Profile API Error: {"error":"Invalid token"}
+queryFn @ index-B6IAHft4.js:188
+index-B6IAHft4.js:188 🔍 User Query Debug: Object
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+injected.js:1 TronLink initiated
+injected.js:1 Backpack couldn't override `window.ethereum`.
+vVs @ injected.js:1
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+(index):1 Error while trying to use the following icon from the Manifest: https://usv-app.replit.app/icon-144.png (Download error or resource isn't a valid image)
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-B6IAHft4.js:188 🔍 Starting Google Sign-In process...
+index-B6IAHft4.js:188 ✅ Google SDK loaded successfully
+index-B6IAHft4.js:188 🔍 Google Client ID configured
+client:74 [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+_.F @ client:74
+xt.ba @ client:307
+ps.ba @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-B6IAHft4.js:188 Google prompt notification: dt {g: 'dismissed', i: 'credential_returned'}
+requests.js:1  POST https://usv-app.replit.app/api/auth/google 400 (Bad Request)
+_$initInterceptor.s.fetch @ requests.js:1
+(anonymous) @ traffic.js:1
+fetch @ traffic.js:1
+value @ injected.js:1
+callback @ index-B6IAHft4.js:188
+xt.fa @ client:304
+Ps.fa @ client:283
+(anonymous) @ client:281
+Promise.then
+Rs @ client:281
+Ts @ client:284
+Us @ client:284
+xt.ba @ client:309
+ps.ba @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+index-B6IAHft4.js:188 Backend error response: {error: 'Google authentication failed', details: 'column "profile_picture" does not exist'}
+callback @ index-B6IAHft4.js:188
+await in callback
+xt.fa @ client:304
+Ps.fa @ client:283
+(anonymous) @ client:281
+Promise.then
+Rs @ client:281
+Ts @ client:284
+Us @ client:284
+xt.ba @ client:309
+ps.ba @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+index-B6IAHft4.js:188 Google Sign-In Callback Error: Error: column "profile_picture" does not exist
+    at ps.callback (index-B6IAHft4.js:188:151115)
+callback @ index-B6IAHft4.js:188
+await in callback
+xt.fa @ client:304
+Ps.fa @ client:283
+(anonymous) @ client:281
+Promise.then
+Rs @ client:281
+Ts @ client:284
+Us @ client:284
+xt.ba @ client:309
+ps.ba @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-B6IAHft4.js:188 🔍 Starting Google Sign-In process...
+index-B6IAHft4.js:188 ✅ Google SDK loaded successfully
+index-B6IAHft4.js:188 🔍 Google Client ID configured
+client:74 [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+_.F @ client:74
+xt.ba @ client:307
+ps.ba @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-B6IAHft4.js:188 Google prompt notification: dt {g: 'dismissed', i: 'credential_returned'}
+requests.js:1  POST https://usv-app.replit.app/api/auth/google 400 (Bad Request)
+_$initInterceptor.s.fetch @ requests.js:1
+(anonymous) @ traffic.js:1
+fetch @ traffic.js:1
+value @ injected.js:1
+callback @ index-B6IAHft4.js:188
+xt.fa @ client:304
+Ps.fa @ client:283
+(anonymous) @ client:281
+Promise.then
+Rs @ client:281
+Ts @ client:284
+Us @ client:284
+xt.ba @ client:309
+ps.ba @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+index-B6IAHft4.js:188 Backend error response: {error: 'Google authentication failed', details: 'column "profile_picture" does not exist'}
+callback @ index-B6IAHft4.js:188
+await in callback
+xt.fa @ client:304
+Ps.fa @ client:283
+(anonymous) @ client:281
+Promise.then
+Rs @ client:281
+Ts @ client:284
+Us @ client:284
+xt.ba @ client:309
+ps.ba @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+index-B6IAHft4.js:188 Google Sign-In Callback Error: Error: column "profile_picture" does not exist
+    at ps.callback (index-B6IAHft4.js:188:151115)
+callback @ index-B6IAHft4.js:188
+await in callback
+xt.fa @ client:304
+Ps.fa @ client:283
+(anonymous) @ client:281
+Promise.then
+Rs @ client:281
+Ts @ client:284
+Us @ client:284
+xt.ba @ client:309
+ps.ba @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
