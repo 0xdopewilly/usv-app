@@ -1,0 +1,112 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x9"}}
+index-DCu_LnmM.js:188 🔍 Auth Debug: {storedToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…0OTV9.iY5dI5BP-nya_4nw4KB-cYcfm4Q338_yjn7iL0X9oqo', currentToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…0OTV9.iY5dI5BP-nya_4nw4KB-cYcfm4Q338_yjn7iL0X9oqo'}
+index-DCu_LnmM.js:188 🔍 User Query Debug: {user: undefined, isLoading: true, error: null, hasToken: true}
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+index-DCu_LnmM.js:188 🔍 Profile API Response: 200 
+injected.js:1 Backpack couldn't override `window.ethereum`.
+vVs @ injected.js:1
+yVs @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+initSelectedAddress @ injected.js:1
+initEthereumProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+getInitTronWeb @ injected.js:1
+initTronProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+_initRequest @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 TronLink initiated
+index-DCu_LnmM.js:188 🔍 Profile API Data: {id: '0b691fc7-1c3e-4b7a-afa4-9959897b47f3', email: 'ayooladopewilly@gmail.com', fullName: 'SFSFSF', balance: 0, stakedBalance: 0, …}
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. {type: 'sender-wallet-providerResult', method: 'sender_getProviderState', params: Array(0), notificationId: 1757711535410539, response: {…}}
+(anonymous) @ script.bundle.js:52
+d @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+Promise.then
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+n @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. {type: 'sender-wallet-providerResult', method: 'sender_getProviderState', params: Array(0), notificationId: 1757711536258242, response: {…}}
+(anonymous) @ script.bundle.js:52
+d @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+Promise.then
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+n @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+index-DCu_LnmM.js:188 🔍 User Query Debug: {user: {…}, isLoading: false, error: null, hasToken: true}
+content.js:2 Check phishing by URL: Passed.
+settings:1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+settings:1 Error while trying to use the following icon from the Manifest: https://usv-app.replit.app/icon-144.png (Download error or resource isn't a valid image)
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-DCu_LnmM.js:188 🔍 Profile API Response: 200 
+index-DCu_LnmM.js:188 🔍 Profile API Data: {id: '0b691fc7-1c3e-4b7a-afa4-9959897b47f3', email: 'ayooladopewilly@gmail.com', fullName: 'SFSFSF', balance: 0, stakedBalance: 0, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}

@@ -399,7 +399,7 @@ router.post('/auth/phantom', async (req, res) => {
           balance: existingUser.balance,
           stakedBalance: existingUser.stakedBalance,
           walletAddress: existingUser.walletAddress,
-        profilePicture: existingUser.profilePicture,
+          profilePicture: existingUser.profilePicture,
         }
       });
       return;
@@ -435,6 +435,7 @@ router.post('/auth/phantom', async (req, res) => {
         balance: newUser.balance,
         stakedBalance: newUser.stakedBalance,
         walletAddress: newUser.walletAddress,
+        profilePicture: newUser.profilePicture,
       }
     });
     
@@ -465,6 +466,7 @@ router.get('/user/profile', authenticateToken, async (req: any, res) => {
       pushNotifications: user.pushNotifications,
       emailNotifications: user.emailNotifications,
       preferredLanguage: user.preferredLanguage,
+      profilePicture: user.profilePicture,
     });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch profile' });
@@ -487,6 +489,7 @@ router.patch('/user/profile', authenticateToken, async (req: any, res) => {
       pushNotifications: user.pushNotifications,
       emailNotifications: user.emailNotifications,
       preferredLanguage: user.preferredLanguage,
+      profilePicture: user.profilePicture,
     });
   } catch (error) {
     res.status(500).json({ error: 'Failed to update profile' });

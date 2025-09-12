@@ -15,6 +15,7 @@ interface User {
   pushNotifications: boolean;
   emailNotifications: boolean;
   preferredLanguage: string;
+  profilePicture?: string;
 }
 
 interface AuthContextType {
