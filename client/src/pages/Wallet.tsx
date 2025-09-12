@@ -511,7 +511,7 @@ export default function Wallet() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => copyAddress(user.walletAddress, 'USV Wallet')}
+                  onClick={() => copyAddress(user.walletAddress || '', 'USV Wallet')}
                   className="text-blue-400 hover:bg-blue-500/20 p-1"
                   data-testid="button-copy-usv-wallet-address"
                 >

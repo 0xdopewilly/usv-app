@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Route, Switch, Router } from "wouter";
+import { Route, Switch, Router, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AnimatePresence, motion } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import SimpleLoadingScreen from "@/components/SimpleLoadingScreen";
@@ -22,29 +23,108 @@ const queryClient = new QueryClient({
   },
 });
 
+// Animation variants for smooth page transitions
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    x: -20,
+    scale: 0.98
+  },
+  in: {
+    opacity: 1,
+    x: 0,
+    scale: 1
+  },
+  out: {
+    opacity: 0,
+    x: 20,
+    scale: 0.98
+  }
+};
+
+const pageTransition = {
+  type: "tween",
+  ease: "anticipate",
+  duration: 0.4
+};
+
+// PageTransition wrapper component
+const PageTransition = ({ children, pageKey }: { children: React.ReactNode; pageKey: string }) => (
+  <motion.div
+    key={pageKey}
+    initial="initial"
+    animate="in"
+    exit="out"
+    variants={pageVariants}
+    transition={pageTransition}
+    className="w-full h-full"
+  >
+    {children}
+  </motion.div>
+);
+
 function AppRouter() {
   const { isAuthenticated, isLoading } = useAuth();
+  const [location] = useLocation();
 
   // Simplified authentication logic to prevent blank page
   if (isLoading) {
-    return <SimpleLoadingScreen />;
+    return (
+      <PageTransition pageKey="loading">
+        <SimpleLoadingScreen />
+      </PageTransition>
+    );
   }
 
   if (!isAuthenticated) {
-    return <AuthPage />;
+    return (
+      <PageTransition pageKey="auth">
+        <AuthPage />
+      </PageTransition>
+    );
   }
 
   return (
     <Router>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/wallet" component={SimpleWallet} />
-        <Route path="/send" component={SimpleSend} />
-        <Route path="/qr-scan" component={QRScan} />
-        <Route path="/nft-portfolio" component={SimpleNFT} />
-        <Route path="/settings" component={Settings} />
-        <Route component={NotFound} />
-      </Switch>
+      <AnimatePresence mode="wait" initial={false}>
+        <Switch location={location}>
+          <Route path="/">
+            <PageTransition pageKey="home">
+              <Home />
+            </PageTransition>
+          </Route>
+          <Route path="/wallet">
+            <PageTransition pageKey="wallet">
+              <SimpleWallet />
+            </PageTransition>
+          </Route>
+          <Route path="/send">
+            <PageTransition pageKey="send">
+              <SimpleSend />
+            </PageTransition>
+          </Route>
+          <Route path="/qr-scan">
+            <PageTransition pageKey="qr-scan">
+              <QRScan />
+            </PageTransition>
+          </Route>
+          <Route path="/nft-portfolio">
+            <PageTransition pageKey="nft-portfolio">
+              <SimpleNFT />
+            </PageTransition>
+          </Route>
+          <Route path="/settings">
+            <PageTransition pageKey="settings">
+              <Settings />
+            </PageTransition>
+          </Route>
+          <Route>
+            <PageTransition pageKey="not-found">
+              <NotFound />
+            </PageTransition>
+          </Route>
+        </Switch>
+      </AnimatePresence>
     </Router>
   );
 }

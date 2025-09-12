@@ -1,6 +1,7 @@
 import { useLocation } from 'wouter';
 import { Home, QrCode, Image, Settings, TrendingUp, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
 
 export default function BottomNavigation() {
   const [location, setLocation] = useLocation();
@@ -20,7 +21,12 @@ export default function BottomNavigation() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gray-800/90 backdrop-blur-xl z-50 safe-bottom rounded-t-3xl mx-4 mb-4">
+    <motion.div 
+      className="fixed bottom-0 left-0 right-0 bg-gray-800/90 backdrop-blur-xl z-50 safe-bottom rounded-t-[32px] mx-4 mb-4 shadow-2xl"
+      initial={{ y: 100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, type: "spring", stiffness: 120 }}
+    >
       <div className="flex items-center justify-around py-4">
         {navItems.map((item) => {
           const IconComponent = item.icon;
@@ -34,7 +40,7 @@ export default function BottomNavigation() {
               onClick={() => setLocation(item.path)}
               className={`flex flex-col items-center py-2 px-3 h-auto relative ${
                 item.isCenter 
-                  ? 'bg-pink-500 rounded-2xl w-14 h-14 text-white shadow-lg shadow-pink-500/40' 
+                  ? 'bg-pink-500 rounded-[28px] w-14 h-14 text-white shadow-lg shadow-pink-500/40' 
                   : isActive 
                     ? 'text-white' 
                     : 'text-gray-400'
@@ -46,6 +52,6 @@ export default function BottomNavigation() {
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 }

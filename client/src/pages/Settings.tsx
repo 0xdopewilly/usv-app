@@ -140,9 +140,9 @@ export default function Settings() {
       
       {/* Header */}
       <motion.div
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
+        initial={{ y: -60, opacity: 0, scale: 0.95 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
         className="flex items-center p-6 pt-12 safe-top"
       >
         <h1 className="text-2xl font-bold text-white">Settings</h1>
@@ -150,21 +150,30 @@ export default function Settings() {
       
       {/* Settings Groups */}
       <motion.div
-        initial={{ y: 50, opacity: 0 }}
+        initial={{ y: 60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
         className="px-6 space-y-6"
       >
         {/* Profile Section - Enhanced */}
-        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6, type: "spring" }}
+        >
+          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Profile</h3>
           </div>
           <div className="p-6">
             <div className="flex items-center space-x-4 mb-6">
               <div className="relative">
-                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-purple-400/50 cursor-pointer"
-                     onClick={() => fileInputRef.current?.click()}>
+                <motion.div 
+                  className="w-20 h-20 rounded-[28px] overflow-hidden border-2 border-purple-400/50 cursor-pointer"
+                  onClick={() => fileInputRef.current?.click()}
+                  whileHover={{ scale: 1.05, rotate: 2 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
                   {user?.profilePicture ? (
                     <img 
                       src={user.profilePicture} 
@@ -172,16 +181,16 @@ export default function Settings() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center">
+                    <div className="w-full h-full bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center rounded-[26px]">
                       <span className="text-white font-bold text-xl">{user?.fullName?.charAt(0) || 'U'}</span>
                     </div>
                   )}
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                     <Camera className="h-6 w-6 text-white" />
                   </div>
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 rounded-full border-2 border-black flex items-center justify-center">
-                  <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                </motion.div>
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 rounded-[12px] border-2 border-black flex items-center justify-center">
+                  <div className="w-2 h-2 bg-green-600 rounded-[4px]"></div>
                 </div>
               </div>
               <div className="flex-1">
@@ -229,9 +238,15 @@ export default function Settings() {
             />
           </div>
         </Card>
+        </motion.div>
 
         {/* Language Selection */}
-        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.6, type: "spring" }}
+        >
+          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Language</h3>
           </div>
@@ -240,7 +255,7 @@ export default function Settings() {
               value={localSettings.preferredLanguage}
               onValueChange={handleLanguageChange}
             >
-              <SelectTrigger className="w-full bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 text-white rounded-2xl focus:ring-2 focus:ring-cyan-400">
+              <SelectTrigger className="w-full bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 text-white rounded-[20px] focus:ring-2 focus:ring-cyan-400 transition-all duration-200 focus:scale-[1.02]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-dark-accent border-gray-600">
@@ -252,9 +267,15 @@ export default function Settings() {
             </Select>
           </div>
         </Card>
+        </motion.div>
         
         {/* Address Book */}
-        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
+        >
+          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Address Book</h3>
           </div>
@@ -267,9 +288,15 @@ export default function Settings() {
             <ChevronRight className="w-5 h-5 text-gray-400" />
           </Button>
         </Card>
+        </motion.div>
         
         {/* Notifications */}
-        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.6, type: "spring" }}
+        >
+          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Notifications</h3>
           </div>
@@ -300,7 +327,7 @@ export default function Settings() {
             </div>
           </div>
         </Card>
-        
+        </motion.div>
         
         {/* Security Settings */}
         <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">

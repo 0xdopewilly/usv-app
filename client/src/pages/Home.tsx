@@ -74,13 +74,18 @@ export default function Home() {
 
       {/* Header with Profile */}
       <motion.div 
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        initial={{ y: -40, opacity: 0, scale: 0.95 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
         className="px-6 pt-12 pb-4"
       >
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-cyan-400/30">
+            <motion.div 
+              className="w-12 h-12 rounded-[24px] overflow-hidden border-2 border-cyan-400/30"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
               {user?.profilePicture ? (
                 <img 
                   src={user.profilePicture} 
@@ -88,31 +93,34 @@ export default function Home() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center">
+                <div className="w-full h-full bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center rounded-[22px]">
                   <span className="text-white font-bold text-sm">{user?.fullName?.charAt(0) || 'U'}</span>
                 </div>
               )}
-            </div>
+            </motion.div>
             <div>
               <p className="text-white/90 text-sm">Welcome back,</p>
               <p className="text-white font-semibold text-base">{user?.fullName?.split(' ')[0] || 'Amanda'}</p>
             </div>
           </div>
-          <div 
-            className="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center cursor-pointer"
+          <motion.div 
+            className="w-10 h-10 bg-white/10 rounded-[20px] flex items-center justify-center cursor-pointer"
             onClick={() => setLocation('/settings')}
+            whileHover={{ scale: 1.1, rotate: 180 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
             <MoreHorizontal className="w-5 h-5 text-white" />
-          </div>
+          </motion.div>
         </div>
 
       </motion.div>
 
       {/* Main Balance */}
       <motion.div 
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.1 }}
+        initial={{ scale: 0.8, opacity: 0, y: 30 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.8, type: "spring", stiffness: 120 }}
         className="px-6 pb-6"
       >
         <div className="text-center">
@@ -131,8 +139,8 @@ export default function Home() {
               </div>
             )}
             <div className="flex items-center space-x-1">
-              <div className="w-4 h-4 bg-white/20 rounded-md flex items-center justify-center">
-                <div className="w-2 h-2 bg-white rounded-sm"></div>
+              <div className="w-4 h-4 bg-white/20 rounded-[8px] flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-[4px]"></div>
               </div>
               <span className="text-white/80 text-sm">
                 {user?.balance ? (user.balance / (prices?.USV?.price || 0.20)).toFixed(5) : '0.00000'} USV
@@ -144,17 +152,21 @@ export default function Home() {
 
       {/* Asset Cards */}
       <motion.div 
-        initial={{ y: 30, opacity: 0 }}
+        initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
         className="px-6 mb-6"
       >
         <div className="grid grid-cols-2 gap-3">
           {/* USV Token Card */}
           <motion.div
+            initial={{ scale: 0.9, opacity: 0, x: -20 }}
+            animate={{ scale: 1, opacity: 1, x: 0 }}
+            transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
+            whileHover={{ scale: 1.02, y: -5 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setLocation('/wallet')}
-            className="bg-black/40 backdrop-blur-sm rounded-3xl p-5 cursor-pointer border border-purple-500/20"
+            className="bg-black/40 backdrop-blur-sm rounded-[32px] p-5 cursor-pointer border border-purple-500/20 shadow-lg hover:shadow-purple-500/20 transition-all duration-300"
           >
             <div className="flex items-center space-x-2 mb-3">
               <img src="/usv-logo.png" alt="USV" className="w-8 h-8 object-contain" />
@@ -197,11 +209,15 @@ export default function Home() {
 
           {/* Solana Card */}
           <motion.div
+            initial={{ scale: 0.9, opacity: 0, x: 20 }}
+            animate={{ scale: 1, opacity: 1, x: 0 }}
+            transition={{ delay: 0.7, duration: 0.6, type: "spring" }}
+            whileHover={{ scale: 1.02, y: -5 }}
             whileTap={{ scale: 0.98 }}
-            className="bg-black/40 backdrop-blur-sm rounded-3xl p-5 cursor-pointer border border-blue-500/20"
+            className="bg-black/40 backdrop-blur-sm rounded-[32px] p-5 cursor-pointer border border-blue-500/20 shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
           >
             <div className="flex items-center space-x-2 mb-3">
-              <div className="w-8 h-8 rounded-lg overflow-hidden bg-black p-1">
+              <div className="w-8 h-8 rounded-[16px] overflow-hidden bg-black p-1">
                 <img 
                   src={solanaLogoSrc} 
                   alt="Solana" 
@@ -250,9 +266,9 @@ export default function Home() {
 
       {/* Your Assets Section */}
       <motion.div 
-        initial={{ y: 30, opacity: 0 }}
+        initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.3 }}
+        transition={{ delay: 0.8, duration: 0.6 }}
         className="px-6"
       >
         <h2 className="text-white text-lg font-semibold mb-4">Your Asset</h2>
@@ -260,12 +276,16 @@ export default function Home() {
         <div className="space-y-3">
           {/* USV Token Row */}
           <motion.div
+            initial={{ scale: 0.95, opacity: 0, x: -10 }}
+            animate={{ scale: 1, opacity: 1, x: 0 }}
+            transition={{ delay: 0.9, duration: 0.5, type: "spring" }}
+            whileHover={{ scale: 1.01, x: 2 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setLocation('/wallet')}
-            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-2xl p-5 cursor-pointer border border-gray-600/30"
+            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30 hover:border-purple-400/50 transition-all duration-300"
           >
             <div className="flex items-center space-x-3">
-              <img src="/usv-logo.png" alt="USV" className="w-12 h-12 object-contain rounded-2xl" />
+              <img src="/usv-logo.png" alt="USV" className="w-12 h-12 object-contain rounded-[20px]" />
               <div>
                 <p className="text-white font-medium text-sm">Ultra Smooth Token</p>
                 <p className="text-white/60 text-xs">USV</p>
@@ -286,11 +306,15 @@ export default function Home() {
 
           {/* Solana Row */}
           <motion.div
+            initial={{ scale: 0.95, opacity: 0, x: -10 }}
+            animate={{ scale: 1, opacity: 1, x: 0 }}
+            transition={{ delay: 1.0, duration: 0.5, type: "spring" }}
+            whileHover={{ scale: 1.01, x: 2 }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-2xl p-5 cursor-pointer border border-gray-600/30"
+            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30 hover:border-blue-400/50 transition-all duration-300"
           >
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-2xl overflow-hidden bg-black p-2">
+              <div className="w-12 h-12 rounded-[20px] overflow-hidden bg-black p-2">
                 <img 
                   src={solanaLogoSrc} 
                   alt="Solana" 
