@@ -22,10 +22,18 @@ export default function BottomNavigation() {
 
   return (
     <motion.div 
-      className="fixed bottom-0 left-0 right-0 z-50 mx-2 mb-2"
+      className="fixed bottom-0 left-0 right-0 z-[9999] p-2"
       initial={{ y: 80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, type: "spring", stiffness: 150 }}
+      style={{ 
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 9999,
+        pointerEvents: 'auto'
+      }}
     >
       {/* Compact Glass Background */}
       <div className="glass-dark rounded-[20px] shadow-lg relative overflow-hidden">        
