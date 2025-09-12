@@ -1,0 +1,160 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x9"}}
+content.js:2 Check phishing by URL: Passed.
+index-B6IAHft4.js:188 🔍 Auth Debug: {storedToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…5NDB9.lEL021vpzHuSWS_UY5CEQkWF9dp2JYb8cI2yow8wjaw', currentToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…5NDB9.lEL021vpzHuSWS_UY5CEQkWF9dp2JYb8cI2yow8wjaw'}
+index-B6IAHft4.js:188 🔍 User Query Debug: {user: undefined, isLoading: true, error: null, hasToken: true}
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. {type: 'sender-wallet-providerResult', method: 'sender_getProviderState', params: Array(0), notificationId: 1757710939995219, response: {…}}
+(anonymous) @ script.bundle.js:52
+d @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+Promise.then
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+n @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. {type: 'sender-wallet-providerResult', method: 'sender_getProviderState', params: Array(0), notificationId: 1757710940842626, response: {…}}
+(anonymous) @ script.bundle.js:52
+d @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+Promise.then
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+n @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+index-B6IAHft4.js:188 🔍 Profile API Response: 200 
+index-B6IAHft4.js:188 🔍 Profile API Data: {id: '0b691fc7-1c3e-4b7a-afa4-9959897b47f3', email: 'ayooladopewilly@gmail.com', fullName: 'SFSFSF', balance: 0, stakedBalance: 0, …}
+index-B6IAHft4.js:256 🚀 Real-time price updates started (every 8s)
+index-B6IAHft4.js:188 🔍 User Query Debug: {user: {…}, isLoading: false, error: null, hasToken: true}
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+initSelectedAddress @ injected.js:1
+initEthereumProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+getInitTronWeb @ injected.js:1
+initTronProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+_initRequest @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 TronLink initiated
+injected.js:1 Backpack couldn't override `window.ethereum`.
+vVs @ injected.js:1
+yVs @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+index-B6IAHft4.js:256 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-12T21:02:23.300Z'}
+index-B6IAHft4.js:256 📈 Prices updated: {SOL: '$23.86', USV: '$0.2009', time: '10:02:21 PM'}
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+(index):1 Error while trying to use the following icon from the Manifest: https://usv-app.replit.app/icon-144.png (Download error or resource isn't a valid image)
+index-B6IAHft4.js:256 ⏸️ Real-time price updates stopped
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+requests.js:1  POST https://usv-app.replit.app/api/user/profile-picture 401 (Unauthorized)
+_$initInterceptor.s.fetch @ requests.js:1
+(anonymous) @ traffic.js:1
+fetch @ traffic.js:1
+value @ injected.js:1
+mutationFn @ index-B6IAHft4.js:296
+fn @ index-B6IAHft4.js:48
+y @ index-B6IAHft4.js:48
+start @ index-B6IAHft4.js:48
+execute @ index-B6IAHft4.js:48
+await in execute
+mutate @ index-B6IAHft4.js:48
+(anonymous) @ index-B6IAHft4.js:48
+c @ index-B6IAHft4.js:296
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+requests.js:1  POST https://usv-app.replit.app/api/user/profile-picture 401 (Unauthorized)
+_$initInterceptor.s.fetch @ requests.js:1
+(anonymous) @ traffic.js:1
+fetch @ traffic.js:1
+value @ injected.js:1
+mutationFn @ index-B6IAHft4.js:296
+fn @ index-B6IAHft4.js:48
+y @ index-B6IAHft4.js:48
+start @ index-B6IAHft4.js:48
+execute @ index-B6IAHft4.js:48
+await in execute
+mutate @ index-B6IAHft4.js:48
+(anonymous) @ index-B6IAHft4.js:48
+c @ index-B6IAHft4.js:296
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}

@@ -52,8 +52,18 @@ export default function Settings() {
       const formData = new FormData();
       formData.append('profilePicture', file);
       
+      // Get auth token from localStorage
+      const token = localStorage.getItem('token');
+      const headers: Record<string, string> = {};
+      
+      // Add Authorization header if token exists
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+      
       const response = await fetch('/api/user/profile-picture', {
         method: 'POST',
+        headers,
         body: formData,
       });
       
