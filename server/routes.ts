@@ -23,7 +23,7 @@ function generateSolanaWallet() {
 
 // Google OAuth client setup
 const googleClient = new OAuth2Client(
-  process.env.GOOGLE_CLIENT_ID || 'your-google-client-id.apps.googleusercontent.com'
+  process.env.GOOGLE_CLIENT_ID
 );
 
 // REAL Apple Sign-In token verification
@@ -51,7 +51,7 @@ async function verifyGoogleToken(idToken: string): Promise<{ email: string; name
   try {
     const ticket = await googleClient.verifyIdToken({
       idToken: idToken,
-      audience: process.env.GOOGLE_CLIENT_ID || 'your-google-client-id.apps.googleusercontent.com',
+      audience: process.env.GOOGLE_CLIENT_ID,
     });
     
     const payload = ticket.getPayload();

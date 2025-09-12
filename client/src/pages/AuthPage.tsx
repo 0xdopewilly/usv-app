@@ -200,8 +200,11 @@ export default function AuthPage() {
       window.google.accounts.id.cancel();
 
       // Re-initialize Google Sign-In fresh
-      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '167005079025-vi7tuicclb0jujlnbfhl1q2l75nle42k.apps.googleusercontent.com';
-      console.log('🔍 Google Client ID being used:', clientId);
+      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+      if (!clientId) {
+        throw new Error('Google Client ID not configured');
+      }
+      console.log('🔍 Google Client ID configured');
       
       window.google.accounts.id.initialize({
         client_id: clientId,
