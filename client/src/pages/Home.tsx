@@ -67,8 +67,12 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black relative pb-20">
+    <div className="min-h-screen bg-black relative pb-20 overflow-hidden">
       <BottomNavigation />
+      
+      {/* Animated Background Gradient */}
+      <div className="absolute inset-0 animate-gradient-shift opacity-5 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-radial from-purple-900/10 via-transparent to-transparent" />
       
       
 
@@ -82,15 +86,15 @@ export default function Home() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <motion.div 
-              className="w-12 h-12 rounded-[24px] overflow-hidden border-2 border-cyan-400/30 cursor-pointer"
+              className="w-12 h-12 rounded-[24px] overflow-hidden border-2 border-cyan-400/30 cursor-pointer interactive hover-lift hover-glow relative"
               whileHover={{ 
-                scale: 1.05, 
-                rotate: 3,
-                borderColor: "rgba(34, 211, 238, 0.6)",
-                boxShadow: "0 8px 25px rgba(34, 211, 238, 0.3)"
+                scale: 1.08, 
+                rotate: 5,
+                borderColor: "rgba(34, 211, 238, 0.8)"
               }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              whileTap={{ scale: 0.92 }}
+              transition={{ type: "spring", stiffness: 500, damping: 20 }}
+              onClick={() => setLocation('/settings')}
             >
               {user?.profilePicture ? (
                 <img 
@@ -99,30 +103,50 @@ export default function Home() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center rounded-[22px]">
-                  <span className="text-white font-bold text-sm">{user?.fullName?.charAt(0) || 'U'}</span>
+                <div className="w-full h-full bg-gradient-electric flex items-center justify-center rounded-[22px] animate-shimmer">
+                  <span className="text-white font-bold text-sm relative z-10">{user?.fullName?.charAt(0) || 'U'}</span>
                 </div>
               )}
+              {/* Online Status Indicator */}
+              <motion.div 
+                className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-black animate-pulse"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.5, type: "spring" }}
+              />
             </motion.div>
-            <div>
-              <p className="text-white/90 text-sm">Welcome back,</p>
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+            >
+              <motion.p 
+                className="text-white/90 text-sm"
+                animate={{ opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              >
+                Welcome back,
+              </motion.p>
               <p className="text-white font-semibold text-base">{user?.fullName?.split(' ')[0] || 'Amanda'}</p>
-            </div>
+            </motion.div>
           </div>
           <motion.div 
-            className="w-10 h-10 bg-white/10 rounded-[20px] flex items-center justify-center cursor-pointer border border-white/20"
+            className="w-10 h-10 glass-card rounded-[20px] flex items-center justify-center cursor-pointer interactive hover-lift"
             onClick={() => setLocation('/settings')}
             whileHover={{ 
-              scale: 1.1, 
-              rotate: 180, 
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-              borderColor: "rgba(255, 255, 255, 0.4)",
-              boxShadow: "0 8px 25px rgba(255, 255, 255, 0.15)"
+              scale: 1.12, 
+              rotate: 180,
+              boxShadow: "0 8px 25px rgba(255, 255, 255, 0.2)"
             }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            whileTap={{ scale: 0.85, rotate: 90 }}
+            transition={{ type: "spring", stiffness: 500, damping: 20 }}
           >
-            <MoreHorizontal className="w-5 h-5 text-white" />
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            >
+              <MoreHorizontal className="w-5 h-5 text-white" />
+            </motion.div>
           </motion.div>
         </div>
 
@@ -135,31 +159,79 @@ export default function Home() {
         transition={{ delay: 0.3, duration: 0.8, type: "spring", stiffness: 120 }}
         className="px-6 pb-6"
       >
-        <div className="text-center">
-          <h1 className="text-white text-5xl font-bold mb-3">
-            ${user?.balance?.toFixed(2) || '0.00'}
-          </h1>
-          <div className="flex items-center justify-center space-x-6">
-            {prices?.USV && (
-              <div className="flex items-center space-x-1">
-                <div className={`text-sm ${prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {prices.USV.changePercent24h >= 0 ? '↗' : '↘'}
-                </div>
-                <span className={`text-sm font-medium ${prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {prices.USV.changePercent24h >= 0 ? '+' : ''}{prices.USV.changePercent24h.toFixed(1)}%
-                </span>
-              </div>
+        <motion.div 
+          className="text-center relative"
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.4, type: "spring" }}
+        >
+          {/* Balance Loading State */}
+          {isLoadingPrices ? (
+            <div className="skeleton w-48 h-14 mx-auto rounded-[16px] mb-3" />
+          ) : (
+            <motion.h1 
+              className="text-white text-5xl font-bold mb-3 relative"
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <span className="relative z-10">${user?.balance?.toFixed(2) || '0.00'}</span>
+              {/* Glow Effect */}
+              <motion.div 
+                className="absolute inset-0 text-transparent bg-gradient-electric bg-clip-text blur-sm opacity-50"
+                animate={{ opacity: [0.3, 0.7, 0.3] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                ${user?.balance?.toFixed(2) || '0.00'}
+              </motion.div>
+            </motion.h1>
+          )}
+          
+          <motion.div 
+            className="flex items-center justify-center space-x-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            {isLoadingPrices ? (
+              <div className="skeleton w-20 h-6 rounded-[8px]" />
+            ) : (
+              prices?.USV && (
+                <motion.div 
+                  className="flex items-center space-x-1"
+                  animate={{ y: [0, -2, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <motion.div 
+                    className={`text-sm ${prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'}`}
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    {prices.USV.changePercent24h >= 0 ? '↗' : '↘'}
+                  </motion.div>
+                  <span className={`text-sm font-medium ${prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {prices.USV.changePercent24h >= 0 ? '+' : ''}{prices.USV.changePercent24h.toFixed(1)}%
+                  </span>
+                </motion.div>
+              )
             )}
-            <div className="flex items-center space-x-1">
-              <div className="w-4 h-4 bg-white/20 rounded-[8px] flex items-center justify-center">
+            <motion.div 
+              className="flex items-center space-x-1"
+              animate={{ x: [0, 2, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <motion.div 
+                className="w-4 h-4 bg-gradient-purple rounded-[8px] flex items-center justify-center animate-shimmer"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              >
                 <div className="w-2 h-2 bg-white rounded-[4px]"></div>
-              </div>
-              <span className="text-white/80 text-sm">
+              </motion.div>
+              <span className="text-white/80 text-sm font-medium">
                 {user?.balance ? (user.balance / (prices?.USV?.price || 0.20)).toFixed(5) : '0.00000'} USV
               </span>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </motion.div>
 
       {/* Asset Cards */}
@@ -176,20 +248,38 @@ export default function Home() {
             animate={{ scale: 1, opacity: 1, x: 0 }}
             transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
             whileHover={{ 
-              scale: 1.02, 
-              y: -5,
-              boxShadow: "0 15px 35px rgba(168, 85, 247, 0.4), 0 5px 15px rgba(168, 85, 247, 0.3)",
-              borderColor: "rgba(168, 85, 247, 0.5)"
+              scale: 1.03, 
+              y: -8,
+              boxShadow: "0 20px 40px rgba(168, 85, 247, 0.3), 0 10px 20px rgba(168, 85, 247, 0.2)",
+              borderColor: "rgba(168, 85, 247, 0.8)",
+              rotate: 1
             }}
-            whileTap={{ scale: 0.98, y: -3 }}
+            whileTap={{ scale: 0.97, y: -4, rotate: -1 }}
             onClick={() => setLocation('/wallet')}
-            className="bg-black/40 backdrop-blur-sm rounded-[32px] p-5 cursor-pointer border border-purple-500/20 shadow-lg transition-all duration-200"
+            className="glass-dark rounded-[32px] p-5 cursor-pointer border border-purple-500/30 shadow-xl hover-lift hover-glow interactive relative overflow-hidden"
+            data-testid="card-usv-token"
           >
-            <div className="flex items-center space-x-2 mb-3">
-              <img src="/usv-logo.png" alt="USV" className="w-8 h-8 object-contain" />
+            {/* Animated gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-purple opacity-5 animate-gradient-slow rounded-[32px]" />
+            <div className="relative z-10">
+            <div className="flex items-center space-x-3 mb-4">
+              <motion.div
+                className="w-10 h-10 rounded-[16px] p-1 bg-gradient-purple relative overflow-hidden"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+              >
+                <img src="/usv-logo.png" alt="USV" className="w-full h-full object-contain relative z-10" />
+                <div className="absolute inset-0 animate-shimmer" />
+              </motion.div>
               <div className="flex-1">
-                <p className="text-white text-xs font-medium">Ultra Smooth Vape</p>
-                <p className="text-white/60 text-xs">USV</p>
+                <motion.p 
+                  className="text-white text-sm font-semibold"
+                  animate={{ x: [0, 1, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  Ultra Smooth Vape
+                </motion.p>
+                <p className="text-white/70 text-xs font-medium">USV</p>
               </div>
             </div>
             
@@ -210,17 +300,37 @@ export default function Home() {
             
             <div className="flex justify-between items-end">
               <div>
-                <p className="text-white/60 text-xs">Price • {lastUpdated}</p>
-                <p className="text-white font-bold text-sm">
-                  ${prices?.USV?.price?.toFixed(3) || '0.200'}
-                  {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1 animate-spin">⟳</span>}
-                </p>
+                <motion.p 
+                  className="text-white/60 text-xs mb-1"
+                  animate={{ opacity: [0.6, 1, 0.6] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  Price • {lastUpdated}
+                </motion.p>
+                {isLoadingPrices ? (
+                  <div className="skeleton w-16 h-5 rounded-[8px]" />
+                ) : (
+                  <motion.p 
+                    className="text-white font-bold text-base flex items-center"
+                    animate={{ scale: [1, 1.02, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    ${prices?.USV?.price?.toFixed(3) || '0.200'}
+                  </motion.p>
+                )}
               </div>
-              <span className={`text-xs font-medium ${
-                (prices?.USV?.changePercent24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-              }`}>
+              <motion.span 
+                className={`text-sm font-bold px-2 py-1 rounded-[12px] ${
+                  (prices?.USV?.changePercent24h || 0) >= 0 
+                    ? 'text-green-400 bg-green-400/10' 
+                    : 'text-red-400 bg-red-400/10'
+                }`}
+                animate={{ y: [0, -2, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
                 {(prices?.USV?.changePercent24h || 0) >= 0 ? '+' : ''}{(prices?.USV?.changePercent24h || 0).toFixed(1)}%
-              </span>
+              </motion.span>
+            </div>
             </div>
           </motion.div>
 
@@ -230,26 +340,42 @@ export default function Home() {
             animate={{ scale: 1, opacity: 1, x: 0 }}
             transition={{ delay: 0.7, duration: 0.6, type: "spring" }}
             whileHover={{ 
-              scale: 1.02, 
-              y: -5,
-              boxShadow: "0 15px 35px rgba(59, 130, 246, 0.4), 0 5px 15px rgba(59, 130, 246, 0.3)",
-              borderColor: "rgba(59, 130, 246, 0.5)"
+              scale: 1.03, 
+              y: -8,
+              boxShadow: "0 20px 40px rgba(79, 172, 254, 0.3), 0 10px 20px rgba(79, 172, 254, 0.2)",
+              borderColor: "rgba(79, 172, 254, 0.8)",
+              rotate: -1
             }}
-            whileTap={{ scale: 0.98, y: -3 }}
-            className="bg-black/40 backdrop-blur-sm rounded-[32px] p-5 cursor-pointer border border-blue-500/20 shadow-lg transition-all duration-200"
+            whileTap={{ scale: 0.97, y: -4, rotate: 1 }}
+            className="glass-dark rounded-[32px] p-5 cursor-pointer border border-blue-500/30 shadow-xl hover-lift hover-glow interactive relative overflow-hidden"
+            data-testid="card-solana-token"
           >
-            <div className="flex items-center space-x-2 mb-3">
-              <div className="w-8 h-8 rounded-[16px] overflow-hidden bg-black p-1">
+            {/* Animated gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-electric opacity-5 animate-gradient-slow rounded-[32px]" />
+            <div className="relative z-10">
+            <div className="flex items-center space-x-3 mb-4">
+              <motion.div 
+                className="w-10 h-10 rounded-[16px] overflow-hidden bg-gradient-electric p-1 relative"
+                animate={{ rotate: -360 }}
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+              >
                 <img 
                   src={solanaLogoSrc} 
                   alt="Solana" 
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain relative z-10"
                   onError={(e) => console.error('Logo failed to load:', e)}
                 />
-              </div>
+                <div className="absolute inset-0 animate-shimmer" />
+              </motion.div>
               <div className="flex-1">
-                <p className="text-white text-xs font-medium">Solana</p>
-                <p className="text-white/60 text-xs">SOL</p>
+                <motion.p 
+                  className="text-white text-sm font-semibold"
+                  animate={{ x: [0, -1, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  Solana
+                </motion.p>
+                <p className="text-white/70 text-xs font-medium">SOL</p>
               </div>
             </div>
             
@@ -270,17 +396,37 @@ export default function Home() {
             
             <div className="flex justify-between items-end">
               <div>
-                <p className="text-white/60 text-xs">Price • {lastUpdated}</p>
-                <p className="text-white font-bold text-sm">
-                  ${prices?.SOL?.price?.toFixed(2) || '161.25'}
-                  {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1 animate-spin">⟳</span>}
-                </p>
+                <motion.p 
+                  className="text-white/60 text-xs mb-1"
+                  animate={{ opacity: [0.6, 1, 0.6] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                >
+                  Price • {lastUpdated}
+                </motion.p>
+                {isLoadingPrices ? (
+                  <div className="skeleton w-20 h-5 rounded-[8px]" />
+                ) : (
+                  <motion.p 
+                    className="text-white font-bold text-base flex items-center"
+                    animate={{ scale: [1, 1.02, 1] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+                  >
+                    ${prices?.SOL?.price?.toFixed(2) || '161.25'}
+                  </motion.p>
+                )}
               </div>
-              <span className={`text-xs font-medium ${
-                (prices?.SOL?.changePercent24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-              }`}>
+              <motion.span 
+                className={`text-sm font-bold px-2 py-1 rounded-[12px] ${
+                  (prices?.SOL?.changePercent24h || 0) >= 0 
+                    ? 'text-green-400 bg-green-400/10' 
+                    : 'text-red-400 bg-red-400/10'
+                }`}
+                animate={{ y: [0, -2, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
+              >
                 {(prices?.SOL?.changePercent24h || 0) >= 0 ? '+' : ''}{(prices?.SOL?.changePercent24h || 0).toFixed(1)}%
-              </span>
+              </motion.span>
+            </div>
             </div>
           </motion.div>
         </div>
