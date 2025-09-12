@@ -4,13 +4,13 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Camera, Upload } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import BottomNavigation from '@/components/BottomNavigation';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 export default function Settings() {
   const { user, logout } = useAuth();
@@ -25,14 +25,11 @@ export default function Settings() {
     preferredLanguage: user?.preferredLanguage ?? 'en',
   });
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const updateProfileMutation = useMutation({
     mutationFn: async (updates: Partial<typeof localSettings>) => {
-      const response = await apiRequest('/api/user/profile', {
-        method: 'PATCH',
-        body: JSON.stringify(updates),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      return response;
+      return await apiRequest('/api/user/profile', 'PATCH', updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
@@ -50,6 +47,35 @@ export default function Settings() {
     },
   });
 
+  const uploadProfilePictureMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('profilePicture', file);
+      
+      const response = await fetch('/api/user/profile-picture', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) throw new Error('Upload failed');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
+      toast({
+        title: "Profile Picture Updated",
+        description: "Your profile picture has been updated successfully",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Upload Failed",
+        description: "Unable to upload profile picture",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleToggle = (key: keyof typeof localSettings, value: boolean) => {
     const updates = { [key]: value };
     setLocalSettings(prev => ({ ...prev, ...updates }));
@@ -60,6 +86,33 @@ export default function Settings() {
     const updates = { preferredLanguage: language };
     setLocalSettings(prev => ({ ...prev, ...updates }));
     updateProfileMutation.mutate(updates);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Invalid File Type",
+          description: "Please select an image file",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "File Too Large",
+          description: "Please select an image smaller than 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      uploadProfilePictureMutation.mutate(file);
+    }
   };
 
   const handleLogout = () => {
@@ -106,18 +159,21 @@ export default function Settings() {
           <div className="p-6">
             <div className="flex items-center space-x-4 mb-6">
               <div className="relative">
-                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-purple-400/50">
-                  <img 
-                    src={user?.avatarUrl || '/user-avatar.png'} 
-                    alt={user?.fullName || 'User'}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                      (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
-                    }}
-                  />
-                  <div className="w-full h-full bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center hidden">
-                    <span className="text-white font-bold text-xl">{user?.fullName?.charAt(0) || 'U'}</span>
+                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-purple-400/50 cursor-pointer"
+                     onClick={() => fileInputRef.current?.click()}>
+                  {user?.profilePicture ? (
+                    <img 
+                      src={user.profilePicture} 
+                      alt={user?.fullName || 'User'}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center">
+                      <span className="text-white font-bold text-xl">{user?.fullName?.charAt(0) || 'U'}</span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                    <Camera className="h-6 w-6 text-white" />
                   </div>
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 rounded-full border-2 border-black flex items-center justify-center">
@@ -143,6 +199,30 @@ export default function Settings() {
                 </div>
               </div>
             </div>
+            
+            {/* Upload Profile Picture Button */}
+            <div className="flex flex-col space-y-3">
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadProfilePictureMutation.isPending}
+                className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
+                data-testid="button-upload-picture"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                {uploadProfilePictureMutation.isPending ? 'Uploading...' : 'Change Profile Picture'}
+              </Button>
+              <p className="text-gray-400 text-xs text-center">JPG, PNG or GIF (max 5MB)</p>
+            </div>
+            
+            {/* Hidden File Input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileUpload}
+              accept="image/*"
+              className="hidden"
+              data-testid="input-profile-picture"
+            />
           </div>
         </Card>
 

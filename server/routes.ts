@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import path from 'path';
 import { Connection, Keypair, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { OAuth2Client } from 'google-auth-library';
 import appleSignin from 'apple-signin-auth';
@@ -159,6 +161,7 @@ router.post('/auth/signup', async (req, res) => {
         balance: user.balance,
         stakedBalance: user.stakedBalance,
         walletAddress: user.walletAddress,  // Return the real Solana address
+        profilePicture: user.profilePicture,
       } 
     });
   } catch (error) {
@@ -221,6 +224,7 @@ router.post('/auth/login', async (req, res) => {
         balance: user.balance,
         stakedBalance: user.stakedBalance,
         walletAddress: user.walletAddress,  // Return wallet address on login too
+        profilePicture: user.profilePicture,
       } 
     });
   } catch (error) {
@@ -285,6 +289,7 @@ router.post('/auth/apple', async (req, res) => {
         balance: user.balance,
         stakedBalance: user.stakedBalance,
         walletAddress: user.walletAddress,
+        profilePicture: user.profilePicture,
       }
     });
     
@@ -352,6 +357,7 @@ router.post('/auth/google', async (req, res) => {
         balance: user.balance,
         stakedBalance: user.stakedBalance,
         walletAddress: user.walletAddress,
+        profilePicture: user.profilePicture,
       }
     });
     
@@ -393,6 +399,7 @@ router.post('/auth/phantom', async (req, res) => {
           balance: existingUser.balance,
           stakedBalance: existingUser.stakedBalance,
           walletAddress: existingUser.walletAddress,
+        profilePicture: existingUser.profilePicture,
         }
       });
       return;
@@ -1015,6 +1022,57 @@ router.post('/qr/generate', authenticateToken, async (req: any, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: 'Failed to generate QR code' });
+  }
+});
+
+// Profile picture upload configuration
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { 
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+    
+    if (mimetype && extname) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files (JPEG, PNG, GIF, WebP) are allowed'));
+    }
+  }
+});
+
+// Profile picture upload endpoint
+router.post('/user/profile-picture', authenticateToken, upload.single('profilePicture'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file uploaded' });
+    }
+
+    const userId = req.user.userId;
+    
+    // Convert image to base64 for storage
+    const imageBuffer = req.file.buffer;
+    const base64Image = `data:${req.file.mimetype};base64,${imageBuffer.toString('base64')}`;
+    
+    // Update user profile picture in database
+    const updatedUser = await storage.updateUser(userId, { profilePicture: base64Image });
+    
+    if (!updatedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Profile picture updated successfully',
+      profilePicture: base64Image
+    });
+    
+  } catch (error) {
+    console.error('Profile picture upload error:', error);
+    res.status(500).json({ error: 'Failed to upload profile picture' });
   }
 });
 

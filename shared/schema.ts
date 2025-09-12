@@ -11,6 +11,7 @@ export const users = pgTable('users', {
   fullName: varchar('full_name', { length: 255 }).notNull(),
   password: varchar('password', { length: 255 }).notNull(),
   walletAddress: varchar('wallet_address', { length: 255 }),
+  profilePicture: text('profile_picture'),
   balance: real('balance').default(0),
   stakedBalance: real('staked_balance').default(0),
   isVerified: boolean('is_verified').default(false),

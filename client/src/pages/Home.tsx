@@ -81,11 +81,17 @@ export default function Home() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-cyan-400/30">
-              <img 
-                src="https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=100&h=100&fit=crop&crop=face" 
-                alt="Amanda"
-                className="w-full h-full object-cover"
-              />
+              {user?.profilePicture ? (
+                <img 
+                  src={user.profilePicture} 
+                  alt={user?.fullName || 'User'}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">{user?.fullName?.charAt(0) || 'U'}</span>
+                </div>
+              )}
             </div>
             <div>
               <p className="text-white/90 text-sm">Welcome back,</p>
