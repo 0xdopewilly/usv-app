@@ -133,12 +133,6 @@ export default function Settings() {
     });
   };
 
-  const appIcons = [
-    { id: 'default', gradient: 'from-electric-blue to-crypto-gold', label: 'Default' },
-    { id: 'purple', gradient: 'from-purple-500 to-pink-500', label: 'Purple' },
-    { id: 'green', gradient: 'from-green-500 to-blue-500', label: 'Green' },
-    { id: 'red', gradient: 'from-red-500 to-orange-500', label: 'Red' },
-  ];
 
   return (
     <div className="min-h-screen bg-black relative pb-20">
@@ -307,30 +301,6 @@ export default function Settings() {
           </div>
         </Card>
         
-        {/* App Customization */}
-        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
-          <div className="p-4 border-b border-dark-accent">
-            <h3 className="font-semibold text-white">App Icon</h3>
-          </div>
-          <div className="p-4">
-            <div className="grid grid-cols-4 gap-3">
-              {appIcons.map((icon) => (
-                <button
-                  key={icon.id}
-                  className="w-12 h-12 bg-gradient-to-br rounded-xl flex items-center justify-center cursor-pointer hover:scale-105 transition-transform"
-                  style={{
-                    backgroundImage: `linear-gradient(135deg, ${icon.gradient.includes('electric-blue') ? 'var(--electric-blue), var(--crypto-gold)' : 
-                      icon.gradient.includes('purple') ? '#8B5CF6, #EC4899' :
-                      icon.gradient.includes('green') ? '#10B981, #3B82F6' : '#EF4444, #F97316'})`
-                  }}
-                  data-testid={`button-icon-${icon.id}`}
-                >
-                  <span className="text-white font-bold text-sm">USV</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </Card>
         
         {/* Security Settings */}
         <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
