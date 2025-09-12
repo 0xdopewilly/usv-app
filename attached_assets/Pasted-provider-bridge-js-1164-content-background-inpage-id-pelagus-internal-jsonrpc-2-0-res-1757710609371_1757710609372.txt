@@ -1,0 +1,252 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x9"}}
+index-B6IAHft4.js:188 🔍 Auth Debug: {storedToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…DAzfQ.18CviTHX6V0Ba2Qkndd6W4OhAhBv8CHUaJ08tlBWokg', currentToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…DAzfQ.18CviTHX6V0Ba2Qkndd6W4OhAhBv8CHUaJ08tlBWokg'}
+index-B6IAHft4.js:188 🔍 User Query Debug: {user: undefined, isLoading: true, error: null, hasToken: true}
+index-B6IAHft4.js:188  GET https://usv-app.replit.app/api/user/profile 403 (Forbidden)
+queryFn @ index-B6IAHft4.js:188
+o @ index-B6IAHft4.js:48
+y @ index-B6IAHft4.js:48
+start @ index-B6IAHft4.js:48
+fetch @ index-B6IAHft4.js:48
+$l @ index-B6IAHft4.js:48
+onSubscribe @ index-B6IAHft4.js:48
+subscribe @ index-B6IAHft4.js:48
+(anonymous) @ index-B6IAHft4.js:48
+W_ @ index-B6IAHft4.js:38
+Yh @ index-B6IAHft4.js:40
+$a @ index-B6IAHft4.js:40
+iS @ index-B6IAHft4.js:40
+Wi @ index-B6IAHft4.js:38
+VF @ index-B6IAHft4.js:40
+io @ index-B6IAHft4.js:40
+Sj @ index-B6IAHft4.js:40
+x @ index-B6IAHft4.js:25
+_ @ index-B6IAHft4.js:25
+index-B6IAHft4.js:188 🔍 Profile API Response: 403 
+index-B6IAHft4.js:188 🔍 Profile API Error: {"error":"Invalid token"}
+queryFn @ index-B6IAHft4.js:188
+await in queryFn
+o @ index-B6IAHft4.js:48
+y @ index-B6IAHft4.js:48
+start @ index-B6IAHft4.js:48
+fetch @ index-B6IAHft4.js:48
+$l @ index-B6IAHft4.js:48
+onSubscribe @ index-B6IAHft4.js:48
+subscribe @ index-B6IAHft4.js:48
+(anonymous) @ index-B6IAHft4.js:48
+W_ @ index-B6IAHft4.js:38
+Yh @ index-B6IAHft4.js:40
+$a @ index-B6IAHft4.js:40
+iS @ index-B6IAHft4.js:40
+Wi @ index-B6IAHft4.js:38
+VF @ index-B6IAHft4.js:40
+io @ index-B6IAHft4.js:40
+Sj @ index-B6IAHft4.js:40
+x @ index-B6IAHft4.js:25
+_ @ index-B6IAHft4.js:25
+index-B6IAHft4.js:188 🔍 User Query Debug: {user: undefined, isLoading: false, error: Error: 403: {"error":"Invalid token"}
+    at queryFn (https://usv-app.replit.app/assets/index-B6IAH…, hasToken: true}
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. {type: 'sender-wallet-providerResult', method: 'sender_getProviderState', params: Array(0), notificationId: 1757710581415334, response: {…}}
+(anonymous) @ script.bundle.js:52
+d @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+Promise.then
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+n @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+script.bundle.js:52 Sender: Failed to get initial state. Please report this bug. {type: 'sender-wallet-providerResult', method: 'sender_getProviderState', params: Array(0), notificationId: 1757710582239820, response: {…}}
+(anonymous) @ script.bundle.js:52
+d @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+Promise.then
+o @ script.bundle.js:52
+a @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+n @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+(anonymous) @ script.bundle.js:52
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+initSelectedAddress @ injected.js:1
+initEthereumProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+getInitTronWeb @ injected.js:1
+initTronProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+_initRequest @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 TronLink initiated
+injected.js:1 Backpack couldn't override `window.ethereum`.
+vVs @ injected.js:1
+yVs @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+content.js:2 Check phishing by URL: Passed.
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+(index):1 Error while trying to use the following icon from the Manifest: https://usv-app.replit.app/icon-144.png (Download error or resource isn't a valid image)
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-B6IAHft4.js:188 🔍 Starting Google Sign-In process...
+index-B6IAHft4.js:188 ✅ Google SDK loaded successfully
+index-B6IAHft4.js:188 🔍 Google Client ID configured
+client:74 [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+(anonymous) @ client:74
+(anonymous) @ client:307
+(anonymous) @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-B6IAHft4.js:188 Google prompt notification: dt {g: 'dismissed', i: 'credential_returned'}
+traffic.js:1  POST https://usv-app.replit.app/api/auth/google 400 (Bad Request)
+(anonymous) @ traffic.js:1
+fetch @ traffic.js:1
+_$initInterceptor.s.fetch @ requests.js:1
+value @ injected.js:1
+callback @ index-B6IAHft4.js:188
+xt.fa @ client:304
+Ps.fa @ client:283
+Rs @ client:281
+Promise.then
+Rs @ client:281
+Ts @ client:284
+Us @ client:284
+(anonymous) @ client:309
+(anonymous) @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+index-B6IAHft4.js:188 Backend error response: {error: 'Google authentication failed', details: 'column "profile_picture" does not exist'}
+callback @ index-B6IAHft4.js:188
+await in callback
+xt.fa @ client:304
+Ps.fa @ client:283
+Rs @ client:281
+Promise.then
+Rs @ client:281
+Ts @ client:284
+Us @ client:284
+(anonymous) @ client:309
+(anonymous) @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+index-B6IAHft4.js:188 Google Sign-In Callback Error: Error: column "profile_picture" does not exist
+    at ps.callback (index-B6IAHft4.js:188:151115)
+callback @ index-B6IAHft4.js:188
+await in callback
+xt.fa @ client:304
+Ps.fa @ client:283
+Rs @ client:281
+Promise.then
+Rs @ client:281
+Ts @ client:284
+Us @ client:284
+(anonymous) @ client:309
+(anonymous) @ client:345
+us @ client:276
+(anonymous) @ index-B6IAHft4.js:188
+setTimeout
+x @ index-B6IAHft4.js:188
+aL @ index-B6IAHft4.js:37
+lL @ index-B6IAHft4.js:37
+uL @ index-B6IAHft4.js:37
+C1 @ index-B6IAHft4.js:37
+C_ @ index-B6IAHft4.js:37
+(anonymous) @ index-B6IAHft4.js:37
+Rb @ index-B6IAHft4.js:40
+ZC @ index-B6IAHft4.js:37
+Em @ index-B6IAHft4.js:37
+ub @ index-B6IAHft4.js:37
+EL @ index-B6IAHft4.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
