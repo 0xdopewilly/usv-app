@@ -171,8 +171,14 @@ export default function Settings() {
                 <motion.div 
                   className="w-20 h-20 rounded-[28px] overflow-hidden border-2 border-purple-400/50 cursor-pointer"
                   onClick={() => fileInputRef.current?.click()}
-                  whileHover={{ scale: 1.05, rotate: 2 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    rotate: 2,
+                    borderColor: "rgba(168, 85, 247, 0.8)",
+                    boxShadow: "0 8px 25px rgba(168, 85, 247, 0.4)"
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   {user?.profilePicture ? (
                     <img 
@@ -215,15 +221,24 @@ export default function Settings() {
             
             {/* Upload Profile Picture Button */}
             <div className="flex flex-col space-y-3">
-              <Button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploadProfilePictureMutation.isPending}
-                className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
-                data-testid="button-upload-picture"
+              <motion.div
+                whileHover={{ 
+                  scale: 1.02,
+                  boxShadow: "0 8px 25px rgba(168, 85, 247, 0.4), 0 4px 15px rgba(34, 211, 238, 0.3)"
+                }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
+                <Button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadProfilePictureMutation.isPending}
+                  className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
+                  data-testid="button-upload-picture"
+                >
                 <Upload className="h-4 w-4 mr-2" />
-                {uploadProfilePictureMutation.isPending ? 'Uploading...' : 'Change Profile Picture'}
-              </Button>
+                  {uploadProfilePictureMutation.isPending ? 'Uploading...' : 'Change Profile Picture'}
+                </Button>
+              </motion.div>
               <p className="text-gray-400 text-xs text-center">JPG, PNG or GIF (max 5MB)</p>
             </div>
             
@@ -279,14 +294,24 @@ export default function Settings() {
           <div className="p-4 border-b border-dark-accent">
             <h3 className="font-semibold text-white">Address Book</h3>
           </div>
-          <Button
-            variant="ghost"
-            className="w-full p-4 text-left flex items-center justify-between hover:bg-dark-accent"
-            data-testid="button-address-book"
+          <motion.div
+            whileHover={{ 
+              scale: 1.01,
+              backgroundColor: "rgba(255, 255, 255, 0.05)",
+              boxShadow: "0 4px 15px rgba(168, 85, 247, 0.15)"
+            }}
+            whileTap={{ scale: 0.99 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            <span className="text-gray-300">Manage saved addresses</span>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-          </Button>
+            <Button
+              variant="ghost"
+              className="w-full p-4 text-left flex items-center justify-between hover:bg-transparent"
+              data-testid="button-address-book"
+            >
+              <span className="text-gray-300">Manage saved addresses</span>
+              <ChevronRight className="w-5 h-5 text-gray-400" />
+            </Button>
+          </motion.div>
         </Card>
         </motion.div>
         
@@ -359,14 +384,24 @@ export default function Settings() {
                 data-testid="switch-require-auth"
               />
             </div>
-            <Button
-              variant="ghost"
-              className="w-full text-left py-2 text-gray-300 flex items-center justify-between hover:bg-dark-accent"
-              data-testid="button-2fa-setup"
+            <motion.div
+              whileHover={{ 
+                scale: 1.01,
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                boxShadow: "0 4px 15px rgba(34, 211, 238, 0.15)"
+              }}
+              whileTap={{ scale: 0.99 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <span>Two-Factor Authentication</span>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
-            </Button>
+              <Button
+                variant="ghost"
+                className="w-full text-left py-2 text-gray-300 flex items-center justify-between hover:bg-transparent"
+                data-testid="button-2fa-setup"
+              >
+                <span>Two-Factor Authentication</span>
+                <ChevronRight className="w-5 h-5 text-gray-400" />
+              </Button>
+            </motion.div>
           </div>
         </Card>
 
@@ -397,14 +432,24 @@ export default function Settings() {
             >
               Terms of Service
             </Button>
-            <Button
-              onClick={handleLogout}
-              variant="ghost"
-              className="w-full text-left py-2 text-error-red hover:bg-dark-accent hover:text-error-red"
-              data-testid="button-logout"
+            <motion.div
+              whileHover={{ 
+                scale: 1.01,
+                backgroundColor: "rgba(220, 38, 38, 0.1)",
+                boxShadow: "0 4px 15px rgba(220, 38, 38, 0.2)"
+              }}
+              whileTap={{ scale: 0.99 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              Log Out
-            </Button>
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                className="w-full text-left py-2 text-error-red hover:bg-transparent hover:text-error-red"
+                data-testid="button-logout"
+              >
+                Log Out
+              </Button>
+            </motion.div>
           </div>
         </Card>
       </motion.div>

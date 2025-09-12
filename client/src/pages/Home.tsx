@@ -82,9 +82,15 @@ export default function Home() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <motion.div 
-              className="w-12 h-12 rounded-[24px] overflow-hidden border-2 border-cyan-400/30"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{ type: "spring", stiffness: 300 }}
+              className="w-12 h-12 rounded-[24px] overflow-hidden border-2 border-cyan-400/30 cursor-pointer"
+              whileHover={{ 
+                scale: 1.05, 
+                rotate: 3,
+                borderColor: "rgba(34, 211, 238, 0.6)",
+                boxShadow: "0 8px 25px rgba(34, 211, 238, 0.3)"
+              }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
               {user?.profilePicture ? (
                 <img 
@@ -104,11 +110,17 @@ export default function Home() {
             </div>
           </div>
           <motion.div 
-            className="w-10 h-10 bg-white/10 rounded-[20px] flex items-center justify-center cursor-pointer"
+            className="w-10 h-10 bg-white/10 rounded-[20px] flex items-center justify-center cursor-pointer border border-white/20"
             onClick={() => setLocation('/settings')}
-            whileHover={{ scale: 1.1, rotate: 180 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300 }}
+            whileHover={{ 
+              scale: 1.1, 
+              rotate: 180, 
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              borderColor: "rgba(255, 255, 255, 0.4)",
+              boxShadow: "0 8px 25px rgba(255, 255, 255, 0.15)"
+            }}
+            whileTap={{ scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             <MoreHorizontal className="w-5 h-5 text-white" />
           </motion.div>
@@ -163,10 +175,15 @@ export default function Home() {
             initial={{ scale: 0.9, opacity: 0, x: -20 }}
             animate={{ scale: 1, opacity: 1, x: 0 }}
             transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
-            whileHover={{ scale: 1.02, y: -5 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ 
+              scale: 1.02, 
+              y: -5,
+              boxShadow: "0 15px 35px rgba(168, 85, 247, 0.4), 0 5px 15px rgba(168, 85, 247, 0.3)",
+              borderColor: "rgba(168, 85, 247, 0.5)"
+            }}
+            whileTap={{ scale: 0.98, y: -3 }}
             onClick={() => setLocation('/wallet')}
-            className="bg-black/40 backdrop-blur-sm rounded-[32px] p-5 cursor-pointer border border-purple-500/20 shadow-lg hover:shadow-purple-500/20 transition-all duration-300"
+            className="bg-black/40 backdrop-blur-sm rounded-[32px] p-5 cursor-pointer border border-purple-500/20 shadow-lg transition-all duration-200"
           >
             <div className="flex items-center space-x-2 mb-3">
               <img src="/usv-logo.png" alt="USV" className="w-8 h-8 object-contain" />
@@ -212,9 +229,14 @@ export default function Home() {
             initial={{ scale: 0.9, opacity: 0, x: 20 }}
             animate={{ scale: 1, opacity: 1, x: 0 }}
             transition={{ delay: 0.7, duration: 0.6, type: "spring" }}
-            whileHover={{ scale: 1.02, y: -5 }}
-            whileTap={{ scale: 0.98 }}
-            className="bg-black/40 backdrop-blur-sm rounded-[32px] p-5 cursor-pointer border border-blue-500/20 shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+            whileHover={{ 
+              scale: 1.02, 
+              y: -5,
+              boxShadow: "0 15px 35px rgba(59, 130, 246, 0.4), 0 5px 15px rgba(59, 130, 246, 0.3)",
+              borderColor: "rgba(59, 130, 246, 0.5)"
+            }}
+            whileTap={{ scale: 0.98, y: -3 }}
+            className="bg-black/40 backdrop-blur-sm rounded-[32px] p-5 cursor-pointer border border-blue-500/20 shadow-lg transition-all duration-200"
           >
             <div className="flex items-center space-x-2 mb-3">
               <div className="w-8 h-8 rounded-[16px] overflow-hidden bg-black p-1">
@@ -279,10 +301,16 @@ export default function Home() {
             initial={{ scale: 0.95, opacity: 0, x: -10 }}
             animate={{ scale: 1, opacity: 1, x: 0 }}
             transition={{ delay: 0.9, duration: 0.5, type: "spring" }}
-            whileHover={{ scale: 1.01, x: 2 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ 
+              scale: 1.01, 
+              x: 3,
+              backgroundColor: "rgba(0, 0, 0, 0.4)",
+              borderColor: "rgba(168, 85, 247, 0.6)",
+              boxShadow: "0 8px 25px rgba(168, 85, 247, 0.2)"
+            }}
+            whileTap={{ scale: 0.98, x: 1 }}
             onClick={() => setLocation('/wallet')}
-            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30 hover:border-purple-400/50 transition-all duration-300"
+            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30 transition-all duration-200"
           >
             <div className="flex items-center space-x-3">
               <img src="/usv-logo.png" alt="USV" className="w-12 h-12 object-contain rounded-[20px]" />

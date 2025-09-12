@@ -220,15 +220,25 @@ export default function Wallet() {
         className="px-6 pt-12 pb-6"
       >
         <div className="flex items-center justify-between mb-8">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setLocation('/')}
-            className="text-pink-500 hover:bg-pink-500/20 p-2 rounded-full w-10 h-10"
-            data-testid="button-back"
+          <motion.div
+            whileHover={{ 
+              scale: 1.1,
+              rotate: -5,
+              boxShadow: "0 8px 25px rgba(236, 72, 153, 0.4)"
+            }}
+            whileTap={{ scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setLocation('/')}
+              className="text-pink-500 hover:bg-pink-500/20 p-2 rounded-full w-10 h-10"
+              data-testid="button-back"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          </motion.div>
           <h1 className="text-white text-lg font-semibold">Ultra Smooth Vape</h1>
           <div className="text-gray-400 text-sm">USV</div>
         </div>
@@ -252,15 +262,25 @@ export default function Wallet() {
               <div className="text-gray-400 text-xs">💰 Real-time devnet balance</div>
               <div className="text-electric-blue text-xs">{currentSolBalance.toFixed(4)} SOL</div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setHideBalance(!hideBalance)}
-              className="text-gray-400 hover:text-white p-1"
-              data-testid="button-toggle-balance"
+            <motion.div
+              whileHover={{ 
+                scale: 1.1,
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                boxShadow: "0 4px 15px rgba(255, 255, 255, 0.2)"
+              }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setHideBalance(!hideBalance)}
+                className="text-gray-400 hover:text-white p-1"
+                data-testid="button-toggle-balance"
+              >
+                {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </Button>
+            </motion.div>
           </div>
           
           <div className="flex items-center justify-center space-x-2 mb-6">
@@ -280,27 +300,48 @@ export default function Wallet() {
 
           {/* FIXED: Receive and Send Buttons (was showing "Sent" before) */}
           <div className="flex space-x-4 mb-6">
-            <Button
-              onClick={() => {
-                copyAddress(user?.walletAddress || '', 'USV wallet');
-                toast({
-                  title: "Receive Address Copied!",
-                  description: "Share this address to receive USV tokens and SOL",
-                });
+            <motion.div
+              whileHover={{ 
+                scale: 1.02,
+                boxShadow: "0 8px 25px rgba(236, 72, 153, 0.4), 0 4px 15px rgba(236, 72, 153, 0.3)"
               }}
-              className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
-              data-testid="button-receive"
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              className="flex-1"
             >
-              Receive
-            </Button>
-            <Button
-              onClick={() => setLocation('/send')}
-              variant="outline"
-              className="flex-1 border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
-              data-testid="button-send"
+              <Button
+                onClick={() => {
+                  copyAddress(user?.walletAddress || '', 'USV wallet');
+                  toast({
+                    title: "Receive Address Copied!",
+                    description: "Share this address to receive USV tokens and SOL",
+                  });
+                }}
+                className="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
+                data-testid="button-receive"
+              >
+                Receive
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ 
+                scale: 1.02,
+                borderColor: "rgba(255, 255, 255, 0.4)",
+                boxShadow: "0 4px 15px rgba(255, 255, 255, 0.1)"
+              }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              className="flex-1"
             >
-              Send
-            </Button>
+              <Button
+                onClick={() => setLocation('/send')}
+                variant="outline"
+                className="w-full border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
+                data-testid="button-send"
+              >
+                Send
+              </Button>
+            </motion.div>
           </div>
         </div>
 
@@ -347,15 +388,25 @@ export default function Wallet() {
             <p className="text-white font-mono text-sm" data-testid="text-usv-address">
               {user?.walletAddress || 'No wallet address'}
             </p>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => copyAddress(user?.walletAddress || '', 'USV wallet')}
-              className="text-gray-400 hover:text-white p-2"
-              data-testid="button-copy-usv-address"
+            <motion.div
+              whileHover={{ 
+                scale: 1.1,
+                backgroundColor: "rgba(34, 211, 238, 0.2)",
+                boxShadow: "0 4px 15px rgba(34, 211, 238, 0.3)"
+              }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <Copy className="w-4 h-4" />
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => copyAddress(user?.walletAddress || '', 'USV wallet')}
+                className="text-gray-400 hover:text-white p-2"
+                data-testid="button-copy-usv-address"
+              >
+                <Copy className="w-4 h-4" />
+              </Button>
+            </motion.div>
           </div>
         </div>
 
@@ -401,17 +452,26 @@ export default function Wallet() {
               </div>
               <div className="text-right">
                 <p className="text-white font-bold">${totalBalance.toFixed(2)}</p>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLocation('/send');
+                <motion.div
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0 4px 15px rgba(236, 72, 153, 0.4)"
                   }}
-                  size="sm"
-                  className="bg-pink-500 hover:bg-pink-600 text-white text-xs px-3 py-1 mt-1"
-                  data-testid="button-send-usv"
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  Send USV
-                </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLocation('/send');
+                    }}
+                    size="sm"
+                    className="bg-pink-500 hover:bg-pink-600 text-white text-xs px-3 py-1 mt-1"
+                    data-testid="button-send-usv"
+                  >
+                    Send USV
+                  </Button>
+                </motion.div>
               </div>
             </motion.div>
 
@@ -449,29 +509,40 @@ export default function Wallet() {
               </div>
               <div className="text-right">
                 <p className="text-white font-bold">${(realSolBalance * (prices?.SOL?.price || 215)).toFixed(2)}</p>
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (realSolBalance > 0) {
-                      setLocation('/send');
-                    } else {
-                      toast({
-                        title: "Send SOL",
-                        description: "Send SOL to your USV wallet first to see balance and send",
-                        variant: "default",
-                      });
-                    }
+                <motion.div
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: realSolBalance > 0 
+                      ? "0 4px 15px rgba(59, 130, 246, 0.4)" 
+                      : "0 4px 15px rgba(107, 114, 128, 0.2)"
                   }}
-                  size="sm"
-                  className={`text-xs px-3 py-1 mt-1 ${
-                    realSolBalance > 0 
-                      ? 'bg-blue-500 hover:bg-blue-600 text-white' 
-                      : 'border border-gray-600 text-gray-400 hover:bg-gray-800'
-                  }`}
-                  data-testid="button-send-sol"
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  Send SOL
-                </Button>
+                  <Button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (realSolBalance > 0) {
+                        setLocation('/send');
+                      } else {
+                        toast({
+                          title: "Send SOL",
+                          description: "Send SOL to your USV wallet first to see balance and send",
+                          variant: "default",
+                        });
+                      }
+                    }}
+                    size="sm"
+                    className={`text-xs px-3 py-1 mt-1 ${
+                      realSolBalance > 0 
+                        ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                        : 'border border-gray-600 text-gray-400 hover:bg-gray-800'
+                    }`}
+                    data-testid="button-send-sol"
+                  >
+                    Send SOL
+                  </Button>
+                </motion.div>
               </div>
             </motion.div>
           </div>
@@ -508,15 +579,25 @@ export default function Wallet() {
                 <p className="text-white font-mono text-sm" data-testid="text-usv-wallet-address">
                   {user.walletAddress.slice(0, 8)}...{user.walletAddress.slice(-8)}
                 </p>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => copyAddress(user.walletAddress || '', 'USV Wallet')}
-                  className="text-blue-400 hover:bg-blue-500/20 p-1"
-                  data-testid="button-copy-usv-wallet-address"
+                <motion.div
+                  whileHover={{ 
+                    scale: 1.1,
+                    backgroundColor: "rgba(59, 130, 246, 0.2)",
+                    boxShadow: "0 4px 15px rgba(59, 130, 246, 0.3)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  <Copy className="w-4 h-4" />
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => copyAddress(user.walletAddress || '', 'USV Wallet')}
+                    className="text-blue-400 hover:bg-blue-500/20 p-1"
+                    data-testid="button-copy-usv-wallet-address"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </motion.div>
               </div>
             </div>
             

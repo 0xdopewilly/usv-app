@@ -308,14 +308,20 @@ export default function QRScan() {
           <h2 className="text-xl font-semibold mb-4">Ready to Scan QR Codes</h2>
           <p className="text-gray-300 mb-6">Tap the button below to start your camera and begin scanning for USV tokens!</p>
           
-          <button
+          <motion.button
             onClick={startCamera}
             data-testid="button-start-camera"
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105"
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
+            whileHover={{ 
+              scale: 1.02,
+              boxShadow: "0 8px 25px rgba(59, 130, 246, 0.4), 0 4px 15px rgba(147, 51, 234, 0.4)"
+            }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
             <Camera className="inline h-5 w-5 mr-2" />
             Start Camera
-          </button>
+          </motion.button>
         </div>
       </div>
     );
@@ -332,12 +338,21 @@ export default function QRScan() {
           <p className="text-gray-400 mb-6">
             To scan QR codes and earn USV tokens, please allow camera access in your browser settings.
           </p>
-          <Button
-            onClick={requestCameraPermission}
-            className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white rounded-2xl px-8 py-4 font-semibold"
+          <motion.div
+            whileHover={{ 
+              scale: 1.02,
+              boxShadow: "0 8px 25px rgba(236, 72, 153, 0.4), 0 4px 15px rgba(147, 51, 234, 0.4)"
+            }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
           >
-            Try Again
-          </Button>
+            <Button
+              onClick={requestCameraPermission}
+              className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white rounded-2xl px-8 py-4 font-semibold"
+            >
+              Try Again
+            </Button>
+          </motion.div>
         </div>
       </div>
     );
@@ -349,23 +364,46 @@ export default function QRScan() {
       
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-6 pt-12">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setLocation('/')}
-          className="text-white bg-black/50 backdrop-blur-sm rounded-full p-3"
+        <motion.div
+          whileHover={{ 
+            scale: 1.1,
+            rotate: -5,
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            boxShadow: "0 8px 25px rgba(255, 255, 255, 0.2)"
+          }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
         >
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLocation('/')}
+            className="text-white bg-black/50 backdrop-blur-sm rounded-full p-3"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+        </motion.div>
         <h1 className="text-white text-lg font-semibold">Scan QR Code</h1>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={toggleFlash}
-          className="text-white bg-black/50 backdrop-blur-sm rounded-full p-3"
+        <motion.div
+          whileHover={{ 
+            scale: 1.1,
+            backgroundColor: flashOn ? "rgba(255, 255, 0, 0.3)" : "rgba(0, 0, 0, 0.7)",
+            boxShadow: flashOn 
+              ? "0 8px 25px rgba(255, 255, 0, 0.4)"
+              : "0 8px 25px rgba(255, 255, 255, 0.2)"
+          }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
         >
-          {flashOn ? <FlashlightOff className="w-5 h-5" /> : <Flashlight className="w-5 h-5" />}
-        </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleFlash}
+            className={`text-white bg-black/50 backdrop-blur-sm rounded-full p-3 ${flashOn ? 'bg-yellow-500/30' : ''}`}
+          >
+            {flashOn ? <FlashlightOff className="w-5 h-5" /> : <Flashlight className="w-5 h-5" />}
+          </Button>
+        </motion.div>
       </div>
 
       {/* Camera Feed */}

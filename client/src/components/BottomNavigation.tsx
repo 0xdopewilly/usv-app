@@ -33,22 +33,39 @@ export default function BottomNavigation() {
           const isActive = location === item.path;
           
           return (
-            <Button
+            <motion.div
               key={item.path}
-              variant="ghost"
-              size="sm"
-              onClick={() => setLocation(item.path)}
-              className={`flex flex-col items-center py-2 px-3 h-auto relative ${
-                item.isCenter 
-                  ? 'bg-pink-500 rounded-[28px] w-14 h-14 text-white shadow-lg shadow-pink-500/40' 
+              whileHover={{
+                scale: item.isCenter ? 1.1 : 1.05,
+                y: item.isCenter ? -8 : -2,
+                boxShadow: item.isCenter 
+                  ? "0 12px 30px rgba(236, 72, 153, 0.6)"
                   : isActive 
-                    ? 'text-white' 
-                    : 'text-gray-400'
-              }`}
-              data-testid={`nav-${item.path.replace('/', '')}`}
+                    ? "0 4px 15px rgba(255, 255, 255, 0.2)" 
+                    : "0 4px 15px rgba(156, 163, 175, 0.2)"
+              }}
+              whileTap={{ 
+                scale: 0.95,
+                y: 0
+              }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <IconComponent className={item.isCenter ? "w-6 h-6" : "w-5 h-5"} />
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLocation(item.path)}
+                className={`flex flex-col items-center py-2 px-3 h-auto relative ${
+                  item.isCenter 
+                    ? 'bg-pink-500 rounded-[28px] w-14 h-14 text-white shadow-lg shadow-pink-500/40' 
+                    : isActive 
+                      ? 'text-white' 
+                      : 'text-gray-400'
+                }`}
+                data-testid={`nav-${item.path.replace('/', '')}`}
+              >
+                <IconComponent className={item.isCenter ? "w-6 h-6" : "w-5 h-5"} />
+              </Button>
+            </motion.div>
           );
         })}
       </div>
