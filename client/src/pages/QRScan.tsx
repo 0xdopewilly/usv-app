@@ -415,7 +415,11 @@ export default function QRScan() {
         className="absolute inset-0 w-full h-full object-cover"
         style={{ 
           objectPosition: 'center center',
-          transform: 'scaleX(-1)'
+          transform: 'scaleX(-1)',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%'
         }}
         data-testid="camera-video"
       />
@@ -423,10 +427,19 @@ export default function QRScan() {
 
       {/* Scanning Overlay */}
       {scanning && !qrDetected && (
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div className="relative">
+        <div className="absolute inset-0 flex items-center justify-center z-10" style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <div className="relative flex flex-col items-center justify-center">
             {/* Scanner Frame */}
-            <div className="w-64 h-64 border-4 border-pink-500 rounded-2xl bg-transparent relative">
+            <div className="w-64 h-64 border-4 border-pink-500 rounded-2xl bg-transparent relative mx-auto">
               <div className="absolute -top-1 -left-1 w-8 h-8 border-l-4 border-t-4 border-pink-500 rounded-tl-2xl"></div>
               <div className="absolute -top-1 -right-1 w-8 h-8 border-r-4 border-t-4 border-pink-500 rounded-tr-2xl"></div>
               <div className="absolute -bottom-1 -left-1 w-8 h-8 border-l-4 border-b-4 border-pink-500 rounded-bl-2xl"></div>
@@ -441,7 +454,7 @@ export default function QRScan() {
             </div>
             
             {/* Instructions */}
-            <p className="text-white text-center mt-6 text-lg">
+            <p className="text-white text-center mt-6 text-lg max-w-xs mx-auto">
               Point camera at QR code to earn USV tokens
             </p>
           </div>
