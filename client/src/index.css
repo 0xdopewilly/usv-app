@@ -10,12 +10,26 @@
 }
 
 :root {
+  /* Enhanced Color Palette for USV Token */
   --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --crypto-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  --electric-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --electric-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
   --purple-gradient: linear-gradient(135deg, #a855f7 0%, #e879f9 100%);
-  --gold-gradient: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
-  --neon-gradient: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+  --gold-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  --neon-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  
+  /* Dark theme colors */
+  --dark-bg: hsl(220, 13%, 4%);
+  --dark-surface: hsl(220, 13%, 8%);
+  --dark-accent: hsl(220, 13%, 12%);
+  --text-primary: hsl(0, 0%, 98%);
+  --text-secondary: hsl(0, 0%, 70%);
+  --text-muted: hsl(0, 0%, 45%);
+  
+  /* Brand colors */
+  --electric-blue: hsl(196, 100%, 50%);
+  --crypto-gold: hsl(45, 100%, 70%);
+  --error-red: hsl(0, 85%, 60%);
 }
 
 body {
@@ -166,30 +180,59 @@ body {
   display: none;
 }
 
-/* Hover Effects */
+/* Enhanced Hover Effects */
 .hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hover-lift:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 
 .hover-glow:hover {
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+  box-shadow: 
+    0 0 20px rgba(168, 85, 247, 0.6),
+    0 0 40px rgba(168, 85, 247, 0.3),
+    0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-/* Premium Glass Effects */
+.hover-scale {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-subtle {
+  transition: all 0.2s ease;
+}
+
+.hover-subtle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced Premium Glass Effects */
 .glass-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .glass-dark {
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.glass-surface {
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -222,4 +265,82 @@ body {
 .form-focus:focus {
   transform: scale(1.02);
   box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3);
+}
+
+/* Typography Improvements */
+.text-gradient-primary {
+  background: var(--electric-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Enhanced Button Styles */
+.glow-button {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.3);
+}
+
+.glow-button:hover {
+  box-shadow: 
+    0 8px 32px rgba(168, 85, 247, 0.5),
+    0 0 0 1px rgba(168, 85, 247, 0.2);
+}
+
+.glow-button::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: var(--purple-gradient);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glow-button:hover::before {
+  opacity: 1;
+}
+
+/* Enhanced Radial Gradient */
+.bg-gradient-radial {
+  background: radial-gradient(ellipse at center, var(--color-start) 0%, transparent 70%);
+}
+
+/* Modern Card Shadows */
+.shadow-modern {
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.1),
+    0 16px 56px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-modern-hover:hover {
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    0 16px 48px rgba(0, 0, 0, 0.15),
+    0 24px 80px rgba(0, 0, 0, 0.15);
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced Focus States */
+*:focus-visible {
+  outline: 2px solid var(--electric-blue);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
