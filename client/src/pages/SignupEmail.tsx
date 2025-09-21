@@ -169,6 +169,9 @@ export default function SignupEmail() {
             id="password"
             type={showPassword ? 'text' : 'password'}
             placeholder="Password"
+            autoCapitalize="none"
+            autoCorrect="off"
+            autoComplete="new-password"
             className="w-full bg-dark-accent text-white px-4 py-4 rounded-xl border-0 focus:ring-2 focus:ring-electric-blue pr-12"
             data-testid="input-password"
             {...register('password')}
