@@ -221,8 +221,6 @@ export default function Home() {
             >
               <motion.div 
                 className="w-4 h-4 bg-gradient-purple rounded-[8px] flex items-center justify-center animate-shimmer"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
               >
                 <div className="w-2 h-2 bg-white rounded-[4px]"></div>
               </motion.div>
@@ -265,8 +263,6 @@ export default function Home() {
             <div className="flex items-center space-x-3 mb-4">
               <motion.div
                 className="w-10 h-10 rounded-[16px] p-1 bg-gradient-purple relative overflow-hidden"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
               >
                 <img src="/usv-logo.png" alt="USV" className="w-full h-full object-contain relative z-10" />
                 <div className="absolute inset-0 animate-shimmer" />
@@ -356,8 +352,6 @@ export default function Home() {
             <div className="flex items-center space-x-3 mb-4">
               <motion.div 
                 className="w-10 h-10 rounded-[16px] overflow-hidden bg-gradient-electric p-1 relative"
-                animate={{ rotate: -360 }}
-                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
               >
                 <img 
                   src={solanaLogoSrc} 
