@@ -41,7 +41,11 @@ export default function BottomNavigation() {
         <div className="relative flex items-center justify-around px-1 py-2">
           {navItems.map((item) => {
             const IconComponent = item.icon;
-            const isActive = location === item.path;
+            const isActive = location === item.path || location.startsWith(item.path + '/');
+            
+            // Define active styles that apply to ALL tabs
+            const activeStylesCenter = 'w-12 h-12 rounded-[16px] text-white bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-500 animate-gradient-shift ring-2 ring-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.45)] filter drop-shadow-[0_0_14px_rgba(168,85,247,0.55)]';
+            const activeStylesRegular = 'rounded-[12px] p-2 h-auto text-white bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-500 animate-gradient-shift ring-2 ring-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.45)] filter drop-shadow-[0_0_14px_rgba(168,85,247,0.55)]';
             
             return (
               <motion.div
@@ -54,78 +58,41 @@ export default function BottomNavigation() {
                   scale: 0.95
                 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                className="flex flex-col items-center relative"
+                className="flex flex-col items-center"
               >
-                {/* Center QR Button - Special Treatment */}
+                {/* Center QR Button */}
                 {item.isCenter ? (
                   <motion.div
-                    className="relative"
                     animate={isActive ? { rotate: [0, 5, -5, 0] } : {}}
                     transition={{ duration: 0.6, ease: "easeInOut" }}
                   >
                     <Button
                       onClick={() => setLocation(item.path)}
-                      className={`w-12 h-12 rounded-[16px] shadow-md relative overflow-hidden transition-all duration-300 ${
+                      className={`shadow-md relative overflow-hidden transition-all duration-300 ${
                         isActive 
-                          ? 'animate-gradient-shift text-white' 
-                          : 'bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white'
+                          ? activeStylesCenter
+                          : 'w-12 h-12 rounded-[16px] bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white'
                       }`}
                       data-testid={`nav-${item.path.replace('/', 'home') || 'qr-scan'}`}
                     >
                       <IconComponent className="w-5 h-5 relative z-10" />
                     </Button>
-                    
-                    {/* Active Purple Glow Ring for Center Button */}
-                    {isActive && (
-                      <motion.div
-                        className="absolute inset-0 rounded-[16px] ring-2 ring-purple-500/70 shadow-lg shadow-purple-500/30 pointer-events-none"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ 
-                          opacity: 1, 
-                          scale: 1,
-                          boxShadow: ['0 0 10px rgba(168, 85, 247, 0.5)', '0 0 20px rgba(168, 85, 247, 0.7)', '0 0 10px rgba(168, 85, 247, 0.5)']
-                        }}
-                        transition={{ 
-                          duration: 0.3,
-                          boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-                        }}
-                      />
-                    )}
                   </motion.div>
                 ) : (
-                  /* Regular Navigation Buttons - More Compact */
-                  <div className="relative">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setLocation(item.path)}
-                      className={`rounded-[12px] p-2 h-auto transition-all duration-200 relative ${
-                        isActive 
-                          ? 'text-white bg-white/20' 
-                          : 'text-gray-400 hover:text-white hover:bg-white/10'
-                      }`}
-                      data-testid={`nav-${item.path.replace('/', 'home') || item.label.toLowerCase()}`}
-                    >
-                      <IconComponent className="w-5 h-5" />
-                    </Button>
-                    
-                    {/* Active Purple Glow Ring for Regular Buttons */}
-                    {isActive && (
-                      <motion.div
-                        className="absolute inset-0 rounded-[12px] ring-2 ring-purple-500/70 shadow-lg shadow-purple-500/30 pointer-events-none"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ 
-                          opacity: 1, 
-                          scale: 1,
-                          boxShadow: ['0 0 10px rgba(168, 85, 247, 0.5)', '0 0 20px rgba(168, 85, 247, 0.7)', '0 0 10px rgba(168, 85, 247, 0.5)']
-                        }}
-                        transition={{ 
-                          duration: 0.3,
-                          boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-                        }}
-                      />
-                    )}
-                  </div>
+                  /* Regular Navigation Buttons */
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setLocation(item.path)}
+                    className={`transition-all duration-200 relative ${
+                      isActive 
+                        ? activeStylesRegular
+                        : 'rounded-[12px] p-2 h-auto text-gray-400 hover:text-white hover:bg-white/10'
+                    }`}
+                    data-testid={`nav-${item.path.replace('/', 'home') || item.label.toLowerCase()}`}
+                  >
+                    <IconComponent className="w-5 h-5" />
+                  </Button>
                 )}
               </motion.div>
             );
