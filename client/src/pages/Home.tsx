@@ -141,10 +141,7 @@ export default function Home() {
             whileTap={{ scale: 0.85, rotate: 90 }}
             transition={{ type: "spring", stiffness: 500, damping: 20 }}
           >
-            <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-            >
+            <motion.div>
               <MoreHorizontal className="w-5 h-5 text-white" />
             </motion.div>
           </motion.div>
@@ -203,8 +200,6 @@ export default function Home() {
                 >
                   <motion.div 
                     className={`text-sm ${prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'}`}
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
                   >
                     {prices.USV.changePercent24h >= 0 ? '↗' : '↘'}
                   </motion.div>
