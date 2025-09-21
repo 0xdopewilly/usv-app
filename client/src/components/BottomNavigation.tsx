@@ -65,7 +65,11 @@ export default function BottomNavigation() {
                   >
                     <Button
                       onClick={() => setLocation(item.path)}
-                      className="animate-gradient-shift w-12 h-12 rounded-[16px] text-white shadow-md relative overflow-hidden"
+                      className={`w-12 h-12 rounded-[16px] shadow-md relative overflow-hidden transition-all duration-300 ${
+                        isActive 
+                          ? 'animate-gradient-shift text-white' 
+                          : 'bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white'
+                      }`}
                       data-testid={`nav-${item.path.replace('/', 'home') || 'qr-scan'}`}
                     >
                       <IconComponent className="w-5 h-5 relative z-10" />
