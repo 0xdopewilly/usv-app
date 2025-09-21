@@ -74,39 +74,58 @@ export default function BottomNavigation() {
                     >
                       <IconComponent className="w-5 h-5 relative z-10" />
                     </Button>
+                    
+                    {/* Active Purple Glow Ring for Center Button */}
+                    {isActive && (
+                      <motion.div
+                        className="absolute inset-0 rounded-[16px] ring-2 ring-purple-500/70 shadow-lg shadow-purple-500/30 pointer-events-none"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ 
+                          opacity: 1, 
+                          scale: 1,
+                          boxShadow: ['0 0 10px rgba(168, 85, 247, 0.5)', '0 0 20px rgba(168, 85, 247, 0.7)', '0 0 10px rgba(168, 85, 247, 0.5)']
+                        }}
+                        transition={{ 
+                          duration: 0.3,
+                          boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                        }}
+                      />
+                    )}
                   </motion.div>
                 ) : (
                   /* Regular Navigation Buttons - More Compact */
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setLocation(item.path)}
-                    className={`rounded-[12px] p-2 h-auto transition-all duration-200 relative ${
-                      isActive 
-                        ? 'text-white bg-white/20' 
-                        : 'text-gray-400 hover:text-white hover:bg-white/10'
-                    }`}
-                    data-testid={`nav-${item.path.replace('/', 'home') || item.label.toLowerCase()}`}
-                  >
-                    <IconComponent className="w-5 h-5" />
-                  </Button>
-                )}
-
-                {/* Active Purple Glow Ring - Applies to ALL active tabs */}
-                {isActive && (
-                  <motion.div
-                    className={`absolute ${item.isCenter ? 'inset-0' : 'inset-0'} rounded-[16px] ring-2 ring-purple-500/70 shadow-lg shadow-purple-500/30`}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ 
-                      opacity: 1, 
-                      scale: 1,
-                      boxShadow: ['0 0 10px rgba(168, 85, 247, 0.5)', '0 0 20px rgba(168, 85, 247, 0.7)', '0 0 10px rgba(168, 85, 247, 0.5)']
-                    }}
-                    transition={{ 
-                      duration: 0.3,
-                      boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-                    }}
-                  />
+                  <div className="relative">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setLocation(item.path)}
+                      className={`rounded-[12px] p-2 h-auto transition-all duration-200 relative ${
+                        isActive 
+                          ? 'text-white bg-white/20' 
+                          : 'text-gray-400 hover:text-white hover:bg-white/10'
+                      }`}
+                      data-testid={`nav-${item.path.replace('/', 'home') || item.label.toLowerCase()}`}
+                    >
+                      <IconComponent className="w-5 h-5" />
+                    </Button>
+                    
+                    {/* Active Purple Glow Ring for Regular Buttons */}
+                    {isActive && (
+                      <motion.div
+                        className="absolute inset-0 rounded-[12px] ring-2 ring-purple-500/70 shadow-lg shadow-purple-500/30 pointer-events-none"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ 
+                          opacity: 1, 
+                          scale: 1,
+                          boxShadow: ['0 0 10px rgba(168, 85, 247, 0.5)', '0 0 20px rgba(168, 85, 247, 0.7)', '0 0 10px rgba(168, 85, 247, 0.5)']
+                        }}
+                        transition={{ 
+                          duration: 0.3,
+                          boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                        }}
+                      />
+                    )}
+                  </div>
                 )}
               </motion.div>
             );
