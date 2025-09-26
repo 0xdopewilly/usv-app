@@ -1,13 +1,13 @@
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, clusterApiUrl } from '@solana/web3.js';
 import { createTransferInstruction, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from '@solana/spl-token';
 
-// USV Token Configuration
-export const USV_TOKEN_MINT = new PublicKey('8zGuJQqwhZafTah7Uc7Z4tXRnguqkn5KLFAP8oV6PHe2'); // Example mint address
+// USV Token Configuration - MAINNET
+export const USV_TOKEN_MINT = new PublicKey('A9Vnuav6Wd4azfrzKwpK1Z62frmJb7G3Ydr3FkvGKH8W'); // Mainnet USV Token
 export const USV_DECIMALS = 6;
-export const SOLANA_NETWORK = 'devnet'; // Using devnet for real testing
+export const SOLANA_NETWORK = 'mainnet-beta'; // Production mainnet
 
-// REAL Solana connection
-export const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
+// REAL Solana connection - MAINNET
+export const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 export const solanaConnection = connection; // Alias for compatibility
 
 // Enhanced Phantom Wallet Detection  
@@ -378,9 +378,9 @@ export const getAllTokenAccounts = async (publicKey: string) => {
   }
 };
 
-// Get token metadata (symbol and name)
+// Get token metadata (symbol and name) - Updated for Mainnet
 const getTokenSymbol = async (mint: string): Promise<string> => {
-  // For USV token, return USV
+  // For USV token on mainnet
   if (mint === USV_TOKEN_MINT.toString()) return 'USV';
   
   // For other tokens, try to get from metadata or use shortened mint
@@ -393,8 +393,8 @@ const getTokenSymbol = async (mint: string): Promise<string> => {
 };
 
 const getTokenName = async (mint: string): Promise<string> => {
-  // For USV token
-  if (mint === USV_TOKEN_MINT.toString()) return 'Ultra Smooth Vape';
+  // For USV token on mainnet
+  if (mint === USV_TOKEN_MINT.toString()) return 'Ultra Smooth Vape Token';
   
   // For other tokens, try to get from metadata
   try {

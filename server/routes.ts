@@ -9,8 +9,8 @@ import appleSignin from 'apple-signin-auth';
 import { storage } from './storage';
 import { loginSchema, signupSchema, verificationSchema, withdrawSchema } from '../shared/schema';
 
-// Solana connection for wallet operations
-const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
+// Solana connection for wallet operations - MAINNET
+const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
 // Helper function to generate Solana wallet
 function generateSolanaWallet() {
