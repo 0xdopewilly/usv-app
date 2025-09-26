@@ -1,0 +1,144 @@
+PROMPT FOR AI BUILDER: USV Wallet App Migration to Solana Mainnet
+OBJECTIVE: Migrate our USV Token wallet application from Solana Devnet to Mainnet with full functionality.
+
+🎯 CRITICAL DEPLOYMENT DETAILS:
+TOKEN CONTRACT (MAINNET):
+
+text
+A9Vnuav6Wd4azfrzKwpK1Z62frmJb7G3Ydr3FkvGKH8W
+TOKEN METADATA:
+
+Name: Ultra Smooth Vape Token
+
+Symbol: USV
+
+Decimals: 6
+
+Total Supply: 1,000,000,000 USV
+
+Metadata URI: https://raw.githubusercontent.com/0xdopewilly/usv-token-assets/main/usv-metadata.json
+
+NETWORK CONFIGURATION:
+
+javascript
+// Change from Devnet to Mainnet
+const network = "mainnet-beta";
+const RPC_URL = "https://api.mainnet-beta.solana.com";
+📱 REQUIRED FUNCTIONALITY MIGRATION:
+1. Wallet Connection:
+
+Update Phantom/Mobile Wallet Adapter to use Mainnet
+
+Ensure all RPC calls point to Mainnet endpoints
+
+Update network detection logic
+
+2. Token Operations:
+
+Balance checks for USV token on Mainnet
+
+Transfer functionality using mainnet token address
+
+Transaction history on Mainnet explorer
+
+3. API Endpoints:
+
+Update all backend API calls to use Mainnet
+
+Claim system should interact with mainnet contract
+
+QR claim flow should work on Mainnet
+
+4. Blockchain Interactions:
+
+Update @solana/web3.js Connection to Mainnet
+
+Change all contract interactions to mainnet address
+
+Update transaction confirmations for Mainnet speed
+
+🔧 SPECIFIC CODE CHANGES NEEDED:
+Before (Devnet):
+
+javascript
+const connection = new Connection(clusterApiUrl('devnet'));
+const tokenAddress = "Ew6KKmr34w4gAcnmUjthXzzAUN14d8xVcpqdHemFejZG"; // Devnet
+After (Mainnet):
+
+javascript
+const connection = new Connection(clusterApiUrl('mainnet-beta'));
+const tokenAddress = "A9Vnuav6Wd4azfrzKwpK1Z62frmJb7G3Ydr3FkvGKH8W"; // Mainnet
+🚀 DEPLOYMENT CHECKLIST:
+Frontend Changes:
+
+Update network configuration to Mainnet
+
+Replace devnet token address with mainnet address
+
+Update Solana explorer links to mainnet
+
+Test Phantom wallet connection on Mainnet
+
+Verify token metadata displays correctly
+
+Backend Changes:
+
+Update Solana RPC connection to Mainnet
+
+Modify claim system for mainnet transactions
+
+Update QR code validation for mainnet
+
+Change all API endpoints to use mainnet token
+
+Mobile App Changes:
+
+Update wallet adapter for Mainnet
+
+Change token contract address
+
+Update transaction confirmation URLs
+
+Test full claim flow on Mainnet
+
+🧪 TESTING REQUIREMENTS:
+Smoke Tests:
+
+Connect Phantom wallet on Mainnet
+
+Display USV token balance (should show 0 initially for test wallets)
+
+Send test transaction (small amount)
+
+Verify transaction on Solana Mainnet Explorer
+
+Check token metadata (name, symbol, logo)
+
+Integration Tests:
+
+QR claim flow end-to-end
+
+Backend API token verification
+
+Mobile app wallet integration
+
+Transaction history display
+
+📊 ENVIRONMENT VARIABLES TO UPDATE:
+env
+SOLANA_NETWORK=mainnet-beta
+TOKEN_ADDRESS=A9Vnuav6Wd4azfrzKwpK1Z62frmJb7G3Ydr3FkvGKH8W
+RPC_URL=https://api.mainnet-beta.solana.com
+EXPLORER_URL=https://explorer.solana.com
+🚨 IMPORTANT NOTES:
+Real Transactions: Mainnet uses real SOL - ensure proper error handling
+
+Gas Fees: Update fee calculations for mainnet gas costs
+
+Confirmation Times: Mainnet has different confirmation timing
+
+Token Discovery: Phantom may take 24-48 hours to auto-detect the token
+
+URGENT: The token is already deployed and verified on Mainnet. This is purely a frontend/backend configuration migration.
+
+DELIVERABLE: Fully functional USV wallet app operating on Solana Mainnet with all existing features working.
