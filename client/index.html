@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://unpkg.com/buffer@6.0.3/index.js"></script>
     <script>
       // Essential polyfills for Solana/crypto libraries
       if (typeof global === 'undefined') {
@@ -9,20 +10,9 @@
       if (typeof process === 'undefined') {
         window.process = { env: {}, browser: true };
       }
-      if (typeof Buffer === 'undefined') {
-        // Import buffer polyfill
-        import('https://unpkg.com/buffer@6.0.3/index.js').then((buffer) => {
-          window.Buffer = buffer.Buffer;
-          console.log("✅ Buffer polyfill loaded");
-        }).catch(() => {
-          // Fallback simple Buffer implementation
-          window.Buffer = {
-            from: (data) => new Uint8Array(data),
-            alloc: (size) => new Uint8Array(size),
-            isBuffer: (obj) => obj instanceof Uint8Array
-          };
-          console.log("✅ Simple Buffer fallback loaded");
-        });
+      // Buffer should now be available from the script above
+      if (typeof Buffer === 'undefined' && window.buffer) {
+        window.Buffer = window.buffer.Buffer;
       }
     </script>
     <meta charset="UTF-8" />
@@ -53,6 +43,32 @@
   </head>
   <body>
     <div id="root">Initial content...</div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      console.log("🔥 HTML executing...");
+      setTimeout(() => {
+        const root = document.getElementById('root');
+        if (root && root.innerHTML === 'Initial content...') {
+          console.error("❌ React failed to load");
+          root.innerHTML = '<div style="background: orange; color: black; padding: 20px;">⚠️ Loading React module failed</div>';
+        }
+      }, 3000);
+    </script>
+    <script type="module">
+      console.log("🚀 Module script executing...");
+      try {
+        console.log("Importing main.tsx...");
+        import('/src/main.tsx').then(() => {
+          console.log("✅ main.tsx loaded successfully");
+        }).catch(error => {
+          console.error("❌ Failed to import main.tsx:", error);
+          document.getElementById('root').innerHTML = `<div style="background: red; color: white; padding: 20px;">
+            <h1>Import Error</h1>
+            <p>${error.message}</p>
+          </div>`;
+        });
+      } catch (error) {
+        console.error("❌ Module script error:", error);
+      }
+    </script>
   </body>
 </html>

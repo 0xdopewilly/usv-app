@@ -135,38 +135,16 @@ function AppRouter() {
   );
 }
 
-// Test with minimal App first
 function App() {
-  console.log("🔥 App component rendering!");
-  
   return (
-    <div 
-      style={{
-        minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        padding: '50px',
-        fontFamily: 'Inter, sans-serif'
-      }}
-    >
-      <div style={{ textAlign: 'center' }}>
-        <h1 style={{ fontSize: '3rem', marginBottom: '2rem' }}>
-          🚀 USV Token
-        </h1>
-        <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>
-          Ultra Smooth Vape Token Ecosystem
-        </p>
-        <div style={{
-          background: 'rgba(255,255,255,0.1)',
-          padding: '2rem',
-          borderRadius: '1rem',
-          backdropFilter: 'blur(10px)'
-        }}>
-          <h2>✅ React is Working!</h2>
-          <p>Login page coming soon...</p>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <div className="min-h-screen bg-black text-white">
+          <AppRouter />
+          <Toaster />
         </div>
-      </div>
-    </div>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 
