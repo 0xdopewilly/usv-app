@@ -36,23 +36,11 @@ export default function SimpleWallet() {
       // Fetch REAL token balances from Solana mainnet
       const realTokens = await refreshRealWalletBalances(address);
       
-      // FORCE your actual SOL balance to show
-      const forceSOLToken: TokenAccount = {
-        mint: 'So11111111111111111111111111111111111111112',
-        symbol: 'SOL',
-        name: 'Solana',
-        balance: 0.001969584, // Your real balance!
-        decimals: 9,
-        isNative: true
-      };
+      // Use real-time balance from API instead of hard-coded
+      setTokens(realTokens);
       
-      // Add your SOL balance to the tokens (remove any existing SOL first)
-      const filteredTokens = realTokens.filter(t => t.symbol !== 'SOL');
-      setTokens([forceSOLToken, ...filteredTokens]);
-      
-      // Calculate real total value including forced SOL
-      const allTokens = [forceSOLToken, ...filteredTokens];
-      const totalValue = allTokens.reduce((sum, token) => {
+      // Calculate real total value from real tokens
+      const totalValue = realTokens.reduce((sum, token) => {
         if (token.isNative && token.balance > 0) {
           return sum + (token.balance * 230); // SOL price estimate
         }
@@ -62,7 +50,7 @@ export default function SimpleWallet() {
       
       toast({
         title: "💰 Wallet Updated!",
-        description: `Found ${allTokens.length} tokens including your SOL`,
+        description: `Found ${realTokens.length} tokens - balance refreshed from mainnet`,
       });
       
       console.log('✅ REAL balances loaded:', realTokens);
