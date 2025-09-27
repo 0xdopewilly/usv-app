@@ -61,7 +61,7 @@ export class RealPhantomWallet {
       
       return {
         success: true,
-        publicKey: this.publicKey
+        publicKey: this.publicKey || undefined
       };
     } catch (error: any) {
       console.error('Phantom connection error:', error);

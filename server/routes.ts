@@ -10,7 +10,7 @@ import { storage } from './storage';
 import { loginSchema, signupSchema, verificationSchema, withdrawSchema } from '../shared/schema';
 
 // Solana connection for wallet operations
-const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
+const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
 // Helper function to generate Solana wallet
 function generateSolanaWallet() {
@@ -631,7 +631,7 @@ router.get('/wallet/balance/:walletAddress', async (req, res) => {
       return res.status(400).json({ error: 'Wallet address required' });
     }
     
-    // Get real SOL balance from Solana devnet
+    // Get real SOL balance from Solana mainnet
     const publicKey = new PublicKey(walletAddress);
     const balanceInLamports = await connection.getBalance(publicKey);
     const balanceInSOL = balanceInLamports / LAMPORTS_PER_SOL;
@@ -640,7 +640,7 @@ router.get('/wallet/balance/:walletAddress', async (req, res) => {
       walletAddress,
       balanceSOL: balanceInSOL,
       balanceLamports: balanceInLamports,
-      network: 'devnet',
+      network: 'mainnet',
       lastUpdated: new Date().toISOString()
     });
   } catch (error) {
@@ -676,7 +676,7 @@ router.get('/wallet/tokens/:walletAddress', async (req, res) => {
     res.json({
       walletAddress,
       tokens,
-      network: 'devnet',
+      network: 'mainnet',
       lastUpdated: new Date().toISOString()
     });
   } catch (error) {
