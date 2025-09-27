@@ -1,12 +1,31 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, Mail, Apple, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, Mail, Apple, ArrowLeft, Wallet } from 'lucide-react';
 import { FaGoogle } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
-import ConnectWallet from '@/components/ConnectWallet';
+// Import ConnectWallet safely with error boundary
+const SafeConnectWallet = ({ onConnected }: { onConnected?: (publicKey: string) => void }) => {
+  try {
+    // Use dynamic import to avoid polyfill issues
+    const ConnectWallet = require('@/components/ConnectWallet').default;
+    return <ConnectWallet onConnected={onConnected} />;
+  } catch (error) {
+    console.warn('Solana wallet connection unavailable:', error);
+    return (
+      <Button 
+        variant="outline" 
+        className="w-full bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border-purple-500/30 text-purple-200 hover:bg-purple-600/30"
+        disabled
+      >
+        <Wallet className="mr-2 h-4 w-4" />
+        Wallet Connection Unavailable
+      </Button>
+    );
+  }
+};
 
 // Apple Sign-In & Google Sign-In Configuration
 declare global {
@@ -469,14 +488,13 @@ export default function AuthPage() {
 
           {/* Wallet Connect */}
           <div className="pt-2">
-            <ConnectWallet 
-              onConnected={(publicKey) => {
+            <SafeConnectWallet 
+              onConnected={(publicKey: string) => {
                 toast({
                   title: "Wallet Connected!",
                   description: `Connected to ${publicKey.slice(0, 8)}... on Solana Mainnet`,
                 });
               }}
-              className="w-full"
             />
             <p className="text-center text-xs text-gray-500 mt-2">
               ⚡ Connected to Solana Mainnet
