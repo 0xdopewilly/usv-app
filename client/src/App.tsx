@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import SimpleLoadingScreen from "@/components/SimpleLoadingScreen";
-import AuthPage from "@/pages/AuthPage";
+import AuthPageSimple from "@/pages/AuthPageSimple";
 import Home from "@/pages/Home";
 import SimpleWallet from "@/pages/SimpleWallet";
 import SimpleSend from "@/pages/SimpleSend";
@@ -80,7 +80,7 @@ function AppRouter() {
   if (!isAuthenticated) {
     return (
       <PageTransition pageKey="auth">
-        <AuthPage />
+        <AuthPageSimple />
       </PageTransition>
     );
   }
