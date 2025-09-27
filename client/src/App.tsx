@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import SimpleLoadingScreen from "@/components/SimpleLoadingScreen";
 import AuthPageSimple from "@/pages/AuthPageSimple";
-import Home from "@/pages/Home";
+import HomeSimple from "@/pages/HomeSimple";
 import SimpleWallet from "@/pages/SimpleWallet";
 import SimpleSend from "@/pages/SimpleSend";
 import Settings from "@/pages/Settings";
@@ -91,7 +91,7 @@ function AppRouter() {
         <Switch location={location}>
           <Route path="/">
             <PageTransition pageKey="home">
-              <Home />
+              <HomeSimple />
             </PageTransition>
           </Route>
           <Route path="/wallet">
