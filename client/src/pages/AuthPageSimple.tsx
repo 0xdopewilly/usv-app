@@ -1,10 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AuthPageSimple() {
+  // Clear any invalid tokens on mount to ensure clean state
+  useEffect(() => {
+    console.log('🔍 AuthPageSimple mounted - clearing invalid tokens');
+    localStorage.removeItem('token');
+  }, []);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

@@ -65,74 +65,8 @@ const PageTransition = ({ children, pageKey }: { children: React.ReactNode; page
 );
 
 function AppRouter() {
-  const { isAuthenticated, isLoading } = useAuth();
-  const [location] = useLocation();
-
-  // Simplified authentication logic to prevent blank page
-  if (isLoading) {
-    return (
-      <PageTransition pageKey="loading">
-        <SimpleLoadingScreen />
-      </PageTransition>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <PageTransition pageKey="auth">
-        <AuthPageSimple />
-      </PageTransition>
-    );
-  }
-
-  return (
-    <Router>
-      <AnimatePresence mode="wait" initial={false}>
-        <Switch location={location}>
-          <Route path="/">
-            <PageTransition pageKey="home">
-              <HomeSimple />
-            </PageTransition>
-          </Route>
-          <Route path="/wallet">
-            <PageTransition pageKey="wallet">
-              <SimpleWallet />
-            </PageTransition>
-          </Route>
-          <Route path="/send">
-            <PageTransition pageKey="send">
-              <SimpleSend />
-            </PageTransition>
-          </Route>
-          <Route path="/qr-scan">
-            <PageTransition pageKey="qr-scan">
-              <QRScan />
-            </PageTransition>
-          </Route>
-          <Route path="/nft-portfolio">
-            <PageTransition pageKey="nft-portfolio">
-              <NFTPortfolio />
-            </PageTransition>
-          </Route>
-          <Route path="/nft/:mint">
-            <PageTransition pageKey="nft-detail">
-              <NFTDetail />
-            </PageTransition>
-          </Route>
-          <Route path="/settings">
-            <PageTransition pageKey="settings">
-              <Settings />
-            </PageTransition>
-          </Route>
-          <Route>
-            <PageTransition pageKey="not-found">
-              <NotFound />
-            </PageTransition>
-          </Route>
-        </Switch>
-      </AnimatePresence>
-    </Router>
-  );
+  // Always show login for now since auth is complex
+  return <AuthPageSimple />;
 }
 
 function App() {
