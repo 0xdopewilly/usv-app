@@ -1,0 +1,127 @@
+evmAsk.js:5 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:5:5093)
+    at window.addEventListener.once (evmAsk.js:5:9013)
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x2328"}}
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+content.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+injected.js:1 TronLink initiated
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1
+index-BMlL4bNd.js:196 🔍 Auth Debug: Object
+index-BMlL4bNd.js:196 🔍 User Query Debug: Object
+content.js:2 Check phishing by URL: Passed.
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-BMlL4bNd.js:196 🔍 Starting Google Sign-In process...
+index-BMlL4bNd.js:196 ✅ Google SDK loaded successfully
+index-BMlL4bNd.js:196 🔍 Google Client ID configured
+injected.js:1 [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+console.warn @ injected.js:1
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+(index):1 The fetch of the id assertion endpoint resulted in a network error: ERR_FAILED
+(index):1 Server did not send the correct CORS headers.
+client:74 [GSI_LOGGER]: FedCM get() rejects with IdentityCredentialError: Error retrieving a token.
+_.G @ client:74
+index-BMlL4bNd.js:196 Google prompt notification: ct
+index-BMlL4bNd.js:196 Google prompt blocked, user may have canceled before
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-BMlL4bNd.js:196 🔍 Starting Google Sign-In process...
+index-BMlL4bNd.js:196 ✅ Google SDK loaded successfully
+index-BMlL4bNd.js:196 🔍 Google Client ID configured
+injected.js:1 [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+console.warn @ injected.js:1
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+(index):1 The fetch of the id assertion endpoint resulted in a network error: ERR_FAILED
+(index):1 Server did not send the correct CORS headers.
+client:74 [GSI_LOGGER]: FedCM get() rejects with IdentityCredentialError: Error retrieving a token.
+_.G @ client:74
+index-BMlL4bNd.js:196 Google prompt notification: ct
+index-BMlL4bNd.js:196 Google prompt blocked, user may have canceled before
+index-BMlL4bNd.js:196 🔍 Starting Google Sign-In process...
+index-BMlL4bNd.js:196 ✅ Google SDK loaded successfully
+index-BMlL4bNd.js:196 🔍 Google Client ID configured
+injected.js:1 [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+console.warn @ injected.js:1
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+(index):1 The fetch of the id assertion endpoint resulted in a network error: ERR_FAILED
+(index):1 Server did not send the correct CORS headers.
+client:74 [GSI_LOGGER]: FedCM get() rejects with IdentityCredentialError: Error retrieving a token.
+_.G @ client:74
+index-BMlL4bNd.js:196 Google prompt notification: ct
+index-BMlL4bNd.js:196 Google prompt blocked, user may have canceled before
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-BMlL4bNd.js:196 🔍 Starting Google Sign-In process...
+index-BMlL4bNd.js:196 ✅ Google SDK loaded successfully
+index-BMlL4bNd.js:196 🔍 Google Client ID configured
+injected.js:1 [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment
+console.warn @ injected.js:1
+_.F @ client:73
+wt.ba @ client:305
+os.ba @ client:343
+ts @ client:274
+(anonymous) @ index-BMlL4bNd.js:196
+setTimeout
+x @ index-BMlL4bNd.js:196
+dL @ index-BMlL4bNd.js:37
+pL @ index-BMlL4bNd.js:37
+mL @ index-BMlL4bNd.js:37
+$1 @ index-BMlL4bNd.js:37
+N_ @ index-BMlL4bNd.js:37
+(anonymous) @ index-BMlL4bNd.js:37
+Lb @ index-BMlL4bNd.js:40
+i_ @ index-BMlL4bNd.js:37
+Cm @ index-BMlL4bNd.js:37
+db @ index-BMlL4bNd.js:37
+kL @ index-BMlL4bNd.js:37
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+(index):1 The fetch of the id assertion endpoint resulted in a network error: ERR_FAILED
+(index):1 Server did not send the correct CORS headers.
+client:74 [GSI_LOGGER]: FedCM get() rejects with IdentityCredentialError: Error retrieving a token.
+_.G @ client:74
+wt.ka @ client:303
+ka @ client:309
+(anonymous) @ client:279
+Promise.then
+Qs @ client:279
+Ss @ client:282
+Ts @ client:282
+wt.ba @ client:307
+os.ba @ client:343
+ts @ client:274
+(anonymous) @ index-BMlL4bNd.js:196
+setTimeout
+x @ index-BMlL4bNd.js:196
+dL @ index-BMlL4bNd.js:37
+pL @ index-BMlL4bNd.js:37
+mL @ index-BMlL4bNd.js:37
+$1 @ index-BMlL4bNd.js:37
+N_ @ index-BMlL4bNd.js:37
+(anonymous) @ index-BMlL4bNd.js:37
+Lb @ index-BMlL4bNd.js:40
+i_ @ index-BMlL4bNd.js:37
+Cm @ index-BMlL4bNd.js:37
+db @ index-BMlL4bNd.js:37
+kL @ index-BMlL4bNd.js:37
+index-BMlL4bNd.js:196 Google prompt notification: ct {g: 'skipped', l: 'unknown_reason'}
+index-BMlL4bNd.js:196 Google prompt blocked, user may have canceled before
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
