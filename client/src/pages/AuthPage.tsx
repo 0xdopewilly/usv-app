@@ -472,14 +472,14 @@ export default function AuthPage() {
             <ConnectWallet 
               onConnected={(publicKey) => {
                 toast({
-                  title: "Wallet Connected! (Devnet)",
-                  description: `Connected to ${publicKey.slice(0, 8)}... on Solana Devnet`,
+                  title: "Wallet Connected!",
+                  description: `Connected to ${publicKey.slice(0, 8)}... on Solana Mainnet`,
                 });
               }}
               className="w-full"
             />
             <p className="text-center text-xs text-gray-500 mt-2">
-              ⚡ Currently using Solana Devnet for testing
+              ⚡ Connected to Solana Mainnet
             </p>
           </div>
         </motion.div>
