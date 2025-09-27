@@ -66,25 +66,35 @@
         // Auto-check if user is logged in (get their wallet address)
         setTimeout(async () => {
             try {
-                const response = await fetch('/api/auth/verify', {
-                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    document.getElementById('result').innerHTML = '<div class="error">❌ Please log in to the main app first</div>';
+                    return;
+                }
+                
+                const response = await fetch('/api/user/profile', {
+                    headers: { 'Authorization': 'Bearer ' + token }
                 });
                 if (response.ok) {
                     const userData = await response.json();
-                    if (userData.user?.walletAddress) {
+                    if (userData.walletAddress) {
                         document.getElementById('result').innerHTML = `
                             <div class="address">
                                 <h3>👤 Your App Wallet Address:</h3>
-                                <div style="font-size: 14px; background: #555; padding: 10px; border-radius: 5px; margin: 10px 0;">
-                                    ${userData.user.walletAddress}
+                                <div style="font-size: 14px; background: #555; padding: 10px; border-radius: 5px; margin: 10px 0; word-break: break-all;">
+                                    ${userData.walletAddress}
                                 </div>
-                                <button onclick="checkAddress('${userData.user.walletAddress}')">Check My Wallet Balance</button>
+                                <button onclick="checkAddress('${userData.walletAddress}')">🔍 Check My Wallet Balance</button>
+                                <p style="color: #ff0; font-size: 12px;">⚠️ This is where your SOL should be if you sent it to your app wallet!</p>
                             </div>
                         `;
                     }
+                } else {
+                    document.getElementById('result').innerHTML = '<div class="error">❌ Please log in to the main app first</div>';
                 }
             } catch (e) {
                 console.log('User not logged in or error:', e);
+                document.getElementById('result').innerHTML = '<div class="error">❌ Error getting user data. Are you logged in?</div>';
             }
         }, 1000);
     </script>
