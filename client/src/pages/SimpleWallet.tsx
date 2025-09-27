@@ -31,34 +31,43 @@ export default function SimpleWallet() {
     setIsRefreshing(true);
     
     try {
-      console.log('🔄 Loading REAL balances from Solana mainnet...');
+      console.log('🔄 Loading balance from backend API for:', address);
       
-      // Fetch REAL token balances from Solana mainnet
-      const realTokens = await refreshRealWalletBalances(address);
+      // Fetch balance from our working backend API instead of browser RPC calls
+      const response = await fetch(`/api/wallet/balance/${address}`);
+      if (!response.ok) throw new Error('Failed to fetch balance');
       
-      // Use real-time balance from API instead of hard-coded
-      setTokens(realTokens);
+      const balanceData = await response.json();
+      console.log('💰 Backend API Response:', balanceData);
       
-      // Calculate real total value from real tokens
-      const totalValue = realTokens.reduce((sum, token) => {
-        if (token.isNative && token.balance > 0) {
-          return sum + (token.balance * 230); // SOL price estimate
-        }
-        return sum;
-      }, 0);
+      // Convert API response to token format for UI
+      const solToken: TokenAccount = {
+        mint: 'So11111111111111111111111111111111111111112',
+        symbol: 'SOL',
+        name: 'Solana',
+        balance: balanceData.balanceSOL || 0,
+        decimals: 9,
+        isNative: true
+      };
+      
+      const tokens = [solToken];
+      setTokens(tokens);
+      
+      // Calculate total value
+      const totalValue = balanceData.balanceSOL * 230; // SOL price estimate
       setTotalValue(totalValue);
       
       toast({
-        title: "💰 Wallet Updated!",
-        description: `Found ${realTokens.length} tokens - balance refreshed from mainnet`,
+        title: "💰 Balance Updated!",
+        description: `${balanceData.balanceSOL?.toFixed(4) || 0} SOL loaded from mainnet`,
       });
       
-      console.log('✅ REAL balances loaded:', realTokens);
+      console.log('✅ Balance loaded from API:', balanceData);
     } catch (error) {
-      console.error('❌ Failed to load real balances:', error);
+      console.error('❌ Failed to load balance:', error);
       toast({
-        title: "❌ Balance Load Failed",
-        description: "Failed to fetch from Solana mainnet",
+        title: "❌ Balance Load Failed", 
+        description: "Failed to fetch balance from API",
         variant: "destructive"
       });
     } finally {
