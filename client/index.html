@@ -2,45 +2,9 @@
 <html lang="en">
   <head>
     <script>
-      // Essential polyfills for Solana/crypto libraries
+      // Only essential globals - no Buffer polyfills
       window.global = globalThis;
       window.process = { env: { NODE_ENV: 'development' }, browser: true };
-      
-      // Simple Buffer polyfill
-      if (typeof Buffer === 'undefined') {
-        window.Buffer = class Buffer extends Uint8Array {
-          constructor(input, encoding) {
-            if (typeof input === 'string') {
-              super(new TextEncoder().encode(input));
-            } else if (typeof input === 'number') {
-              super(input);
-            } else {
-              super(input);
-            }
-          }
-          
-          static from(input, encoding) {
-            return new Buffer(input, encoding);
-          }
-          
-          static alloc(size) {
-            return new Buffer(size);
-          }
-          
-          static isBuffer(obj) {
-            return obj instanceof Buffer;
-          }
-          
-          toString(encoding = 'utf8') {
-            return new TextDecoder(encoding).decode(this);
-          }
-        };
-        
-        // Add required prototype properties
-        Buffer.prototype.constructor = Buffer;
-      }
-      
-      console.log("✅ Polyfills loaded - Buffer:", typeof Buffer, "global:", typeof global, "process:", typeof process);
     </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/usv-logo.png" />
@@ -70,32 +34,6 @@
   </head>
   <body>
     <div id="root">Initial content...</div>
-    <script>
-      console.log("🔥 HTML executing...");
-      setTimeout(() => {
-        const root = document.getElementById('root');
-        if (root && root.innerHTML === 'Initial content...') {
-          console.error("❌ React failed to load");
-          root.innerHTML = '<div style="background: orange; color: black; padding: 20px;">⚠️ Loading React module failed</div>';
-        }
-      }, 3000);
-    </script>
-    <script type="module">
-      console.log("🚀 Module script executing...");
-      try {
-        console.log("Importing main.tsx...");
-        import('/src/main.tsx').then(() => {
-          console.log("✅ main.tsx loaded successfully");
-        }).catch(error => {
-          console.error("❌ Failed to import main.tsx:", error);
-          document.getElementById('root').innerHTML = `<div style="background: red; color: white; padding: 20px;">
-            <h1>Import Error</h1>
-            <p>${error.message}</p>
-          </div>`;
-        });
-      } catch (error) {
-        console.error("❌ Module script error:", error);
-      }
-    </script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

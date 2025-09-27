@@ -6,25 +6,36 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
-// Import ConnectWallet safely with error boundary
+// Safely import ConnectWallet with dynamic ESM import
 const SafeConnectWallet = ({ onConnected }: { onConnected?: (publicKey: string) => void }) => {
-  try {
-    // Use dynamic import to avoid polyfill issues
-    const ConnectWallet = require('@/components/ConnectWallet').default;
-    return <ConnectWallet onConnected={onConnected} />;
-  } catch (error) {
-    console.warn('Solana wallet connection unavailable:', error);
-    return (
-      <Button 
-        variant="outline" 
-        className="w-full bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border-purple-500/30 text-purple-200 hover:bg-purple-600/30"
-        disabled
-      >
-        <Wallet className="mr-2 h-4 w-4" />
-        Wallet Connection Unavailable
-      </Button>
-    );
+  const [WalletComponent, setWalletComponent] = useState<any>(null);
+  
+  useEffect(() => {
+    // Dynamic import after mount to avoid polyfill issues
+    import('@/components/ConnectWallet')
+      .then((module) => {
+        setWalletComponent(() => module.default);
+      })
+      .catch((error) => {
+        console.warn('Solana wallet connection unavailable:', error);
+        setWalletComponent(null);
+      });
+  }, []);
+  
+  if (WalletComponent) {
+    return <WalletComponent onConnected={onConnected} />;
   }
+  
+  return (
+    <Button 
+      variant="outline" 
+      className="w-full bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border-purple-500/30 text-purple-200 hover:bg-purple-600/30"
+      disabled
+    >
+      <Wallet className="mr-2 h-4 w-4" />
+      {WalletComponent === null ? 'Wallet Connection Unavailable' : 'Loading Wallet...'}
+    </Button>
+  );
 };
 
 // Apple Sign-In & Google Sign-In Configuration
