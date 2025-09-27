@@ -1,5 +1,6 @@
 export function registerSW() {
-  if ('serviceWorker' in navigator) {
+  // Only register service worker in production
+  if ('serviceWorker' in navigator && import.meta.env.PROD) {
     window.addEventListener('load', () => {
       navigator.serviceWorker
         .register('/sw.js')
