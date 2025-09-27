@@ -1079,7 +1079,7 @@ const upload = multer({
 });
 
 // Profile picture upload endpoint
-router.post('/user/profile-picture', authenticateToken, upload.single('profilePicture'), async (req, res) => {
+router.post('/user/profile-picture', authenticateToken, upload.single('profilePicture'), async (req: any, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No image file uploaded' });
