@@ -330,7 +330,7 @@ export const getWalletBalance = async (publicKey: string): Promise<number> => {
   }
 };
 
-// Get ALL token accounts for a wallet (REAL DEVNET TOKENS)
+// Get ALL token accounts for a wallet (REAL MAINNET TOKENS)
 export const getAllTokenAccounts = async (publicKey: string) => {
   try {
     const wallet = new PublicKey(publicKey);
