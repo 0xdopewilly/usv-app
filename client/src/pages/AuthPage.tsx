@@ -1,42 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, Mail, Apple, ArrowLeft, Wallet } from 'lucide-react';
+import { Eye, EyeOff, Mail, Apple, ArrowLeft } from 'lucide-react';
 import { FaGoogle } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
-// Safely import ConnectWallet with dynamic ESM import
-const SafeConnectWallet = ({ onConnected }: { onConnected?: (publicKey: string) => void }) => {
-  const [WalletComponent, setWalletComponent] = useState<any>(null);
-  
-  useEffect(() => {
-    // Dynamic import after mount to avoid polyfill issues
-    import('@/components/ConnectWallet')
-      .then((module) => {
-        setWalletComponent(() => module.default);
-      })
-      .catch((error) => {
-        console.warn('Solana wallet connection unavailable:', error);
-        setWalletComponent(null);
-      });
-  }, []);
-  
-  if (WalletComponent) {
-    return <WalletComponent onConnected={onConnected} />;
-  }
-  
-  return (
-    <Button 
-      variant="outline" 
-      className="w-full bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border-purple-500/30 text-purple-200 hover:bg-purple-600/30"
-      disabled
-    >
-      <Wallet className="mr-2 h-4 w-4" />
-      {WalletComponent === null ? 'Wallet Connection Unavailable' : 'Loading Wallet...'}
-    </Button>
-  );
-};
 
 // Apple Sign-In & Google Sign-In Configuration
 declare global {
@@ -497,20 +466,6 @@ export default function AuthPage() {
             Continue with Email
           </Button>
 
-          {/* Wallet Connect */}
-          <div className="pt-2">
-            <SafeConnectWallet 
-              onConnected={(publicKey: string) => {
-                toast({
-                  title: "Wallet Connected!",
-                  description: `Connected to ${publicKey.slice(0, 8)}... on Solana Mainnet`,
-                });
-              }}
-            />
-            <p className="text-center text-xs text-gray-500 mt-2">
-              ⚡ Connected to Solana Mainnet
-            </p>
-          </div>
         </motion.div>
 
         {/* Toggle Auth Mode */}
