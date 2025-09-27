@@ -1,5 +1,9 @@
 import { Connection, PublicKey, Transaction } from '@solana/web3.js';
-import { createTransferInstruction, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from '@solana/spl-token';
+import { createTransferInstruction, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, TOKEN_PROGRAM_ID, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token';
+import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
+import { walletAdapterIdentity } from '@metaplex-foundation/umi-web3js-adapters';
+import { fetchAllDigitalAssetByOwner } from '@metaplex-foundation/mpl-token-metadata';
+import { publicKey } from '@metaplex-foundation/umi';
 import { connection, phantomWallet } from './solana';
 
 // NFT Interface for standardized NFT data
@@ -14,8 +18,8 @@ export interface SolanaNFT {
     value: string;
   }>;
   collection?: {
-    name: string;
-    family: string;
+    name?: string;
+    family?: string;
   };
   creators?: Array<{
     address: string;
@@ -32,52 +36,51 @@ export interface SolanaNFT {
   uri?: string;
 }
 
-// Metaplex Token Metadata Program ID
-const METADATA_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s');
+// Initialize UMI for Metaplex operations
+const umi = createUmi(connection.rpcEndpoint);
 
 export class NFTService {
   private connection: Connection;
+  private umi: ReturnType<typeof createUmi>;
 
   constructor() {
     this.connection = connection;
+    this.umi = umi;
   }
 
   /**
-   * Fetch all NFTs owned by a wallet address
+   * Fetch all NFTs owned by a wallet address using Metaplex UMI
    */
   async getNFTsForWallet(walletAddress: string): Promise<SolanaNFT[]> {
     try {
       console.log('🎨 Fetching NFTs for wallet:', walletAddress);
       
-      const publicKey = new PublicKey(walletAddress);
-      
-      // Get all token accounts owned by the wallet
-      const tokenAccounts = await this.connection.getParsedTokenAccountsByOwner(
-        publicKey,
-        { programId: new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA') }
-      );
+      // Use Metaplex UMI to fetch all digital assets
+      const owner = publicKey(walletAddress);
+      const digitalAssets = await fetchAllDigitalAssetByOwner(this.umi, owner);
 
+      console.log(`📦 Found ${digitalAssets.length} digital assets`);
+
+      // Convert to parallel processing with concurrency limit
+      const CONCURRENCY_LIMIT = 5;
       const nfts: SolanaNFT[] = [];
-
-      // Filter for NFTs (tokens with decimals = 0 and amount = 1)
-      for (const tokenAccount of tokenAccounts.value) {
-        const tokenAmount = tokenAccount.account.data.parsed.info.tokenAmount;
-        const mint = tokenAccount.account.data.parsed.info.mint;
-
-        // Check if it's likely an NFT (decimals = 0, amount = 1)
-        if (tokenAmount.decimals === 0 && tokenAmount.uiAmount === 1) {
-          try {
-            const nft = await this.getNFTMetadata(mint);
-            if (nft) {
-              nfts.push(nft);
-            }
-          } catch (error) {
-            console.warn(`Failed to fetch metadata for NFT ${mint}:`, error);
+      
+      for (let i = 0; i < digitalAssets.length; i += CONCURRENCY_LIMIT) {
+        const batch = digitalAssets.slice(i, i + CONCURRENCY_LIMIT);
+        const batchResults = await Promise.allSettled(
+          batch.map(asset => this.convertDigitalAssetToNFT(asset))
+        );
+        
+        for (const result of batchResults) {
+          if (result.status === 'fulfilled' && result.value) {
+            nfts.push(result.value);
+          } else if (result.status === 'rejected') {
+            console.warn('Failed to process NFT:', result.reason);
           }
         }
       }
 
-      console.log(`✅ Found ${nfts.length} NFTs for wallet`);
+      console.log(`✅ Successfully processed ${nfts.length} NFTs for wallet`);
       return nfts;
     } catch (error) {
       console.error('Failed to fetch NFTs for wallet:', error);
@@ -86,64 +89,62 @@ export class NFTService {
   }
 
   /**
-   * Get NFT metadata from mint address using direct RPC calls
+   * Convert Metaplex UMI DigitalAsset to our NFT interface
    */
-  async getNFTMetadata(mintAddress: string): Promise<SolanaNFT | null> {
+  private async convertDigitalAssetToNFT(asset: any): Promise<SolanaNFT | null> {
     try {
-      const mintKey = new PublicKey(mintAddress);
-      
-      // Find metadata PDA (Program Derived Address)
-      const [metadataPDA] = PublicKey.findProgramAddressSync(
-        [
-          Buffer.from('metadata'),
-          METADATA_PROGRAM_ID.toBuffer(),
-          mintKey.toBuffer(),
-        ],
-        METADATA_PROGRAM_ID
-      );
-      
-      // Get metadata account
-      const metadataAccount = await this.connection.getAccountInfo(metadataPDA);
-      if (!metadataAccount) {
-        return null;
-      }
-
-      // Parse basic metadata from the account data
-      const metadata = this.parseMetadataAccount(metadataAccount.data);
-      
-      // Fetch off-chain metadata if URI exists
+      // Get off-chain metadata if available
       let offChainMetadata: any = {};
-      if (metadata.uri) {
+      if (asset.metadata?.uri) {
         try {
-          const response = await fetch(metadata.uri.replace(/\0/g, ''));
+          const response = await fetch(asset.metadata.uri);
           if (response.ok) {
             offChainMetadata = await response.json();
           }
         } catch (error) {
-          console.warn(`Failed to fetch off-chain metadata for ${mintAddress}:`, error);
+          console.warn(`Failed to fetch off-chain metadata for ${asset.publicKey}:`, error);
         }
       }
 
       return {
-        mint: mintAddress,
-        name: offChainMetadata.name || metadata.name || 'Unknown NFT',
-        symbol: offChainMetadata.symbol || metadata.symbol || '',
+        mint: asset.publicKey.toString(),
+        name: offChainMetadata.name || asset.metadata?.name || 'Unknown NFT',
+        symbol: offChainMetadata.symbol || asset.metadata?.symbol || '',
         description: offChainMetadata.description || 'No description available',
         image: offChainMetadata.image || offChainMetadata.image_url,
         attributes: offChainMetadata.attributes || [],
-        collection: offChainMetadata.collection || (metadata.collection ? {
+        collection: asset.metadata?.collection ? {
           name: offChainMetadata.collection?.name || 'Unknown Collection',
-          family: offChainMetadata.collection?.family || 'Unknown'
-        } : undefined),
-        creators: metadata.creators?.map((creator: any) => ({
-          address: creator.address,
+          family: offChainMetadata.collection?.family
+        } : undefined,
+        creators: asset.metadata?.creators?.map((creator: any) => ({
+          address: creator.address.toString(),
           verified: creator.verified,
           share: creator.share
         })),
         properties: offChainMetadata.properties,
-        sellerFeeBasisPoints: metadata.sellerFeeBasisPoints,
-        uri: metadata.uri?.replace(/\0/g, '')
+        sellerFeeBasisPoints: asset.metadata?.sellerFeeBasisPoints,
+        uri: asset.metadata?.uri
       };
+    } catch (error) {
+      console.error(`Failed to convert digital asset ${asset.publicKey}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Get NFT metadata by mint address using UMI
+   */
+  async getNFTMetadata(mintAddress: string): Promise<SolanaNFT | null> {
+    try {
+      const mint = publicKey(mintAddress);
+      const digitalAssets = await fetchAllDigitalAssetByOwner(this.umi, mint);
+      
+      if (digitalAssets.length === 0) {
+        return null;
+      }
+
+      return await this.convertDigitalAssetToNFT(digitalAssets[0]);
     } catch (error) {
       console.error(`Failed to get NFT metadata for ${mintAddress}:`, error);
       return null;
@@ -151,68 +152,7 @@ export class NFTService {
   }
 
   /**
-   * Parse metadata account data (simplified parser)
-   */
-  private parseMetadataAccount(data: Buffer): any {
-    try {
-      // This is a simplified parser - for production use a proper borsh deserializer
-      let offset = 1; // Skip discriminator
-      
-      // Skip update authority (32 bytes)
-      offset += 32;
-      
-      // Skip mint (32 bytes) 
-      offset += 32;
-      
-      // Read name length (4 bytes)
-      const nameLength = data.readUInt32LE(offset);
-      offset += 4;
-      
-      // Read name
-      const name = data.slice(offset, offset + nameLength).toString('utf8').replace(/\0/g, '');
-      offset += nameLength;
-      
-      // Read symbol length (4 bytes)
-      const symbolLength = data.readUInt32LE(offset);
-      offset += 4;
-      
-      // Read symbol
-      const symbol = data.slice(offset, offset + symbolLength).toString('utf8').replace(/\0/g, '');
-      offset += symbolLength;
-      
-      // Read URI length (4 bytes)
-      const uriLength = data.readUInt32LE(offset);
-      offset += 4;
-      
-      // Read URI
-      const uri = data.slice(offset, offset + uriLength).toString('utf8').replace(/\0/g, '');
-      offset += uriLength;
-      
-      // Read seller fee basis points (2 bytes)
-      const sellerFeeBasisPoints = data.readUInt16LE(offset);
-      offset += 2;
-      
-      return {
-        name,
-        symbol,
-        uri,
-        sellerFeeBasisPoints,
-        creators: [] // Simplified - would need more complex parsing for creators
-      };
-    } catch (error) {
-      console.error('Failed to parse metadata account:', error);
-      return {
-        name: 'Unknown NFT',
-        symbol: '',
-        uri: '',
-        sellerFeeBasisPoints: 0,
-        creators: []
-      };
-    }
-  }
-
-  /**
-   * Transfer NFT to another wallet
+   * Transfer NFT to another wallet with modern token program support
    */
   async transferNFT(nftMint: string, toAddress: string): Promise<{ success: boolean; signature?: string; error?: string }> {
     try {
@@ -224,9 +164,18 @@ export class NFTService {
       const fromKey = phantomWallet.publicKey;
       const toKey = new PublicKey(toAddress);
 
-      // Get associated token accounts
-      const fromTokenAccount = await getAssociatedTokenAddress(mintKey, fromKey);
-      const toTokenAccount = await getAssociatedTokenAddress(mintKey, toKey);
+      // Get mint info to determine token program
+      const mintInfo = await this.connection.getAccountInfo(mintKey);
+      if (!mintInfo) {
+        return { success: false, error: 'NFT mint not found' };
+      }
+
+      // Detect token program (legacy vs Token-2022)
+      const tokenProgram = mintInfo.owner.equals(TOKEN_PROGRAM_ID) ? TOKEN_PROGRAM_ID : TOKEN_2022_PROGRAM_ID;
+      
+      // Get associated token accounts with correct program
+      const fromTokenAccount = await getAssociatedTokenAddress(mintKey, fromKey, false, tokenProgram);
+      const toTokenAccount = await getAssociatedTokenAddress(mintKey, toKey, false, tokenProgram);
 
       const transaction = new Transaction();
 
@@ -239,40 +188,97 @@ export class NFTService {
             fromKey, // payer
             toTokenAccount, // associatedToken
             toKey, // owner
-            mintKey // mint
+            mintKey, // mint
+            tokenProgram // token program
           )
         );
       }
 
-      // Add transfer instruction (NFTs have amount = 1)
-      transaction.add(
-        createTransferInstruction(
-          fromTokenAccount, // source
-          toTokenAccount, // destination
-          fromKey, // owner
-          1 // amount (always 1 for NFTs)
-        )
-      );
+      // For modern NFTs, we should use createTransferCheckedInstruction when possible
+      try {
+        // Import createTransferCheckedInstruction
+        const { createTransferCheckedInstruction } = await import('@solana/spl-token');
+        
+        // Add transfer instruction (NFTs have amount = 1, decimals = 0)
+        transaction.add(
+          createTransferCheckedInstruction(
+            fromTokenAccount, // source
+            mintKey, // mint
+            toTokenAccount, // destination
+            fromKey, // owner
+            1, // amount (always 1 for NFTs)
+            0, // decimals (always 0 for NFTs)
+            [], // multiSigners
+            tokenProgram // token program
+          )
+        );
+      } catch (importError) {
+        // Fallback to regular transfer if createTransferCheckedInstruction is not available
+        transaction.add(
+          createTransferInstruction(
+            fromTokenAccount, // source
+            toTokenAccount, // destination
+            fromKey, // owner
+            1, // amount (always 1 for NFTs)
+            [], // multiSigners
+            tokenProgram // token program
+          )
+        );
+      }
 
       // Set recent blockhash and fee payer
-      const { blockhash } = await this.connection.getLatestBlockhash();
+      const { blockhash } = await this.connection.getLatestBlockhash('finalized');
       transaction.recentBlockhash = blockhash;
       transaction.feePayer = fromKey;
 
-      // Sign and send transaction
-      const signature = await phantomWallet.signAndSendTransaction(transaction);
-      
-      console.log(`✅ NFT transferred successfully! Signature: ${signature}`);
+      // Sign and send transaction with retry logic
+      let signature: string;
+      let attempts = 0;
+      const maxAttempts = 3;
+
+      while (attempts < maxAttempts) {
+        try {
+          signature = await phantomWallet.signAndSendTransaction(transaction);
+          break;
+        } catch (txError: any) {
+          attempts++;
+          if (attempts >= maxAttempts) {
+            throw txError;
+          }
+          
+          // Refresh blockhash for retry
+          const { blockhash: newBlockhash } = await this.connection.getLatestBlockhash('finalized');
+          transaction.recentBlockhash = newBlockhash;
+          
+          // Wait before retry
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+        }
+      }
+
+      console.log(`✅ NFT transferred successfully! Signature: ${signature!}`);
       
       return {
         success: true,
-        signature
+        signature: signature!
       };
     } catch (error: any) {
       console.error('NFT transfer failed:', error);
+      
+      // Provide more specific error messages
+      let errorMessage = 'Failed to transfer NFT';
+      if (error.message?.includes('0x1')) {
+        errorMessage = 'Insufficient balance or NFT not owned';
+      } else if (error.message?.includes('blockhash')) {
+        errorMessage = 'Transaction expired, please try again';
+      } else if (error.message?.includes('simulation failed')) {
+        errorMessage = 'Transaction would fail - please check NFT ownership';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       return {
         success: false,
-        error: error.message || 'Failed to transfer NFT'
+        error: errorMessage
       };
     }
   }

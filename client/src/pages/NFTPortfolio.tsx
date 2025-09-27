@@ -40,7 +40,7 @@ export default function NFTPortfolio() {
   const filteredNFTs = nfts.filter(nft => 
     nft.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     nft.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    nft.collection?.name.toLowerCase().includes(searchQuery.toLowerCase())
+    nft.collection?.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleRefresh = async () => {
