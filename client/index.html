@@ -1,19 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="https://unpkg.com/buffer@6.0.3/index.js"></script>
     <script>
       // Essential polyfills for Solana/crypto libraries
-      if (typeof global === 'undefined') {
-        window.global = globalThis;
+      window.global = globalThis;
+      window.process = { env: { NODE_ENV: 'development' }, browser: true };
+      
+      // Simple Buffer polyfill
+      if (typeof Buffer === 'undefined') {
+        window.Buffer = class Buffer extends Uint8Array {
+          constructor(input, encoding) {
+            if (typeof input === 'string') {
+              super(new TextEncoder().encode(input));
+            } else if (typeof input === 'number') {
+              super(input);
+            } else {
+              super(input);
+            }
+          }
+          
+          static from(input, encoding) {
+            return new Buffer(input, encoding);
+          }
+          
+          static alloc(size) {
+            return new Buffer(size);
+          }
+          
+          static isBuffer(obj) {
+            return obj instanceof Buffer;
+          }
+          
+          toString(encoding = 'utf8') {
+            return new TextDecoder(encoding).decode(this);
+          }
+        };
+        
+        // Add required prototype properties
+        Buffer.prototype.constructor = Buffer;
       }
-      if (typeof process === 'undefined') {
-        window.process = { env: {}, browser: true };
-      }
-      // Buffer should now be available from the script above
-      if (typeof Buffer === 'undefined' && window.buffer) {
-        window.Buffer = window.buffer.Buffer;
-      }
+      
+      console.log("✅ Polyfills loaded - Buffer:", typeof Buffer, "global:", typeof global, "process:", typeof process);
     </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/usv-logo.png" />
