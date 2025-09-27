@@ -54,7 +54,7 @@ export default function SimpleWalletTest() {
           <div className="text-center text-gray-400">
             <p>🔧 Testing basic wallet UI...</p>
             <p>If you see this, the app is working!</p>
-            <p>Solana mainnet integration ready...</p>
+            <p>Solana integration loading...</p>
           </div>
         </div>
       </div>

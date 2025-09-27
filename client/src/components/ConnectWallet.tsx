@@ -77,7 +77,7 @@ export default function ConnectWallet({ onConnected, className = "" }: ConnectWa
         return;
       }
 
-      const response = await window.solana.connect();
+      const response = await window.solana.connect({ onlyIfTrusted: false });
       const publicKey = response.publicKey.toString();
       
       setIsConnected(true);

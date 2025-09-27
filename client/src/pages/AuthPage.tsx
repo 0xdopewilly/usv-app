@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
+import ConnectWallet from '@/components/ConnectWallet';
 
 // Apple Sign-In & Google Sign-In Configuration
 declare global {
@@ -466,6 +467,21 @@ export default function AuthPage() {
             Continue with Email
           </Button>
 
+          {/* Wallet Connect */}
+          <div className="pt-2">
+            <ConnectWallet 
+              onConnected={(publicKey) => {
+                toast({
+                  title: "Wallet Connected! (Devnet)",
+                  description: `Connected to ${publicKey.slice(0, 8)}... on Solana Devnet`,
+                });
+              }}
+              className="w-full"
+            />
+            <p className="text-center text-xs text-gray-500 mt-2">
+              ⚡ Currently using Solana Devnet for testing
+            </p>
+          </div>
         </motion.div>
 
         {/* Toggle Auth Mode */}

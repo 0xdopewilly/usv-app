@@ -25,8 +25,8 @@ export interface TokenAccount {
   isNative: boolean;
 }
 
-// REAL Solana mainnet connection
-const MAINNET_RPC = 'https://api.mainnet-beta.solana.com';
+// REAL Solana devnet connection
+const DEVNET_RPC = 'https://api.devnet.solana.com';
 
 // Real Phantom wallet service
 export class RealPhantomWallet {
@@ -94,7 +94,7 @@ export async function getRealSolBalance(publicKey: string): Promise<number> {
   try {
     console.log('🔍 Fetching REAL SOL balance for:', publicKey);
     
-    const response = await fetch(MAINNET_RPC, {
+    const response = await fetch(DEVNET_RPC, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -145,7 +145,7 @@ export async function getRealTokenAccounts(publicKey: string): Promise<TokenAcco
 
     // Get SPL token accounts
     try {
-      const response = await fetch(MAINNET_RPC, {
+      const response = await fetch(DEVNET_RPC, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -180,10 +180,10 @@ export async function getRealTokenAccounts(publicKey: string): Promise<TokenAcco
             let symbol = 'Unknown';
             let name = 'Unknown Token';
             
-            // Special case for USV token on mainnet
-            if (mint === 'A9Vnuav6Wd4azfrzKwpK1Z62frmJb7G3Ydr3FkvGKH8W') {
+            // Special case for USV token
+            if (mint === '8zGuJQqwhZafTah7Uc7Z4tXRnguqkn5KLFAP8oV6PHe2') {
               symbol = 'USV';
-              name = 'Ultra Smooth Vape Token';
+              name = 'Ultra Smooth Vape';
             } else {
               symbol = mint.slice(0, 8) + '...';
               name = `Token ${mint.slice(0, 8)}`;

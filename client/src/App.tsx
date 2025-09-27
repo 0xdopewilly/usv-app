@@ -10,8 +10,7 @@ import Home from "@/pages/Home";
 import SimpleWallet from "@/pages/SimpleWallet";
 import SimpleSend from "@/pages/SimpleSend";
 import Settings from "@/pages/Settings";
-import NFTPortfolio from "@/pages/NFTPortfolio";
-import NFTDetail from "@/pages/NFTDetail";
+import SimpleNFT from "@/pages/SimpleNFT";
 import QRScan from "@/pages/QRScan";
 import NotFound from "@/pages/NotFound";
 
@@ -111,12 +110,7 @@ function AppRouter() {
           </Route>
           <Route path="/nft-portfolio">
             <PageTransition pageKey="nft-portfolio">
-              <NFTPortfolio />
-            </PageTransition>
-          </Route>
-          <Route path="/nft/:mint">
-            <PageTransition pageKey="nft-detail">
-              <NFTDetail />
+              <SimpleNFT />
             </PageTransition>
           </Route>
           <Route path="/settings">

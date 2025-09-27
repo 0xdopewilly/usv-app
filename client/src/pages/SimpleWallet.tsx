@@ -31,9 +31,9 @@ export default function SimpleWallet() {
     setIsRefreshing(true);
     
     try {
-      console.log('🔄 Loading REAL balances from Solana mainnet...');
+      console.log('🔄 Loading REAL balances from Solana devnet...');
       
-      // Fetch REAL token balances from Solana mainnet
+      // Fetch REAL token balances from Solana devnet
       const realTokens = await refreshRealWalletBalances(address);
       setTokens(realTokens);
       
@@ -48,7 +48,7 @@ export default function SimpleWallet() {
       
       toast({
         title: "💰 REAL Balances Loaded!",
-        description: `Found ${realTokens.length} tokens from mainnet blockchain`,
+        description: `Found ${realTokens.length} tokens from devnet blockchain`,
       });
       
       console.log('✅ REAL balances loaded:', realTokens);
@@ -56,7 +56,7 @@ export default function SimpleWallet() {
       console.error('❌ Failed to load real balances:', error);
       toast({
         title: "❌ Balance Load Failed",
-        description: "Failed to fetch from Solana mainnet",
+        description: "Failed to fetch from Solana devnet",
         variant: "destructive"
       });
     } finally {
@@ -74,7 +74,7 @@ export default function SimpleWallet() {
       return;
     }
     
-    console.log('🔄 Refreshing REAL balances from mainnet...');
+    console.log('🔄 Refreshing REAL balances from devnet...');
     await loadRealBalances(user.walletAddress);
   };
 
