@@ -136,15 +136,22 @@ function AppRouter() {
 }
 
 function App() {
+  console.log("🔥 App component is rendering!");
+  
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <div className="min-h-screen bg-black text-white">
-          <AppRouter />
-          <Toaster />
-        </div>
-      </AuthProvider>
-    </QueryClientProvider>
+    <div 
+      style={{ 
+        background: 'red', 
+        color: 'white', 
+        padding: '50px', 
+        fontSize: '30px',
+        minHeight: '100vh'
+      }}
+    >
+      <h1>🚀 REACT IS WORKING!</h1>
+      <p>If you see this, React is loading correctly.</p>
+      <p>Time: {new Date().toLocaleTimeString()}</p>
+    </div>
   );
 }
 

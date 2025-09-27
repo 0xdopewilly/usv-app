@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script>
+      // Fix for Node.js global variable in browser
+      if (typeof global === 'undefined') {
+        var global = globalThis;
+      }
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/usv-logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,7 +34,14 @@
     <title>USV Token - Ultra Smooth Vape Ecosystem</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">Loading...</div>
+    <script>
+      console.log("🔥 HTML script is executing!");
+      document.getElementById('root').innerHTML = '<div style="background: green; color: white; padding: 20px; font-size: 24px;">HTML SCRIPT WORKS!</div>';
+      setTimeout(() => {
+        console.log("🔥 About to load main.tsx...");
+      }, 100);
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,0 +1,63 @@
+Check phishing by URL: Passed.
+index-alOfmrvU.js:345 Uncaught ReferenceError: global is not defined
+    at index-alOfmrvU.js:345:300762
+(anonymous) @ index-alOfmrvU.js:345Understand this error
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+initSelectedAddress @ injected.js:1
+initEthereumProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1Understand this warning
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+getInitTronWeb @ injected.js:1
+initTronProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1Understand this warning
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+_initRequest @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1Understand this warning
+injected.js:1 TronLink initiated
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1
+t2o @ injected.js:1
+Z5o @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1Understand this warning
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">Understand this warning
+2provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
