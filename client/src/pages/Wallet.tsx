@@ -259,7 +259,7 @@ export default function Wallet() {
               {hideBalance ? '••••••' : `$${totalBalance.toFixed(3)}`}
             </h2>
             <div className="text-center">
-              <div className="text-gray-400 text-xs">💰 Real-time devnet balance</div>
+              <div className="text-gray-400 text-xs">💰 Real-time mainnet balance</div>
               <div className="text-electric-blue text-xs">{currentSolBalance.toFixed(4)} SOL</div>
             </div>
             <motion.div
@@ -475,13 +475,13 @@ export default function Wallet() {
               </div>
             </motion.div>
 
-            {/* SOL Asset - LIVE DEVNET BALANCE with SEND functionality */}
+            {/* SOL Asset - LIVE MAINNET BALANCE with SEND functionality */}
             <motion.div
               whileTap={{ scale: 0.98 }}
               onClick={() => {
                 toast({
                   title: "Solana (SOL)",
-                  description: `Live devnet balance: ${realSolBalance.toFixed(4)} SOL`,
+                  description: `Live mainnet balance: ${realSolBalance.toFixed(4)} SOL`,
                 });
               }}
               className="flex items-center justify-between bg-gray-900/50 rounded-xl p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
@@ -570,7 +570,7 @@ export default function Wallet() {
             
             <div className="bg-black/30 rounded-xl p-4 mb-4">
               <div className="flex justify-between items-center mb-2">
-                <p className="text-xs text-gray-400">Live Devnet Balance</p>
+                <p className="text-xs text-gray-400">Live Mainnet Balance</p>
                 <p className="text-white font-semibold" data-testid="text-usv-wallet-balance">
                   {currentSolBalance.toFixed(4)} SOL
                 </p>

@@ -14,8 +14,8 @@ interface WalletContextType {
 const WalletContext = createContext<WalletContextType | null>(null);
 
 export function WalletProvider({ children }: { children: ReactNode }) {
-  // Use Solana devnet for development
-  const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
+  // Use Solana mainnet for production
+  const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 
   // For now, we'll simulate wallet connection
   // In production, this would integrate with actual Solana wallets

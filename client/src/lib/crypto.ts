@@ -18,7 +18,7 @@ export interface WalletBalance {
 export class SolanaService {
   private connection: Connection;
   
-  constructor(rpcUrl: string = 'https://api.devnet.solana.com') {
+  constructor(rpcUrl: string = 'https://api.mainnet-beta.solana.com') {
     this.connection = new Connection(rpcUrl, 'confirmed');
   }
 
