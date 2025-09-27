@@ -135,22 +135,37 @@ function AppRouter() {
   );
 }
 
+// Test with minimal App first
 function App() {
-  console.log("🔥 App component is rendering!");
+  console.log("🔥 App component rendering!");
   
   return (
     <div 
-      style={{ 
-        background: 'red', 
-        color: 'white', 
-        padding: '50px', 
-        fontSize: '30px',
-        minHeight: '100vh'
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        padding: '50px',
+        fontFamily: 'Inter, sans-serif'
       }}
     >
-      <h1>🚀 REACT IS WORKING!</h1>
-      <p>If you see this, React is loading correctly.</p>
-      <p>Time: {new Date().toLocaleTimeString()}</p>
+      <div style={{ textAlign: 'center' }}>
+        <h1 style={{ fontSize: '3rem', marginBottom: '2rem' }}>
+          🚀 USV Token
+        </h1>
+        <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>
+          Ultra Smooth Vape Token Ecosystem
+        </p>
+        <div style={{
+          background: 'rgba(255,255,255,0.1)',
+          padding: '2rem',
+          borderRadius: '1rem',
+          backdropFilter: 'blur(10px)'
+        }}>
+          <h2>✅ React is Working!</h2>
+          <p>Login page coming soon...</p>
+        </div>
+      </div>
     </div>
   );
 }

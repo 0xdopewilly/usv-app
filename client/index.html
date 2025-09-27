@@ -2,9 +2,27 @@
 <html lang="en">
   <head>
     <script>
-      // Fix for Node.js global variable in browser
+      // Essential polyfills for Solana/crypto libraries
       if (typeof global === 'undefined') {
-        var global = globalThis;
+        window.global = globalThis;
+      }
+      if (typeof process === 'undefined') {
+        window.process = { env: {}, browser: true };
+      }
+      if (typeof Buffer === 'undefined') {
+        // Import buffer polyfill
+        import('https://unpkg.com/buffer@6.0.3/index.js').then((buffer) => {
+          window.Buffer = buffer.Buffer;
+          console.log("✅ Buffer polyfill loaded");
+        }).catch(() => {
+          // Fallback simple Buffer implementation
+          window.Buffer = {
+            from: (data) => new Uint8Array(data),
+            alloc: (size) => new Uint8Array(size),
+            isBuffer: (obj) => obj instanceof Uint8Array
+          };
+          console.log("✅ Simple Buffer fallback loaded");
+        });
       }
     </script>
     <meta charset="UTF-8" />
@@ -34,7 +52,7 @@
     <title>USV Token - Ultra Smooth Vape Ecosystem</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">Initial content...</div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
