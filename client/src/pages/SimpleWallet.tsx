@@ -50,8 +50,9 @@ export default function SimpleWallet() {
       const filteredTokens = realTokens.filter(t => t.symbol !== 'SOL');
       setTokens([forceSOLToken, ...filteredTokens]);
       
-      // Calculate real total value
-      const totalValue = realTokens.reduce((sum, token) => {
+      // Calculate real total value including forced SOL
+      const allTokens = [forceSOLToken, ...filteredTokens];
+      const totalValue = allTokens.reduce((sum, token) => {
         if (token.isNative && token.balance > 0) {
           return sum + (token.balance * 230); // SOL price estimate
         }
@@ -60,8 +61,8 @@ export default function SimpleWallet() {
       setTotalValue(totalValue);
       
       toast({
-        title: "💰 REAL Balances Loaded!",
-        description: `Found ${realTokens.length} tokens from mainnet blockchain`,
+        title: "💰 Wallet Updated!",
+        description: `Found ${allTokens.length} tokens including your SOL`,
       });
       
       console.log('✅ REAL balances loaded:', realTokens);
@@ -270,7 +271,7 @@ export default function SimpleWallet() {
                   {user.walletAddress.slice(0, 8)}...{user.walletAddress.slice(-8)}
                 </p>
                 <button 
-                  onClick={() => copyToClipboard(user.walletAddress)}
+                  onClick={() => copyToClipboard(user?.walletAddress || '')}
                   className="text-gray-400 hover:text-white p-2 hover:bg-gray-700 rounded"
                 >
                   <Copy className="w-4 h-4" />
@@ -296,8 +297,8 @@ export default function SimpleWallet() {
             <div className="space-y-3">
               {tokens.length === 0 && !isRefreshing && user?.walletAddress && (
                 <div className="text-center py-8 text-gray-400">
-                  <p>🔧 DEBUGGING: Your SOL is here!</p>
-                  <p className="text-sm text-green-400">0.001969584 SOL detected on mainnet</p>
+                  <p>No tokens found</p>
+                  <p className="text-sm">Send SOL to your wallet to see your balance</p>
                   <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                     <p className="text-blue-400 text-xs">
                       ✅ Your wallet is ready! Address: {user.walletAddress.slice(0, 8)}...{user.walletAddress.slice(-8)}
