@@ -25,8 +25,8 @@ export interface TokenAccount {
   isNative: boolean;
 }
 
-// REAL Solana devnet connection
-const DEVNET_RPC = 'https://api.devnet.solana.com';
+// REAL Solana mainnet connection
+const MAINNET_RPC = 'https://api.mainnet-beta.solana.com';
 
 // Real Phantom wallet service
 export class RealPhantomWallet {
@@ -57,7 +57,7 @@ export class RealPhantomWallet {
       this.publicKey = response.publicKey.toString();
       this.isConnected = true;
       
-      console.log('🦄 REAL Phantom wallet connected:', this.publicKey);
+      console.log('🦄 REAL Phantom wallet connected (MAINNET):', this.publicKey);
       
       return {
         success: true,
@@ -92,9 +92,9 @@ export class RealPhantomWallet {
 // REAL balance fetching using Solana RPC
 export async function getRealSolBalance(publicKey: string): Promise<number> {
   try {
-    console.log('🔍 Fetching REAL SOL balance for:', publicKey);
+    console.log('🔍 Fetching REAL SOL balance (MAINNET) for:', publicKey);
     
-    const response = await fetch(DEVNET_RPC, {
+    const response = await fetch(MAINNET_RPC, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ export async function getRealSolBalance(publicKey: string): Promise<number> {
     const lamports = data.result.value;
     const solBalance = lamports / 1000000000; // Convert lamports to SOL
     
-    console.log('💰 REAL SOL balance:', solBalance);
+    console.log('💰 REAL SOL balance (MAINNET):', solBalance);
     return solBalance;
   } catch (error) {
     console.error('Failed to fetch SOL balance:', error);
@@ -128,7 +128,7 @@ export async function getRealSolBalance(publicKey: string): Promise<number> {
 // Get ALL real token accounts
 export async function getRealTokenAccounts(publicKey: string): Promise<TokenAccount[]> {
   try {
-    console.log('🔍 Fetching REAL token accounts for:', publicKey);
+    console.log('🔍 Fetching REAL token accounts (MAINNET) for:', publicKey);
     
     const tokens: TokenAccount[] = [];
     
@@ -145,7 +145,7 @@ export async function getRealTokenAccounts(publicKey: string): Promise<TokenAcco
 
     // Get SPL token accounts
     try {
-      const response = await fetch(DEVNET_RPC, {
+      const response = await fetch(MAINNET_RPC, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -204,7 +204,7 @@ export async function getRealTokenAccounts(publicKey: string): Promise<TokenAcco
       console.error('Failed to fetch token accounts:', tokenError);
     }
 
-    console.log('💰 REAL tokens found:', tokens);
+    console.log('💰 REAL tokens found (MAINNET):', tokens);
     return tokens;
   } catch (error) {
     console.error('Failed to fetch token accounts:', error);
@@ -217,6 +217,6 @@ export const realPhantomWallet = new RealPhantomWallet();
 
 // Real wallet refresh function
 export async function refreshRealWalletBalances(publicKey: string): Promise<TokenAccount[]> {
-  console.log('🔄 Refreshing REAL wallet balances for:', publicKey);
+  console.log('🔄 Refreshing REAL wallet balances (MAINNET) for:', publicKey);
   return await getRealTokenAccounts(publicKey);
 }

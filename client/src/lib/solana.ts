@@ -4,10 +4,10 @@ import { createTransferInstruction, getAssociatedTokenAddress, createAssociatedT
 // USV Token Configuration
 export const USV_TOKEN_MINT = new PublicKey('8zGuJQqwhZafTah7Uc7Z4tXRnguqkn5KLFAP8oV6PHe2'); // Example mint address
 export const USV_DECIMALS = 6;
-export const SOLANA_NETWORK = 'devnet'; // Using devnet for real testing
+export const SOLANA_NETWORK = 'mainnet-beta'; // Production mainnet
 
-// REAL Solana connection
-export const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
+// REAL Solana mainnet connection
+export const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
 export const solanaConnection = connection; // Alias for compatibility
 
 // Enhanced Phantom Wallet Detection  
@@ -61,7 +61,7 @@ class PhantomWalletConnection {
       this.publicKey = response.publicKey;
       this.isConnected = true;
       
-      console.log('🦄 Phantom wallet connected:', response.publicKey.toString());
+      console.log('🦄 Phantom wallet connected (MAINNET):', response.publicKey.toString());
       
       return {
         success: true,
@@ -82,7 +82,7 @@ class PhantomWalletConnection {
       await this.phantom.disconnect();
       this.isConnected = false;
       this.publicKey = null;
-      console.log('🦄 Phantom wallet disconnected');
+      console.log('🦄 Phantom wallet disconnected (MAINNET)');
     }
   }
 
@@ -107,7 +107,7 @@ class PhantomWalletConnection {
 
     try {
       const response = await this.phantom.signAndSendTransaction(transaction);
-      console.log('🦄 Transaction sent:', response.signature);
+      console.log('🦄 Transaction sent (MAINNET):', response.signature);
       return response.signature;
     } catch (error: any) {
       console.error('Transaction failed:', error);
@@ -245,7 +245,7 @@ export class SolanaService {
       transaction.feePayer = phantomWallet.publicKey;
 
       const signature = await phantomWallet.signAndSendTransaction(transaction);
-      console.log(`✅ Transferred ${amount} USV tokens to ${toAddress}`);
+      console.log(`✅ Transferred ${amount} USV tokens (MAINNET) to ${toAddress}`);
       
       return signature;
     } catch (error: any) {
@@ -275,7 +275,7 @@ export class SolanaService {
       transaction.feePayer = phantomWallet.publicKey;
 
       const signature = await phantomWallet.signAndSendTransaction(transaction);
-      console.log(`✅ Transferred ${amount} SOL to ${toAddress}`);
+      console.log(`✅ Transferred ${amount} SOL (MAINNET) to ${toAddress}`);
       
       return signature;
     } catch (error: any) {
@@ -294,7 +294,7 @@ export class SolanaService {
       // For demo purposes, we'll create a simple transfer transaction
       // In a real app, this would interact with a staking program
       const signature = `stake_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      console.log(`🏦 Staked ${amount} USV tokens (simulated)`);
+      console.log(`🏦 Staked ${amount} USV tokens (MAINNET simulated)`);
       return signature;
     } catch (error: any) {
       console.error('Staking failed:', error);
@@ -310,7 +310,7 @@ export class SolanaService {
 
     try {
       const signature = `unstake_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      console.log(`💸 Unstaked ${amount} USV tokens (simulated)`);
+      console.log(`💸 Unstaked ${amount} USV tokens (MAINNET simulated)`);
       return signature;
     } catch (error: any) {
       console.error('Unstaking failed:', error);
@@ -407,9 +407,9 @@ const getTokenName = async (mint: string): Promise<string> => {
 // Refresh all balances for a wallet
 export const refreshWalletBalances = async (publicKey: string) => {
   try {
-    console.log('🔄 Refreshing wallet balances for:', publicKey);
+    console.log('🔄 Refreshing wallet balances (MAINNET) for:', publicKey);
     const tokens = await getAllTokenAccounts(publicKey);
-    console.log('💰 Found tokens:', tokens);
+    console.log('💰 Found tokens (MAINNET):', tokens);
     return tokens;
   } catch (error) {
     console.error('Failed to refresh balances:', error);
@@ -442,7 +442,7 @@ export const transferFromPhantomToApp = async (recipientAddress: string, amount:
     // Wait for confirmation
     await connection.confirmTransaction(signature);
     
-    console.log(`✅ Successfully transferred ${amount} SOL to app wallet`);
+    console.log(`✅ Successfully transferred ${amount} SOL (MAINNET) to app wallet`);
     
     return {
       success: true,
