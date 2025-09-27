@@ -39,13 +39,16 @@ export default function Wallet() {
   const [realSolBalance, setRealSolBalance] = useState(0);
   
   // Real-time SOL balance fetching
-  const { data: walletBalance, refetch: refetchBalance } = useQuery({
+  const { data: walletBalance, refetch: refetchBalance, isLoading: balanceLoading } = useQuery({
     queryKey: ['wallet-balance', user?.walletAddress],
     queryFn: async () => {
       if (!user?.walletAddress) return null;
+      console.log('🔍 Fetching balance for:', user.walletAddress);
       const response = await fetch(`/api/wallet/balance/${user.walletAddress}`);
       if (!response.ok) throw new Error('Failed to fetch balance');
-      return response.json();
+      const data = await response.json();
+      console.log('💰 Balance API Response:', data);
+      return data;
     },
     enabled: !!user?.walletAddress,
     refetchInterval: 10000, // Refresh every 10 seconds for real-time updates
@@ -77,7 +80,6 @@ export default function Wallet() {
 
     realTimePriceService.startRealTimeUpdates(5000);
     checkPhantomConnection();
-    checkRealSolanaBalance();
 
     return () => {
       unsubscribe();
@@ -85,21 +87,9 @@ export default function Wallet() {
     };
   }, []);
 
-  // Check real Solana balance for USV wallet
-  const checkRealSolanaBalance = async () => {
-    if (user?.walletAddress) {
-      try {
-        const balance = await solanaService.getSolBalance(user.walletAddress);
-        setRealSolBalance(balance);
-        console.log(`🚀 Real SOL balance for ${user.walletAddress}: ${balance} SOL`);
-      } catch (error) {
-        console.error('Error checking SOL balance:', error);
-      }
-    }
-  };
-  
-  // Calculate balances from real-time data
-  const currentSolBalance = walletBalance?.balanceSOL || realSolBalance || 0;
+  // Calculate balances from real-time API data
+  const currentSolBalance = walletBalance?.balanceSOL || 0;
+  console.log('🎯 Current SOL Balance Display:', currentSolBalance, 'from API data:', walletBalance);
   const usvTokens = tokenBalances?.tokens?.find((token: any) => token.symbol === 'USV')?.amount || 2847.39; // Fallback to mock for demo
   const totalBalance = (currentSolBalance * (prices?.SOL?.price || 23.45)) + (usvTokens * (prices?.USV?.price || 0.20));
   
@@ -194,7 +184,7 @@ export default function Wallet() {
       setTimeout(async () => {
         const newBalance = await phantomWallet.getBalance();
         setPhantomBalance(newBalance);
-        await checkRealSolanaBalance();
+        refetchBalance(); // Refresh API balance
       }, 2000);
     } catch (error: any) {
       toast({
@@ -481,7 +471,7 @@ export default function Wallet() {
               onClick={() => {
                 toast({
                   title: "Solana (SOL)",
-                  description: `Live mainnet balance: ${realSolBalance.toFixed(4)} SOL`,
+                  description: `Live mainnet balance: ${currentSolBalance.toFixed(4)} SOL`,
                 });
               }}
               className="flex items-center justify-between bg-gray-900/50 rounded-xl p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
@@ -504,15 +494,15 @@ export default function Wallet() {
                 />
                 <div>
                   <p className="text-white font-medium">Solana</p>
-                  <p className="text-gray-400 text-sm">SOL • {realSolBalance.toFixed(4)}</p>
+                  <p className="text-gray-400 text-sm">SOL • {currentSolBalance.toFixed(4)}</p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-white font-bold">${(realSolBalance * (prices?.SOL?.price || 215)).toFixed(2)}</p>
+                <p className="text-white font-bold">${(currentSolBalance * (prices?.SOL?.price || 215)).toFixed(2)}</p>
                 <motion.div
                   whileHover={{ 
                     scale: 1.05,
-                    boxShadow: realSolBalance > 0 
+                    boxShadow: currentSolBalance > 0 
                       ? "0 4px 15px rgba(59, 130, 246, 0.4)" 
                       : "0 4px 15px rgba(107, 114, 128, 0.2)"
                   }}
@@ -522,7 +512,7 @@ export default function Wallet() {
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (realSolBalance > 0) {
+                      if (currentSolBalance > 0) {
                         setLocation('/send');
                       } else {
                         toast({
@@ -534,7 +524,7 @@ export default function Wallet() {
                     }}
                     size="sm"
                     className={`text-xs px-3 py-1 mt-1 ${
-                      realSolBalance > 0 
+                      currentSolBalance > 0 
                         ? 'bg-blue-500 hover:bg-blue-600 text-white' 
                         : 'border border-gray-600 text-gray-400 hover:bg-gray-800'
                     }`}
