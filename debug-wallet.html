@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>USV Wallet Debug</title>
+    <style>
+        body { font-family: monospace; background: #000; color: #fff; padding: 20px; }
+        .address { background: #333; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .balance { color: #0f0; font-size: 18px; }
+        .error { color: #f00; }
+        button { background: #0079F2; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 5px; cursor: pointer; }
+        input { background: #333; color: #fff; padding: 10px; border: 1px solid #555; border-radius: 5px; width: 400px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 USV Wallet Debugger</h1>
+    <p>Let's find your SOL! Test any Solana address to check balance:</p>
+    
+    <div>
+        <label>Enter Solana Address:</label><br>
+        <input type="text" id="addressInput" placeholder="Enter wallet address...">
+        <button onclick="checkBalance()">Check Balance</button>
+    </div>
+    
+    <div id="result"></div>
+    
+    <h3>🔧 Quick Tests:</h3>
+    <button onclick="checkAddress('11111111111111111111111111111112')">Test System Account (Should have ~17 SOL)</button>
+    
+    <script>
+        async function checkBalance() {
+            const address = document.getElementById('addressInput').value.trim();
+            if (!address) {
+                alert('Please enter an address');
+                return;
+            }
+            
+            document.getElementById('result').innerHTML = '<p>⏳ Checking balance...</p>';
+            
+            try {
+                // Test our API first
+                const apiResponse = await fetch(`/api/wallet/balance/${address}`);
+                if (apiResponse.ok) {
+                    const apiData = await apiResponse.json();
+                    document.getElementById('result').innerHTML = `
+                        <div class="address">
+                            <h3>📊 Balance Results for: ${address}</h3>
+                            <div class="balance">💰 SOL Balance: ${apiData.balanceSOL}</div>
+                            <div>🌐 Network: ${apiData.network}</div>
+                            <div>⏰ Last Updated: ${apiData.lastUpdated}</div>
+                            <div>🔢 Lamports: ${apiData.balanceLamports}</div>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('result').innerHTML = `<div class="error">❌ API Error: ${apiResponse.status}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<div class="error">❌ Error: ${error.message}</div>`;
+            }
+        }
+        
+        function checkAddress(addr) {
+            document.getElementById('addressInput').value = addr;
+            checkBalance();
+        }
+        
+        // Auto-check if user is logged in (get their wallet address)
+        setTimeout(async () => {
+            try {
+                const response = await fetch('/api/auth/verify', {
+                    headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
+                });
+                if (response.ok) {
+                    const userData = await response.json();
+                    if (userData.user?.walletAddress) {
+                        document.getElementById('result').innerHTML = `
+                            <div class="address">
+                                <h3>👤 Your App Wallet Address:</h3>
+                                <div style="font-size: 14px; background: #555; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                                    ${userData.user.walletAddress}
+                                </div>
+                                <button onclick="checkAddress('${userData.user.walletAddress}')">Check My Wallet Balance</button>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (e) {
+                console.log('User not logged in or error:', e);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
