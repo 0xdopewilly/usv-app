@@ -1,65 +1,51 @@
+import { useState } from 'react';
 import { useRoute, useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Share, Heart, ArrowRightLeft, Tag, Coins } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { ArrowLeft, Share, Send, ImageIcon, ExternalLink, RefreshCw } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
-
-interface NFT {
-  id: string;
-  name: string;
-  collection: string;
-  image: string;
-  description?: string;
-  floorPrice: number;
-  lastSalePrice?: number;
-  attributes?: Array<{
-    trait_type: string;
-    value: string;
-  }>;
-}
+import { nftService, type SolanaNFT, formatNFTImage, formatNFTName, shortenAddress } from '@/lib/nftService';
 
 export default function NFTDetail() {
-  const [, params] = useRoute('/nfts/:id');
+  const [, params] = useRoute('/nft/:mint');
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [sendAddress, setSendAddress] = useState('');
+  const [isSending, setIsSending] = useState(false);
   
-  const { data: nft, isLoading } = useQuery({
-    queryKey: ['/api/nfts', params?.id],
+  const mintAddress = params?.mint;
+
+  // Fetch NFT data by mint address
+  const { data: nft, isLoading, error } = useQuery({
+    queryKey: ['nft-detail', mintAddress],
+    queryFn: async () => {
+      if (!mintAddress) throw new Error('No mint address provided');
+      return await nftService.getNFTByMint(mintAddress);
+    },
+    enabled: !!mintAddress,
   });
 
-  // Mock NFT data since we don't have real data
-  const mockNFT: NFT = {
-    id: params?.id || '1',
-    name: 'USV Genesis #001',
-    collection: 'USV Genesis Collection',
-    description: 'A rare genesis NFT from the USV Token ecosystem, representing early adoption and community membership.',
-    image: 'https://images.unsplash.com/photo-1634973357973-f2ed2657db3c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800',
-    floorPrice: 2.5,
-    lastSalePrice: 3.1,
-    attributes: [
-      { trait_type: 'Rarity', value: 'Legendary' },
-      { trait_type: 'Power Level', value: '9000' },
-      { trait_type: 'Generation', value: 'Genesis' },
-      { trait_type: 'Color Scheme', value: 'Electric Blue' },
-    ],
-  };
-
-  const displayNFT = nft || mockNFT;
-
   const handleShare = async () => {
+    if (!nft) return;
+    
+    const shareData = {
+      title: formatNFTName(nft.name),
+      text: `Check out this NFT: ${formatNFTName(nft.name)}`,
+      url: window.location.href,
+    };
+
     if (navigator.share) {
       try {
-        await navigator.share({
-          title: displayNFT.name,
-          text: `Check out this NFT: ${displayNFT.name}`,
-          url: window.location.href,
-        });
+        await navigator.share(shareData);
       } catch (error) {
         // User cancelled or error occurred
       }
     } else {
+      // Fallback - copy to clipboard
+      await navigator.clipboard.writeText(window.location.href);
       toast({
         title: "Link Copied",
         description: "NFT link copied to clipboard",
@@ -67,194 +53,256 @@ export default function NFTDetail() {
     }
   };
 
-  const handleFavorite = () => {
-    toast({
-      title: "Added to Favorites",
-      description: "NFT has been added to your favorites",
-    });
+  const handleSendNFT = async () => {
+    if (!nft || !sendAddress.trim()) return;
+
+    if (!nftService.isValidSolanaAddress(sendAddress)) {
+      toast({
+        title: "❌ Invalid Address",
+        description: "Please enter a valid Solana wallet address",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSending(true);
+    try {
+      const result = await nftService.transferNFT(nft.mint, sendAddress);
+      
+      if (result.success) {
+        toast({
+          title: "✅ NFT Sent Successfully!",
+          description: `${formatNFTName(nft.name)} sent to ${shortenAddress(sendAddress)}`
+        });
+        setSendAddress('');
+        // Navigate back to NFT portfolio
+        setLocation('/nft-portfolio');
+      } else {
+        toast({
+          title: "❌ Transfer Failed",
+          description: result.error || "Failed to send NFT",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "❌ Transfer Failed", 
+        description: "An error occurred while sending the NFT",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSending(false);
+    }
   };
 
-  const handleTransfer = () => {
-    toast({
-      title: "Transfer NFT",
-      description: "NFT transfer feature would be implemented here",
-    });
-  };
-
-  const handleListForSale = () => {
-    toast({
-      title: "List for Sale",
-      description: "Listing feature would be implemented here",
-    });
-  };
-
-  const handleStake = () => {
-    toast({
-      title: "Stake NFT",
-      description: "NFT staking feature would be implemented here",
-    });
+  const handleViewOnSolscan = () => {
+    if (!nft) return;
+    const url = `https://solscan.io/token/${nft.mint}`;
+    window.open(url, '_blank');
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-dark-primary flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-electric-blue to-crypto-gold rounded-full flex items-center justify-center animate-pulse">
-            <span className="text-xl font-bold text-white">USV</span>
+          <div className="w-16 h-16 mx-auto mb-4 bg-purple-500/20 rounded-full flex items-center justify-center">
+            <RefreshCw className="w-8 h-8 text-purple-400 animate-spin" />
           </div>
-          <p className="text-gray-400">Loading NFT...</p>
+          <p className="text-white text-lg mb-2">Loading NFT...</p>
+          <p className="text-gray-400 text-sm">Fetching details from Solana</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !nft) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center px-6">
+          <div className="w-16 h-16 mx-auto mb-4 bg-red-900/20 rounded-full flex items-center justify-center">
+            <ImageIcon className="w-8 h-8 text-red-400" />
+          </div>
+          <p className="text-red-400 text-lg mb-2">NFT Not Found</p>
+          <p className="text-gray-400 text-sm mb-6">
+            This NFT could not be loaded or does not exist
+          </p>
+          <Button 
+            onClick={() => setLocation('/nft-portfolio')}
+            variant="outline"
+            data-testid="button-back-to-portfolio"
+          >
+            Back to Portfolio
+          </Button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-dark-primary relative pb-20">
+    <div className="min-h-screen bg-black text-white">
       {/* Header */}
       <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="flex items-center justify-between p-6 pt-12 safe-top"
+        className="flex items-center justify-between p-6 border-b border-gray-800"
       >
         <Button
-          onClick={() => setLocation('/nfts')}
+          onClick={() => setLocation('/nft-portfolio')}
           variant="ghost"
-          size="icon"
-          className="w-10 h-10 bg-dark-accent rounded-full text-gray-300 hover:text-white"
+          size="sm"
+          className="text-white hover:bg-gray-800"
           data-testid="button-back"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back
         </Button>
-        <div className="flex space-x-2">
+        
+        <div className="flex items-center space-x-2">
           <Button
             onClick={handleShare}
             variant="ghost"
-            size="icon"
-            className="w-10 h-10 bg-dark-accent rounded-full text-gray-300 hover:text-white"
+            size="sm"
+            className="text-white hover:bg-gray-800"
             data-testid="button-share"
           >
             <Share className="w-5 h-5" />
           </Button>
           <Button
-            onClick={handleFavorite}
+            onClick={handleViewOnSolscan}
             variant="ghost"
-            size="icon"
-            className="w-10 h-10 bg-dark-accent rounded-full text-gray-300 hover:text-white"
-            data-testid="button-favorite"
+            size="sm"
+            className="text-white hover:bg-gray-800"
+            data-testid="button-view-explorer"
           >
-            <Heart className="w-5 h-5" />
+            <ExternalLink className="w-5 h-5" />
           </Button>
         </div>
       </motion.div>
-      
-      {/* NFT Image */}
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="px-6 mb-6"
-      >
-        <img
-          src={displayNFT.image}
-          alt={displayNFT.name}
-          className="w-full rounded-xl"
-          data-testid="img-nft"
-        />
-      </motion.div>
-      
-      {/* NFT Info */}
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        className="px-6 mb-6"
-      >
-        <h1 className="text-2xl font-bold mb-2 text-white" data-testid="text-nft-name">
-          {displayNFT.name}
-        </h1>
-        <p className="text-gray-400 mb-4" data-testid="text-nft-collection">
-          {displayNFT.collection}
-        </p>
-        
-        {displayNFT.description && (
-          <p className="text-gray-300 mb-4 text-sm" data-testid="text-nft-description">
-            {displayNFT.description}
-          </p>
-        )}
-        
-        <Card className="bg-dark-secondary p-4 border-dark-accent mb-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-gray-400 text-sm">Floor Price</p>
-              <p className="text-white font-medium" data-testid="text-floor-price">
-                {displayNFT.floorPrice} SOL
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-sm">Last Sale</p>
-              <p className="text-white font-medium" data-testid="text-last-sale">
-                {displayNFT.lastSalePrice || 'N/A'} {displayNFT.lastSalePrice ? 'SOL' : ''}
-              </p>
-            </div>
-          </div>
-        </Card>
 
-        {/* Attributes */}
-        {displayNFT.attributes && displayNFT.attributes.length > 0 && (
-          <Card className="bg-dark-secondary p-4 border-dark-accent mb-4">
-            <h3 className="text-white font-semibold mb-3">Attributes</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {displayNFT.attributes.map((attribute, index) => (
-                <div
-                  key={index}
-                  className="bg-dark-accent p-3 rounded-lg text-center"
-                  data-testid={`attribute-${index}`}
-                >
-                  <p className="text-gray-400 text-xs mb-1">{attribute.trait_type}</p>
-                  <p className="text-white font-medium text-sm">{attribute.value}</p>
+      <div className="max-w-md mx-auto p-6">
+        {/* NFT Image */}
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="aspect-square bg-gray-800 rounded-2xl overflow-hidden mb-6 relative"
+        >
+          {nft.image ? (
+            <img
+              src={formatNFTImage(nft.image)}
+              alt={formatNFTName(nft.name)}
+              className="w-full h-full object-cover"
+              data-testid="img-nft"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/50 to-blue-900/50">
+              <ImageIcon className="w-16 h-16 text-gray-400" />
+            </div>
+          )}
+        </motion.div>
+
+        {/* NFT Info */}
+        <motion.div
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="space-y-6"
+        >
+          {/* Basic Info */}
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-white mb-2" data-testid="text-nft-name">
+              {formatNFTName(nft.name)}
+            </h1>
+            {nft.collection?.name && (
+              <p className="text-purple-400" data-testid="text-collection">
+                {nft.collection.name}
+              </p>
+            )}
+            {nft.symbol && (
+              <p className="text-gray-400 text-sm">{nft.symbol}</p>
+            )}
+          </div>
+
+          {/* Description */}
+          {nft.description && (
+            <Card className="bg-gray-900 border-gray-700 p-4">
+              <h3 className="text-white font-medium mb-2">Description</h3>
+              <p className="text-gray-300 text-sm" data-testid="text-description">
+                {nft.description}
+              </p>
+            </Card>
+          )}
+
+          {/* Attributes */}
+          {nft.attributes && nft.attributes.length > 0 && (
+            <Card className="bg-gray-900 border-gray-700 p-4">
+              <h3 className="text-white font-medium mb-3">Attributes</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {nft.attributes.map((attr, index) => (
+                  <div key={index} className="bg-gray-800 rounded-lg p-3">
+                    <p className="text-gray-400 text-xs uppercase tracking-wide mb-1">
+                      {attr.trait_type}
+                    </p>
+                    <p className="text-white text-sm font-medium">{attr.value}</p>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Technical Details */}
+          <Card className="bg-gray-900 border-gray-700 p-4">
+            <h3 className="text-white font-medium mb-3">Details</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 text-sm">Mint Address</span>
+                <span className="text-white text-sm font-mono" data-testid="text-mint">
+                  {shortenAddress(nft.mint)}
+                </span>
+              </div>
+              {nft.sellerFeeBasisPoints !== undefined && (
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-400 text-sm">Royalty</span>
+                  <span className="text-white text-sm">
+                    {(nft.sellerFeeBasisPoints / 100).toFixed(2)}%
+                  </span>
                 </div>
-              ))}
+              )}
             </div>
           </Card>
-        )}
-      </motion.div>
-      
-      {/* Action Buttons */}
-      <motion.div
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
-        className="px-6 space-y-3"
-      >
-        <Button
-          onClick={handleTransfer}
-          className="w-full bg-gradient-to-r from-electric-blue to-crypto-gold text-white py-4 h-auto text-lg font-semibold glow-button flex items-center justify-center space-x-2"
-          data-testid="button-transfer"
-        >
-          <ArrowRightLeft className="w-5 h-5" />
-          <span>Transfer NFT</span>
-        </Button>
-        
-        <Button
-          onClick={handleListForSale}
-          variant="outline"
-          className="w-full bg-dark-accent hover:bg-gray-600 text-white py-4 h-auto text-lg font-semibold border border-gray-600 flex items-center justify-center space-x-2"
-          data-testid="button-list-sale"
-        >
-          <Tag className="w-5 h-5" />
-          <span>List for Sale</span>
-        </Button>
-        
-        <Button
-          onClick={handleStake}
-          className="w-full bg-crypto-gold hover:bg-yellow-600 text-white py-4 h-auto text-lg font-semibold flex items-center justify-center space-x-2"
-          data-testid="button-stake"
-        >
-          <Coins className="w-5 h-5" />
-          <span>Stake NFT</span>
-        </Button>
-      </motion.div>
+
+          {/* Send NFT Section */}
+          <Card className="bg-gray-900 border-gray-700 p-4">
+            <h3 className="text-white font-medium mb-4">Send NFT</h3>
+            <div className="space-y-3">
+              <Input
+                placeholder="Recipient wallet address"
+                value={sendAddress}
+                onChange={(e) => setSendAddress(e.target.value)}
+                className="w-full bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:border-purple-500"
+                data-testid="input-send-address"
+              />
+              <Button
+                onClick={handleSendNFT}
+                disabled={!sendAddress.trim() || isSending}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                data-testid="button-send-nft"
+              >
+                {isSending ? (
+                  <div className="flex items-center space-x-2">
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Sending...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <Send className="w-4 h-4" />
+                    <span>Send NFT</span>
+                  </div>
+                )}
+              </Button>
+            </div>
+          </Card>
+        </motion.div>
+      </div>
     </div>
   );
 }
