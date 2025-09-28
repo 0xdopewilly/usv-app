@@ -89,7 +89,7 @@ const groupTransactionsByDate = (transactions: Transaction[]) => {
 export default function TransactionHistory() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
-  const { user } = useAuth();
+  const { user, refreshToken } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -112,8 +112,24 @@ export default function TransactionHistory() {
   // Sync incoming transactions mutation
   const syncTransactionsMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest('POST', '/wallet/sync-transactions');
-      return response.json();
+      try {
+        const response = await apiRequest('POST', '/wallet/sync-transactions');
+        return response.json();
+      } catch (error: any) {
+        // Handle token expiry specifically
+        if (error.message.includes('Invalid token') || error.message.includes('Access token required') || error.message.includes('Session expired')) {
+          // Try to refresh token first
+          const tokenRefreshed = await refreshToken();
+          if (tokenRefreshed) {
+            // Retry the request with new token
+            const response = await apiRequest('POST', '/wallet/sync-transactions');
+            return response.json();
+          } else {
+            throw new Error('Session expired. Please log in again.');
+          }
+        }
+        throw error;
+      }
     },
     onSuccess: (data: any) => {
       toast({

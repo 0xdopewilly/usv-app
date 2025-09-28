@@ -5,14 +5,24 @@ async function throwIfResNotOk(res: Response) {
     let errorMessage = res.statusText;
     try {
       const responseText = await res.text();
+      console.log(`🔍 Response body for ${res.status}:`, responseText.substring(0, 200));
+      
       if (responseText) {
         // Try to parse as JSON to get the error message
         try {
           const errorData = JSON.parse(responseText);
           errorMessage = errorData.error || errorData.message || responseText;
-        } catch {
-          // If not JSON, use the raw text
-          errorMessage = responseText;
+        } catch (jsonError) {
+          // If not JSON, check if it's HTML (likely login redirect)
+          if (responseText.includes('<!DOCTYPE') || responseText.includes('<html')) {
+            if (res.status === 401 || res.status === 403) {
+              errorMessage = 'Session expired. Please log in again.';
+            } else {
+              errorMessage = 'Server returned unexpected HTML response';
+            }
+          } else {
+            errorMessage = responseText;
+          }
         }
       }
     } catch {

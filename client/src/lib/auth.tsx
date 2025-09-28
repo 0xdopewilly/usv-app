@@ -24,6 +24,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   signup: (data: SignupData) => Promise<void>;
   logout: () => void;
+  refreshToken: () => Promise<boolean>;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -140,6 +141,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, 100);
   };
 
+  // Helper function to refresh token when expired
+  const refreshToken = async (): Promise<boolean> => {
+    if (!user) return false;
+    
+    try {
+      const response = await apiRequest('POST', '/api/auth/refresh-token', {
+        userId: user.id,
+        email: user.email
+      });
+      const data = await response.json();
+      
+      if (data.token) {
+        setToken(data.token);
+        localStorage.setItem('token', data.token);
+        return true;
+      }
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      logout();
+    }
+    return false;
+  };
+
   // No longer needed since we define queryFn directly in useQuery
 
   return (
@@ -150,6 +174,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         signup,
         logout,
+        refreshToken,
         isAuthenticated: !!token && !!user,
         isLoading: isLoading || loginMutation.isPending || signupMutation.isPending,
       }}
