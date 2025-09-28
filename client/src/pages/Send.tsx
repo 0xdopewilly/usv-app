@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Send, Scan, User, AlertCircle, CheckCircle, DollarSign } from 'lucide-react';
+import { ArrowLeft, Send, Scan, User, AlertCircle, CheckCircle, DollarSign, Loader2 } from 'lucide-react';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -25,11 +26,17 @@ export default function SendTokens() {
   const [transactionHash, setTransactionHash] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // For sending SOL, we need to check actual wallet balance, not user.balance
-  // For now, allow small amounts. TODO: Fetch real SOL balance from wallet
-  const maxBalance = 0.005; // Increased max for testing - user can send up to 0.005 SOL
+  // Fetch real SOL balance from user's wallet
+  const { data: balanceData, isLoading: isBalanceLoading, error: balanceError } = useQuery({
+    queryKey: ['/api/wallet/my-balance'],
+    enabled: !!user,
+    refetchInterval: 10000, // Refresh every 10 seconds
+  });
+
+  const maxBalance = (balanceData as any)?.balanceSOL || 0;
   const amountNum = parseFloat(amount) || 0;
-  const isValidAmount = amountNum > 0 && amountNum <= maxBalance;
+  const feeBuffer = 0.000005; // Small buffer for transaction fees
+  const isValidAmount = amountNum > 0 && amountNum <= (maxBalance - feeBuffer);
   const isValidAddress = recipientAddress.length >= 32; // Basic Solana address length check
 
   // Quick send options
@@ -106,7 +113,9 @@ export default function SendTokens() {
   };
 
   const setMaxAmount = () => {
-    setAmount(maxBalance.toString());
+    // Leave small buffer for transaction fees
+    const maxSendable = Math.max(0, maxBalance - feeBuffer);
+    setAmount(maxSendable.toFixed(6));
   };
 
   if (transactionStep === 'success') {
@@ -344,10 +353,21 @@ export default function SendTokens() {
                 <p className="text-gray-400 text-sm">SOL (Solana)</p>
               </div>
             </div>
-            <p className="text-white text-3xl font-bold" data-testid="text-available-balance">
-              {maxBalance.toFixed(4)} SOL
-            </p>
-            <p className="text-gray-400 text-sm">≈ ${(maxBalance * 230).toFixed(2)} USD</p>
+            {isBalanceLoading ? (
+              <div className="flex items-center space-x-2">
+                <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
+                <p className="text-gray-400">Loading balance...</p>
+              </div>
+            ) : balanceError ? (
+              <p className="text-red-400">Error loading balance</p>
+            ) : (
+              <>
+                <p className="text-white text-3xl font-bold" data-testid="text-available-balance">
+                  {maxBalance.toFixed(6)} SOL
+                </p>
+                <p className="text-gray-400 text-sm">≈ ${(maxBalance * 230).toFixed(2)} USD</p>
+              </>
+            )}
           </Card>
 
           {/* Recipient Input */}
@@ -453,7 +473,9 @@ export default function SendTokens() {
             {amount && !isValidAmount && (
               <p className="text-red-400 text-sm mt-2 flex items-center">
                 <AlertCircle className="w-4 h-4 mr-1" />
-                {amountNum > maxBalance ? 'Insufficient balance' : 'Invalid amount'}
+                {amountNum > (maxBalance - feeBuffer) ? 
+                  `Insufficient balance (max: ${(maxBalance - feeBuffer).toFixed(6)} SOL)` : 
+                  'Invalid amount'}
               </p>
             )}
           </Card>
@@ -461,12 +483,16 @@ export default function SendTokens() {
           {/* Send Button */}
           <Button
             onClick={handleSendTokens}
-            disabled={!isValidAddress || !isValidAmount || isLoading}
+            disabled={!isValidAddress || !isValidAmount || isLoading || isBalanceLoading}
             className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             data-testid="button-send-tokens"
           >
-            <Send className="w-5 h-5 mr-2" />
-            Send {amountNum || 0} SOL
+            {isBalanceLoading ? (
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+            ) : (
+              <Send className="w-5 h-5 mr-2" />
+            )}
+            {isBalanceLoading ? 'Loading...' : `Send ${amountNum || 0} SOL`}
           </Button>
         </motion.div>
       </div>

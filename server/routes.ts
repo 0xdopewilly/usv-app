@@ -681,6 +681,37 @@ router.get('/wallet/balance/:walletAddress', async (req, res) => {
   }
 });
 
+// Authenticated user's SOL balance endpoint
+router.get('/wallet/my-balance', authenticateToken, async (req: any, res) => {
+  try {
+    const user = await storage.getUserById(req.userId);
+    if (!user || !user.walletAddress) {
+      return res.status(400).json({ error: 'User wallet not found' });
+    }
+
+    console.log('🔍 Fetching SOL balance for user wallet:', user.walletAddress);
+    
+    // Get real SOL balance from Solana mainnet using connection
+    const publicKey = new PublicKey(user.walletAddress);
+    const balanceInLamports = await connection.getBalance(publicKey);
+    const balanceInSOL = balanceInLamports / LAMPORTS_PER_SOL;
+    
+    console.log('✅ User SOL balance fetched:', { lamports: balanceInLamports, sol: balanceInSOL });
+
+    res.json({
+      walletAddress: user.walletAddress,
+      balanceSOL: balanceInSOL,
+      balanceLamports: balanceInLamports,
+      network: 'mainnet',
+      lastUpdated: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching user SOL balance:', error);
+    res.status(500).json({ error: 'Failed to fetch wallet balance' });
+  }
+});
+
 router.get('/wallet/tokens/:walletAddress', async (req, res) => {
   try {
     const { walletAddress } = req.params;
@@ -1159,6 +1190,18 @@ router.post('/wallet/send-sol', authenticateToken, async (req: any, res) => {
     const user = await storage.getUserById(userId);
     if (!user || !user.walletPrivateKey) {
       return res.status(404).json({ error: 'User wallet not found or no private key available' });
+    }
+
+    // Check user's actual SOL balance before sending
+    const senderPublicKey = new PublicKey(user.walletAddress);
+    const balanceInLamports = await connection.getBalance(senderPublicKey);
+    const balanceInSOL = balanceInLamports / LAMPORTS_PER_SOL;
+    const feeBuffer = 0.000005; // Small buffer for transaction fees
+    
+    if (amount > (balanceInSOL - feeBuffer)) {
+      return res.status(400).json({ 
+        error: `Insufficient balance. Available: ${balanceInSOL.toFixed(6)} SOL, Requested: ${amount} SOL` 
+      });
     }
     
     // Decrypt private key and create keypair
