@@ -1644,26 +1644,37 @@ router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res
         }
         
         if (ourWalletIndex === -1) {
+          console.log(`⚠️ User wallet ${user.walletAddress} not found in transaction ${signature}`);
           continue; // Our wallet is not in this transaction
         }
         
-        // Check if our wallet balance increased (incoming transaction)
+        // Check balance changes for our wallet
         const preBalance = preBalances[ourWalletIndex];
         const postBalance = postBalances[ourWalletIndex];
         const balanceChange = postBalance - preBalance;
+        
+        console.log(`🔍 Transaction ${signature}: Balance change for wallet index ${ourWalletIndex}: ${balanceChange} lamports`);
         
         if (balanceChange > 0) {
           // This is an incoming transaction
           const amountSOL = balanceChange / LAMPORTS_PER_SOL;
           
-          // Find the sender (first account that decreased in balance)
-          let senderAddress = '';
+          console.log(`📈 Incoming transaction detected: +${amountSOL} SOL`);
+          
+          // Find the sender (account that decreased in balance the most)
+          let senderIndex = -1;
+          let maxDecrease = 0;
           for (let i = 0; i < accountKeys.length; i++) {
-            if (i !== ourWalletIndex && preBalances[i] > postBalances[i]) {
-              senderAddress = accountKeys[i].toBase58();
-              break;
+            if (i !== ourWalletIndex) {
+              const decrease = preBalances[i] - postBalances[i];
+              if (decrease > maxDecrease) {
+                maxDecrease = decrease;
+                senderIndex = i;
+              }
             }
           }
+          
+          let senderAddress = senderIndex >= 0 ? accountKeys[senderIndex].toBase58() : 'Unknown';
           
           // Create the transaction record
           await storage.createTransaction({
@@ -1679,6 +1690,94 @@ router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res
           
           syncedCount++;
           console.log(`✅ Synced incoming transaction: ${amountSOL} SOL from ${senderAddress}`);
+        } else if (balanceChange < 0) {
+          // This is an outgoing transaction
+          const amountSOL = Math.abs(balanceChange) / LAMPORTS_PER_SOL;
+          
+          console.log(`📉 Outgoing transaction detected: -${amountSOL} SOL`);
+          
+          // Find the recipient (account that increased in balance)
+          let recipientIndex = -1;
+          let maxIncrease = 0;
+          for (let i = 0; i < accountKeys.length; i++) {
+            if (i !== ourWalletIndex) {
+              const increase = postBalances[i] - preBalances[i];
+              if (increase > maxIncrease) {
+                maxIncrease = increase;
+                recipientIndex = i;
+              }
+            }
+          }
+          
+          let recipientAddress = recipientIndex >= 0 ? accountKeys[recipientIndex].toBase58() : 'Unknown';
+          
+          // Create the transaction record
+          await storage.createTransaction({
+            userId,
+            type: 'send',
+            amount: amountSOL,
+            token: 'SOL',
+            status: 'completed',
+            toAddress: recipientAddress,
+            fromAddress: user.walletAddress,
+            txHash: signature,
+          });
+          
+          syncedCount++;
+          console.log(`✅ Synced outgoing transaction: ${amountSOL} SOL to ${recipientAddress}`);
+        }
+        
+        // Also check for SPL token (USV) transfers
+        if (meta.preTokenBalances && meta.postTokenBalances) {
+          const userPubKey = new PublicKey(user.walletAddress);
+          
+          // Find USV token changes for this user
+          const preUSVBalances = meta.preTokenBalances.filter(balance => 
+            balance.mint === USV_TOKEN_MINT.toBase58() && balance.owner === user.walletAddress
+          );
+          const postUSVBalances = meta.postTokenBalances.filter(balance => 
+            balance.mint === USV_TOKEN_MINT.toBase58() && balance.owner === user.walletAddress
+          );
+          
+          if (preUSVBalances.length > 0 || postUSVBalances.length > 0) {
+            const preAmount = preUSVBalances[0]?.uiTokenAmount.uiAmount || 0;
+            const postAmount = postUSVBalances[0]?.uiTokenAmount.uiAmount || 0;
+            const tokenChange = postAmount - preAmount;
+            
+            console.log(`🔍 USV Token change: ${tokenChange} USV`);
+            
+            if (tokenChange > 0) {
+              // Incoming USV token transfer
+              await storage.createTransaction({
+                userId,
+                type: 'receive',
+                amount: tokenChange,
+                token: 'USV',
+                status: 'completed',
+                toAddress: user.walletAddress,
+                fromAddress: 'Unknown', // Could parse from instructions if needed
+                txHash: signature,
+              });
+              
+              syncedCount++;
+              console.log(`✅ Synced incoming USV transaction: +${tokenChange} USV`);
+            } else if (tokenChange < 0) {
+              // Outgoing USV token transfer
+              await storage.createTransaction({
+                userId,
+                type: 'send',
+                amount: Math.abs(tokenChange),
+                token: 'USV',
+                status: 'completed',
+                toAddress: 'Unknown', // Could parse from instructions if needed
+                fromAddress: user.walletAddress,
+                txHash: signature,
+              });
+              
+              syncedCount++;
+              console.log(`✅ Synced outgoing USV transaction: -${Math.abs(tokenChange)} USV`);
+            }
+          }
         }
         
       } catch (txError) {
