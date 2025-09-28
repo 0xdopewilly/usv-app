@@ -1283,6 +1283,56 @@ router.post('/wallet/send-sol', authenticateToken, async (req: any, res) => {
   }
 });
 
+// Database repair endpoint for missing users
+router.post('/wallet/repair-user', authenticateToken, async (req: any, res) => {
+  try {
+    const userId = req.user.userId;
+    const userEmail = req.user.email;
+    
+    console.log(`🔧 Repairing user data for: ${userId} (${userEmail})`);
+    
+    // Check if user exists
+    let user = await storage.getUserById(userId);
+    if (user) {
+      return res.json({ success: true, message: 'User already exists in database' });
+    }
+    
+    // Create missing user with custodial wallet
+    const solanaWallet = generateSolanaWallet();
+    const encryptedPrivateKey = encryptPrivateKey(solanaWallet.privateKey);
+    
+    // Create user record with required data
+    user = await storage.createUser({
+      id: userId,
+      email: userEmail,
+      fullName: 'Repaired User', // Default name, user can update
+      password: '', // Empty password since they use OAuth
+      balance: 0,
+      stakedBalance: 0,
+      walletAddress: solanaWallet.publicKey,
+      walletPrivateKey: encryptedPrivateKey,
+      isVerified: true, // Assume verified since they're authenticated
+      twoFactorEnabled: false,
+      faceIdEnabled: false,
+      pushNotifications: true,
+      emailNotifications: true,
+      preferredLanguage: "en",
+    });
+    
+    console.log(`✅ User repaired with new wallet: ${solanaWallet.publicKey}`);
+    
+    res.json({
+      success: true,
+      message: 'User database record created',
+      walletAddress: user.walletAddress
+    });
+    
+  } catch (error: any) {
+    console.error('❌ User repair error:', error);
+    res.status(500).json({ error: error.message || 'Failed to repair user' });
+  }
+});
+
 // Enhanced send tokens endpoint supporting both SOL and USV
 router.post('/wallet/send-tokens', authenticateToken, async (req: any, res) => {
   try {

@@ -87,6 +87,24 @@ export default function SendTokens() {
     try {
       console.log(`🔄 Sending ${selectedToken} via custodial endpoint:`, { recipientAddress, amount: amountNum });
       
+      // First try to repair user data if needed
+      try {
+        const repairResponse = await fetch('/api/wallet/repair-user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+        });
+        
+        if (repairResponse.ok) {
+          const repairData = await repairResponse.json();
+          console.log('🔧 User repair result:', repairData);
+        }
+      } catch (repairError) {
+        console.log('ℹ️ User repair not needed or failed:', repairError);
+      }
+      
       // Use custodial wallet send endpoint instead of Phantom
       const response = await fetch('/api/wallet/send-tokens', {
         method: 'POST',
