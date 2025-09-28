@@ -8,11 +8,13 @@ import SimpleLoadingScreen from "@/components/SimpleLoadingScreen";
 import AuthPage from "@/pages/AuthPage";
 import Home from "@/pages/Home";
 import SimpleWallet from "@/pages/SimpleWallet";
-import SimpleSend from "@/pages/SimpleSend";
-import Settings from "@/pages/Settings";
-import SimpleNFT from "@/pages/SimpleNFT";
-import QRScan from "@/pages/QRScan";
-import NotFound from "@/pages/NotFound";
+import SimpleSend from "./pages/SimpleSend";
+import TokenSelection from "./pages/TokenSelection";
+import SendTokens from "./pages/Send";
+import Settings from "./pages/Settings";
+import SimpleNFT from "./pages/SimpleNFT";
+import QRScan from "./pages/QRScan";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -99,8 +101,13 @@ function AppRouter() {
             </PageTransition>
           </Route>
           <Route path="/send">
+            <PageTransition pageKey="token-selection">
+              <TokenSelection />
+            </PageTransition>
+          </Route>
+          <Route path="/send/:token">
             <PageTransition pageKey="send">
-              <SimpleSend />
+              <SendTokens />
             </PageTransition>
           </Route>
           <Route path="/qr-scan">

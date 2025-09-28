@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Send, Scan, User, AlertCircle, CheckCircle, DollarSign, Loader2 } from 'lucide-react';
-import { useLocation } from 'wouter';
+import { useLocation, useParams } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -16,6 +16,8 @@ import usvLogo from '@assets/image_1757431326277.png';
 
 export default function SendTokens() {
   const [, setLocation] = useLocation();
+  const params = useParams();
+  const selectedToken = params.token?.toUpperCase() || 'SOL';
   const { user } = useAuth();
   const { toast } = useToast();
   
@@ -75,7 +77,7 @@ export default function SendTokens() {
     setTransactionStep('processing');
     
     try {
-      console.log('🔄 Sending SOL via custodial endpoint:', { recipientAddress, amount: amountNum });
+      console.log(`🔄 Sending ${selectedToken} via custodial endpoint:`, { recipientAddress, amount: amountNum });
       
       // Use custodial wallet send endpoint instead of Phantom
       const response = await fetch('/api/wallet/send-sol', {
@@ -337,13 +339,13 @@ export default function SendTokens() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation('/')}
+            onClick={() => setLocation('/send')}
             className="text-pink-500 hover:bg-pink-500/20 p-2 rounded-full w-10 h-10"
             data-testid="button-back"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-white text-lg font-semibold">Send Tokens</h1>
+          <h1 className="text-white text-lg font-semibold">Send {selectedToken}</h1>
           <Button
             variant="ghost"
             size="sm"
