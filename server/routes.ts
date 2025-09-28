@@ -1582,4 +1582,123 @@ router.post('/wallet/send-tokens', authenticateToken, async (req: any, res) => {
   }
 });
 
+// Sync incoming transactions endpoint - detects incoming SOL transfers to user's custodial wallet
+router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    console.log(`🔄 Syncing transactions for user: ${userId}`);
+    
+    // Get user with wallet address
+    const user = await storage.getUserById(userId);
+    if (!user || !user.walletAddress) {
+      return res.status(404).json({ error: 'User wallet not found' });
+    }
+    
+    const walletPublicKey = new PublicKey(user.walletAddress);
+    
+    // Get transaction signatures for this wallet (limit to recent 100)
+    const signatures = await connection.getSignaturesForAddress(walletPublicKey, { limit: 100 });
+    
+    console.log(`📊 Found ${signatures.length} signatures for wallet ${user.walletAddress}`);
+    
+    let syncedCount = 0;
+    
+    // Process each transaction signature
+    for (const signatureInfo of signatures) {
+      try {
+        const signature = signatureInfo.signature;
+        
+        // Check if we already have this transaction
+        const existingTransactions = await storage.getTransactionsByUserId(userId);
+        const existingTransaction = existingTransactions.find(tx => tx.txHash === signature);
+        
+        if (existingTransaction) {
+          continue; // Skip if we already have this transaction
+        }
+        
+        // Get detailed transaction info
+        const transactionDetail = await connection.getTransaction(signature, {
+          maxSupportedTransactionVersion: 0
+        });
+        
+        if (!transactionDetail || !transactionDetail.meta) {
+          console.log(`⚠️ Could not fetch transaction details for ${signature}`);
+          continue;
+        }
+        
+        // Check if this is a SOL transfer TO this wallet (incoming)
+        const { preBalances, postBalances, transaction } = transactionDetail;
+        const accountKeys = transaction.message.staticAccountKeys || transaction.message.accountKeys;
+        
+        // Find the index of our wallet in the account keys
+        let ourWalletIndex = -1;
+        for (let i = 0; i < accountKeys.length; i++) {
+          if (accountKeys[i].toBase58() === user.walletAddress) {
+            ourWalletIndex = i;
+            break;
+          }
+        }
+        
+        if (ourWalletIndex === -1) {
+          continue; // Our wallet is not in this transaction
+        }
+        
+        // Check if our wallet balance increased (incoming transaction)
+        const preBalance = preBalances[ourWalletIndex];
+        const postBalance = postBalances[ourWalletIndex];
+        const balanceChange = postBalance - preBalance;
+        
+        if (balanceChange > 0) {
+          // This is an incoming transaction
+          const amountSOL = balanceChange / LAMPORTS_PER_SOL;
+          
+          // Find the sender (first account that decreased in balance)
+          let senderAddress = '';
+          for (let i = 0; i < accountKeys.length; i++) {
+            if (i !== ourWalletIndex && preBalances[i] > postBalances[i]) {
+              senderAddress = accountKeys[i].toBase58();
+              break;
+            }
+          }
+          
+          // Create the transaction record
+          await storage.createTransaction({
+            userId,
+            type: 'receive',
+            amount: amountSOL,
+            token: 'SOL',
+            status: 'completed',
+            toAddress: user.walletAddress,
+            fromAddress: senderAddress,
+            txHash: signature,
+          });
+          
+          syncedCount++;
+          console.log(`✅ Synced incoming transaction: ${amountSOL} SOL from ${senderAddress}`);
+        }
+        
+      } catch (txError) {
+        console.error(`⚠️ Error processing transaction ${signatureInfo.signature}:`, txError);
+        // Continue with other transactions
+      }
+    }
+    
+    console.log(`🔄 Transaction sync completed. Synced ${syncedCount} new incoming transactions.`);
+    
+    res.json({
+      success: true,
+      syncedCount,
+      message: `Synced ${syncedCount} new incoming transactions`
+    });
+    
+  } catch (error: any) {
+    console.error('❌ Transaction sync error:', error);
+    res.status(500).json({ 
+      success: false,
+      error: error.message || 'Failed to sync transactions' 
+    });
+  }
+});
+
 export default router;
