@@ -1628,8 +1628,11 @@ router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res
         }
         
         // Check if this is a SOL transfer TO this wallet (incoming)
-        const { preBalances, postBalances, transaction } = transactionDetail;
-        const accountKeys = transaction.message.staticAccountKeys || transaction.message.accountKeys;
+        const { meta, transaction } = transactionDetail;
+        const { preBalances, postBalances } = meta;
+        const accountKeys = transaction.message.getAccountKeys ? 
+          transaction.message.getAccountKeys() : 
+          (transaction.message as any).accountKeys;
         
         // Find the index of our wallet in the account keys
         let ourWalletIndex = -1;

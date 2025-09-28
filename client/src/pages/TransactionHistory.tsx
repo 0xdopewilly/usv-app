@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowUpRight, ArrowDownLeft, Clock, Search } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, ArrowDownLeft, Clock, Search, RefreshCw } from 'lucide-react';
 import { useLocation } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useAuth } from '@/lib/auth';
+import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 
 // Date utility functions
 const formatDate = (date: Date) => {
@@ -87,6 +90,8 @@ export default function TransactionHistory() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Fetch user transactions
   const { data: transactions = [], isLoading } = useQuery({
@@ -103,6 +108,33 @@ export default function TransactionHistory() {
     enabled: !!user,
     refetchInterval: 30000, // Refresh every 30 seconds
   });
+
+  // Sync incoming transactions mutation
+  const syncTransactionsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest('POST', '/wallet/sync-transactions');
+      return response.json();
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: 'Transactions synced',
+        description: `Synced ${data.syncedCount} new incoming transactions`,
+      });
+      // Refresh the transactions list
+      queryClient.invalidateQueries({ queryKey: ['/api/transactions'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Sync failed',
+        description: error.message || 'Failed to sync transactions',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handleSyncTransactions = () => {
+    syncTransactionsMutation.mutate();
+  };
 
   // Filter transactions based on search query
   const filteredTransactions = transactions.filter((transaction: Transaction) => 
@@ -177,7 +209,15 @@ export default function TransactionHistory() {
           data-testid="button-back"
         />
         <h1 className="text-white text-xl font-semibold">Transaction History</h1>
-        <div className="w-6 h-6" />
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={handleSyncTransactions}
+          disabled={syncTransactionsMutation.isPending}
+          data-testid="button-sync-transactions"
+        >
+          <RefreshCw className={`w-5 h-5 ${syncTransactionsMutation.isPending ? 'animate-spin' : ''}`} />
+        </Button>
       </motion.div>
 
       {/* Search Bar */}
@@ -263,6 +303,7 @@ export default function TransactionHistory() {
                       key={transaction.id}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
+                      onClick={() => setLocation(`/transaction/${transaction.id}`)}
                     >
                       <Card className="bg-gray-900/50 border-gray-700 p-4 cursor-pointer hover:bg-gray-800/50 transition-all duration-200" data-testid={`card-transaction-${transaction.id}`}>
                         <div className="flex items-center space-x-4">
