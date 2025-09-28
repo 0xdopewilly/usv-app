@@ -31,6 +31,14 @@ export default function SendTokens() {
   // Fetch real SOL balance from user's wallet using the working endpoint
   const { data: balanceData, isLoading: isBalanceLoading, error: balanceError } = useQuery({
     queryKey: ['/api/wallet/balance', user?.walletAddress],
+    queryFn: async () => {
+      if (!user?.walletAddress) throw new Error('No wallet address');
+      
+      const response = await fetch(`/api/wallet/balance/${user.walletAddress}`);
+      if (!response.ok) throw new Error('Failed to fetch balance');
+      
+      return response.json();
+    },
     enabled: !!user?.walletAddress,
     refetchInterval: 10000, // Refresh every 10 seconds
   });
