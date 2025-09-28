@@ -275,9 +275,13 @@ export default function SendTokens() {
           >
             <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/20 p-6">
               <div className="text-center mb-6">
-                <img src="/usv-logo.png" alt="USV" className="w-16 h-16 rounded-xl object-contain mx-auto mb-4" />
+                <img 
+                  src={selectedToken === 'SOL' ? '/solana-logo.png' : '/usv-logo.png'} 
+                  alt={selectedToken} 
+                  className="w-16 h-16 rounded-xl object-contain mx-auto mb-4" 
+                />
                 <h2 className="text-white text-3xl font-bold mb-2" data-testid="text-confirm-amount">
-                  {amountNum} SOL
+                  {amountNum} {selectedToken}
                 </h2>
                 <p className="text-gray-400">≈ ${(amountNum * 230).toFixed(2)} USD</p>
               </div>
@@ -366,10 +370,14 @@ export default function SendTokens() {
           {/* Balance Card */}
           <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/20 p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <img src="/usv-logo.png" alt="USV" className="w-10 h-10 rounded-xl object-contain" />
+              <img 
+                src={selectedToken === 'SOL' ? '/solana-logo.png' : '/usv-logo.png'} 
+                alt={selectedToken} 
+                className="w-10 h-10 rounded-xl object-contain" 
+              />
               <div>
                 <h3 className="text-white font-semibold">Available Balance</h3>
-                <p className="text-gray-400 text-sm">SOL (Solana)</p>
+                <p className="text-gray-400 text-sm">{selectedToken} ({selectedToken === 'SOL' ? 'Solana' : 'USV Token'})</p>
               </div>
             </div>
             {isBalanceLoading ? (
