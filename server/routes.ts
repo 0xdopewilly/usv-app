@@ -1283,6 +1283,32 @@ router.post('/wallet/send-sol', authenticateToken, async (req: any, res) => {
   }
 });
 
+// Token refresh endpoint for invalid tokens
+router.post('/auth/refresh-token', async (req, res) => {
+  try {
+    const { userId, email } = req.body;
+    
+    if (!userId || !email) {
+      return res.status(400).json({ error: 'User ID and email required' });
+    }
+    
+    // Generate new token
+    const newToken = jwt.sign({ userId, email }, JWT_SECRET);
+    
+    console.log(`🔄 New token generated for user: ${email}`);
+    
+    res.json({ 
+      success: true,
+      token: newToken,
+      message: 'Token refreshed successfully' 
+    });
+    
+  } catch (error: any) {
+    console.error('❌ Token refresh error:', error);
+    res.status(500).json({ error: 'Failed to refresh token' });
+  }
+});
+
 // Database repair endpoint for missing users
 router.post('/wallet/repair-user', authenticateToken, async (req: any, res) => {
   try {

@@ -87,22 +87,44 @@ export default function SendTokens() {
     try {
       console.log(`🔄 Sending ${selectedToken} via custodial endpoint:`, { recipientAddress, amount: amountNum });
       
-      // First try to repair user data if needed
-      try {
-        const repairResponse = await fetch('/api/wallet/repair-user', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-        });
-        
-        if (repairResponse.ok) {
-          const repairData = await repairResponse.json();
-          console.log('🔧 User repair result:', repairData);
+      // First refresh token if needed, then repair user data
+      if (user?.id && user?.email) {
+        try {
+          const refreshResponse = await fetch('/api/auth/refresh-token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: user.id,
+              email: user.email
+            })
+          });
+          
+          if (refreshResponse.ok) {
+            const refreshData = await refreshResponse.json();
+            console.log('🔄 Token refreshed:', refreshData);
+            localStorage.setItem('token', refreshData.token);
+          }
+        } catch (refreshError) {
+          console.log('ℹ️ Token refresh failed:', refreshError);
         }
-      } catch (repairError) {
-        console.log('ℹ️ User repair not needed or failed:', repairError);
+        
+        // Now try to repair user data if needed
+        try {
+          const repairResponse = await fetch('/api/wallet/repair-user', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+          });
+          
+          if (repairResponse.ok) {
+            const repairData = await repairResponse.json();
+            console.log('🔧 User repair result:', repairData);
+          }
+        } catch (repairError) {
+          console.log('ℹ️ User repair not needed or failed:', repairError);
+        }
       }
       
       // Use custodial wallet send endpoint instead of Phantom
