@@ -684,7 +684,8 @@ router.get('/wallet/balance/:walletAddress', async (req, res) => {
 // Authenticated user's SOL balance endpoint
 router.get('/wallet/my-balance', authenticateToken, async (req: any, res) => {
   try {
-    const user = await storage.getUserById(req.userId);
+    const userId = req.user?.userId || req.userId;
+    const user = await storage.getUserById(userId);
     if (!user || !user.walletAddress) {
       return res.status(400).json({ error: 'User wallet not found' });
     }

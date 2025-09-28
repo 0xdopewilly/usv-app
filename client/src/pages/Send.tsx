@@ -36,8 +36,24 @@ export default function SendTokens() {
   const maxBalance = (balanceData as any)?.balanceSOL || 0;
   const amountNum = parseFloat(amount) || 0;
   const feeBuffer = 0.000005; // Small buffer for transaction fees
-  const isValidAmount = amountNum > 0 && amountNum <= (maxBalance - feeBuffer);
+  
+  // Allow sending if we can't fetch balance (server will validate)
+  const isValidAmount = isBalanceLoading ? (amountNum > 0) : (amountNum > 0 && amountNum <= (maxBalance - feeBuffer));
   const isValidAddress = recipientAddress.length >= 32; // Basic Solana address length check
+
+  // Debug logging
+  console.log('🔍 Send validation debug:', {
+    amount,
+    amountNum,
+    maxBalance,
+    isValidAmount,
+    isValidAddress,
+    recipientAddress: recipientAddress.slice(0, 20),
+    balanceData,
+    isBalanceLoading,
+    feeBuffer,
+    maxSendable: maxBalance - feeBuffer
+  });
 
   // Quick send options
   const quickAmounts = [25, 50, 100, 250];
@@ -483,7 +499,7 @@ export default function SendTokens() {
           {/* Send Button */}
           <Button
             onClick={handleSendTokens}
-            disabled={!isValidAddress || !isValidAmount || isLoading || isBalanceLoading}
+            disabled={!isValidAddress || !isValidAmount || isLoading}
             className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             data-testid="button-send-tokens"
           >
