@@ -1309,7 +1309,7 @@ router.post('/auth/refresh-token', async (req, res) => {
   }
 });
 
-// Database repair endpoint for missing users
+// Database repair endpoint for missing users or missing custodial wallets
 router.post('/wallet/repair-user', authenticateToken, async (req: any, res) => {
   try {
     const userId = req.user.userId;
@@ -1319,8 +1319,30 @@ router.post('/wallet/repair-user', authenticateToken, async (req: any, res) => {
     
     // Check if user exists
     let user = await storage.getUserById(userId);
-    if (user) {
-      return res.json({ success: true, message: 'User already exists in database' });
+    
+    if (user && user.walletPrivateKey) {
+      return res.json({ success: true, message: 'User already exists with custodial wallet' });
+    }
+    
+    if (user && !user.walletPrivateKey) {
+      // User exists but missing custodial wallet - create one
+      console.log(`🔧 User exists but missing custodial wallet, creating new one...`);
+      const solanaWallet = generateSolanaWallet();
+      const encryptedPrivateKey = encryptPrivateKey(solanaWallet.privateKey);
+      
+      // Update user with custodial wallet
+      user = await storage.updateUser(userId, {
+        walletAddress: solanaWallet.publicKey,
+        walletPrivateKey: encryptedPrivateKey,
+      });
+      
+      console.log(`✅ User updated with custodial wallet: ${solanaWallet.publicKey}`);
+      
+      return res.json({
+        success: true,
+        message: 'User updated with custodial wallet',
+        walletAddress: solanaWallet.publicKey
+      });
     }
     
     // Create missing user with custodial wallet
