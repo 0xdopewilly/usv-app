@@ -85,8 +85,7 @@ export default function SendTokens() {
     setTransactionStep('processing');
     
     try {
-      // First check if user has custodial private key by trying custodial endpoint
-      console.log(`🔄 Attempting ${selectedToken} send:`, { recipientAddress, amount: amountNum });
+      console.log(`🔄 Sending ${selectedToken} via custodial wallet:`, { recipientAddress, amount: amountNum });
       
       // First refresh token if needed, then repair user data
       if (user?.id && user?.email) {
@@ -128,8 +127,7 @@ export default function SendTokens() {
         }
       }
       
-      // Try custodial wallet send first
-      console.log('🔐 Trying custodial wallet send...');
+      // Send via custodial wallet endpoint
       const response = await fetch('/api/wallet/send-tokens', {
         method: 'POST',
         headers: {
@@ -145,59 +143,7 @@ export default function SendTokens() {
 
       const result = await response.json();
       
-      // If custodial fails due to no private key, fallback to Phantom wallet
-      if (!response.ok && (result.error?.includes('no private key') || result.error?.includes('User wallet not found'))) {
-        console.log('🦄 Custodial failed, falling back to Phantom wallet...');
-        
-        // Import Phantom wallet functionality
-        const { phantomWallet } = await import('@/lib/solana');
-        
-        if (!phantomWallet.isInstalled()) {
-          throw new Error('Phantom wallet not installed. Please install Phantom to send from this wallet.');
-        }
-        
-        if (!phantomWallet.isConnected) {
-          const connectResult = await phantomWallet.connect();
-          if (!connectResult.success) {
-            throw new Error(connectResult.error || 'Failed to connect to Phantom wallet');
-          }
-        }
-        
-        // Check if connected wallet matches user's wallet
-        const connectedAddress = phantomWallet.getAddress();
-        if (connectedAddress !== (user as any)?.walletAddress) {
-          throw new Error(`Please connect to wallet ${(user as any)?.walletAddress} in Phantom to continue`);
-        }
-        
-        // Create transaction using Phantom
-        const { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } = await import('@solana/web3.js');
-        const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
-        
-        const transaction = new Transaction().add(
-          SystemProgram.transfer({
-            fromPubkey: new PublicKey(connectedAddress!),
-            toPubkey: new PublicKey(recipientAddress),
-            lamports: amountNum * LAMPORTS_PER_SOL,
-          })
-        );
-        
-        const { blockhash } = await connection.getLatestBlockhash();
-        transaction.recentBlockhash = blockhash;
-        transaction.feePayer = new PublicKey(connectedAddress!);
-        
-        const signature = await phantomWallet.signAndSendTransaction(transaction);
-        
-        setTransactionHash(signature);
-        setTransactionStep('success');
-        
-        toast({
-          title: "🎉 Transfer Successful!",
-          description: `Sent ${amountNum} SOL successfully via Phantom`,
-        });
-        
-        console.log('✅ SOL sent successfully via Phantom:', signature);
-      } else if (response.ok && result.success) {
-        // Custodial send succeeded
+      if (response.ok && result.success) {
         setTransactionHash(result.signature);
         setTransactionStep('success');
         
@@ -206,7 +152,7 @@ export default function SendTokens() {
           description: `Sent ${amountNum} SOL successfully`,
         });
         
-        console.log('✅ SOL sent successfully via custodial:', result);
+        console.log('✅ SOL sent successfully:', result);
       } else {
         throw new Error(result.error || 'Failed to send SOL');
       }
