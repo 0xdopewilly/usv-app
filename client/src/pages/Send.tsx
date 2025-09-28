@@ -25,7 +25,9 @@ export default function SendTokens() {
   const [transactionHash, setTransactionHash] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const maxBalance = user?.balance || 0;
+  // For sending SOL, we need to check actual wallet balance, not user.balance
+  // For now, allow small amounts. TODO: Fetch real SOL balance from wallet
+  const maxBalance = 0.001; // Conservative max for testing - user can send up to 0.001 SOL
   const amountNum = parseFloat(amount) || 0;
   const isValidAmount = amountNum > 0 && amountNum <= maxBalance;
   const isValidAddress = recipientAddress.length >= 32; // Basic Solana address length check
@@ -50,42 +52,44 @@ export default function SendTokens() {
     setTransactionStep('processing');
     
     try {
-      // REAL token transfer using Solana
-      const signature = await solanaService.transferUSV(recipientAddress, amountNum);
+      console.log('🔄 Sending SOL via custodial endpoint:', { recipientAddress, amount: amountNum });
       
-      // Update user balance via API
-      const response = await fetch('/api/user/transfer', {
+      // Use custodial wallet send endpoint instead of Phantom
+      const response = await fetch('/api/wallet/send-sol', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          toAddress: recipientAddress,
-          amount: amountNum,
-          signature
+          recipientAddress,
+          amount: amountNum
         })
       });
 
-      if (response.ok) {
-        setTransactionHash(signature);
+      const result = await response.json();
+      
+      if (response.ok && result.success) {
+        setTransactionHash(result.signature);
         setTransactionStep('success');
         
         toast({
           title: "🎉 Transfer Successful!",
-          description: `Sent ${amountNum} USV tokens successfully`,
+          description: `Sent ${amountNum} SOL successfully`,
         });
+        
+        console.log('✅ SOL sent successfully:', result);
       } else {
-        throw new Error('Failed to update balance');
+        throw new Error(result.error || 'Failed to send SOL');
       }
     } catch (error: any) {
-      console.error('Transfer error:', error);
+      console.error('❌ Transfer error:', error);
       setErrorMessage(error.message || 'Transaction failed');
       setTransactionStep('error');
       
       toast({
         title: "Transfer Failed",
-        description: error.message || "Failed to send tokens",
+        description: error.message || "Failed to send SOL",
         variant: "destructive",
       });
     } finally {
@@ -120,7 +124,7 @@ export default function SendTokens() {
           
           <h2 className="text-white text-2xl font-bold mb-2">Transfer Successful!</h2>
           <p className="text-gray-400 mb-6">
-            {amountNum} USV tokens sent successfully
+            {amountNum} SOL sent successfully
           </p>
           
           <div className="bg-gray-900 rounded-xl p-4 mb-6">
@@ -205,7 +209,7 @@ export default function SendTokens() {
           
           <h2 className="text-white text-2xl font-bold mb-2">Processing Transfer</h2>
           <p className="text-gray-400 mb-6">
-            Sending {amountNum} USV tokens to the recipient...
+            Sending {amountNum} SOL to the recipient...
           </p>
           
           <p className="text-purple-400 text-sm">
@@ -245,9 +249,9 @@ export default function SendTokens() {
               <div className="text-center mb-6">
                 <img src="/usv-logo.png" alt="USV" className="w-16 h-16 rounded-xl object-contain mx-auto mb-4" />
                 <h2 className="text-white text-3xl font-bold mb-2" data-testid="text-confirm-amount">
-                  {amountNum} USV
+                  {amountNum} SOL
                 </h2>
-                <p className="text-gray-400">≈ ${(amountNum * 0.20).toFixed(2)} USD</p>
+                <p className="text-gray-400">≈ ${(amountNum * 230).toFixed(2)} USD</p>
               </div>
 
               <div className="space-y-4">
@@ -337,13 +341,13 @@ export default function SendTokens() {
               <img src="/usv-logo.png" alt="USV" className="w-10 h-10 rounded-xl object-contain" />
               <div>
                 <h3 className="text-white font-semibold">Available Balance</h3>
-                <p className="text-gray-400 text-sm">USV Tokens</p>
+                <p className="text-gray-400 text-sm">SOL (Solana)</p>
               </div>
             </div>
             <p className="text-white text-3xl font-bold" data-testid="text-available-balance">
-              {maxBalance.toLocaleString()}
+              {maxBalance.toFixed(4)} SOL
             </p>
-            <p className="text-gray-400 text-sm">≈ ${(maxBalance * 0.20).toFixed(2)} USD</p>
+            <p className="text-gray-400 text-sm">≈ ${(maxBalance * 230).toFixed(2)} USD</p>
           </Card>
 
           {/* Recipient Input */}
@@ -425,7 +429,7 @@ export default function SendTokens() {
             </div>
             
             <p className="text-gray-400 text-sm mt-2">
-              ≈ ${(amountNum * 0.20).toFixed(2)} USD
+              ≈ ${(amountNum * 230).toFixed(2)} USD
             </p>
 
             {/* Quick Amount Buttons */}
@@ -462,7 +466,7 @@ export default function SendTokens() {
             data-testid="button-send-tokens"
           >
             <Send className="w-5 h-5 mr-2" />
-            Send {amountNum || 0} USV Tokens
+            Send {amountNum || 0} SOL
           </Button>
         </motion.div>
       </div>
