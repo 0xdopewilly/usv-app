@@ -1,0 +1,111 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x2328"}}
+index-C-udGM3F.js:221 🔍 Auth Debug: {storedToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…yNDF9.UbQrIsENgBMvLhGDEh0D48J_ujVFeaPR08ZPiIU-DXQ', currentToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…yNDF9.UbQrIsENgBMvLhGDEh0D48J_ujVFeaPR08ZPiIU-DXQ'}
+index-C-udGM3F.js:221 🔍 User Query Debug: {user: undefined, isLoading: true, error: null, hasToken: true}
+index-C-udGM3F.js:221 🔍 Profile API Response: 200 
+content.js:2 Check phishing by URL: Passed.
+index-C-udGM3F.js:221 🔍 Profile API Data: {id: '0b691fc7-1c3e-4b7a-afa4-9959897b47f3', email: 'ayooladopewilly@gmail.com', fullName: 'SFSFSF', balance: 0, stakedBalance: 0, …}
+index-C-udGM3F.js:289 🚀 Real-time price updates started (every 8s)
+index-C-udGM3F.js:221 🔍 User Query Debug: {user: {…}, isLoading: false, error: null, hasToken: true}
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1
+t2o @ injected.js:1
+Z5o @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+initSelectedAddress @ injected.js:1
+initEthereumProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+getInitTronWeb @ injected.js:1
+initTronProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+_initRequest @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 TronLink initiated
+index-C-udGM3F.js:289 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-28T06:34:05.098Z'}
+index-C-udGM3F.js:289 📈 Prices updated: {SOL: '$200.76', USV: '$0.1993', time: '07:34:06'}
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-C-udGM3F.js:289 ⏸️ Real-time price updates stopped
+index-C-udGM3F.js:289 🔄 Loading balance from backend API for: 41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW
+index-C-udGM3F.js:289 💰 Backend API Response: {walletAddress: '41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW', balanceSOL: 0.003934761, balanceLamports: 3934761, network: 'mainnet', lastUpdated: '2025-09-28T06:34:10.964Z'}
+index-C-udGM3F.js:289 ✅ Balance loaded from API: {walletAddress: '41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW', balanceSOL: 0.003934761, balanceLamports: 3934761, network: 'mainnet', lastUpdated: '2025-09-28T06:34:10.964Z'}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-C-udGM3F.js:289 🔄 Loading tokens for selection: 41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW
+index-C-udGM3F.js:289 💰 Token data loaded: {walletAddress: '41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW', balanceSOL: 0.003934761, balanceLamports: 3934761, network: 'mainnet', lastUpdated: '2025-09-28T06:34:14.417Z'}
+index-C-udGM3F.js:289 🪙 Token selected for sending: SOL
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0, isValidAmount: false, isValidAddress: false, …}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0, isValidAmount: false, isValidAddress: false, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0', amountNum: 0, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0', amountNum: 0, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.1', amountNum: 0.1, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0', amountNum: 0, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.0', amountNum: 0, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.00', amountNum: 0, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0, isValidAmount: true, isValidAddress: true, …}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0, isValidAmount: true, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0, isValidAmount: true, isValidAddress: true, …}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0, isValidAmount: true, isValidAddress: true, …}
+index-C-udGM3F.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0, isValidAmount: false, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}

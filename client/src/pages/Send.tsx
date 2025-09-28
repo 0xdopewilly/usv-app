@@ -28,10 +28,10 @@ export default function SendTokens() {
   const [transactionHash, setTransactionHash] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Fetch real SOL balance from user's wallet
+  // Fetch real SOL balance from user's wallet using the working endpoint
   const { data: balanceData, isLoading: isBalanceLoading, error: balanceError } = useQuery({
-    queryKey: ['/api/wallet/my-balance'],
-    enabled: !!user,
+    queryKey: ['/api/wallet/balance', user?.walletAddress],
+    enabled: !!user?.walletAddress,
     refetchInterval: 10000, // Refresh every 10 seconds
   });
 
