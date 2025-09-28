@@ -1,0 +1,149 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x2328"}}
+index-R8SeRNAe.js:221 🔍 Auth Debug: {storedToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…yMDd9.u0hUkcbnU2R4bgsR8nGjFlRyV01Q-w7J2zN_LUhIVPo', currentToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…yMDd9.u0hUkcbnU2R4bgsR8nGjFlRyV01Q-w7J2zN_LUhIVPo'}
+index-R8SeRNAe.js:221 🔍 User Query Debug: {user: undefined, isLoading: true, error: null, hasToken: true}
+index-R8SeRNAe.js:221 🔍 Profile API Response: 200 
+content.js:2 Check phishing by URL: Passed.
+index-R8SeRNAe.js:221 🔍 Profile API Data: {id: '0b691fc7-1c3e-4b7a-afa4-9959897b47f3', email: 'ayooladopewilly@gmail.com', fullName: 'SFSFSF', balance: 0, stakedBalance: 0, …}
+index-R8SeRNAe.js:289 🚀 Real-time price updates started (every 8s)
+index-R8SeRNAe.js:221 🔍 User Query Debug: {user: {…}, isLoading: false, error: null, hasToken: true}
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1
+t2o @ injected.js:1
+Z5o @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+initSelectedAddress @ injected.js:1
+initEthereumProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+getInitTronWeb @ injected.js:1
+initTronProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+_initRequest @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 TronLink initiated
+index-R8SeRNAe.js:289 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-28T07:40:10.904Z'}
+index-R8SeRNAe.js:289 📈 Prices updated: {SOL: '$201.86', USV: '$0.1953', time: '08:40:11'}
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+index-R8SeRNAe.js:289 ⏸️ Real-time price updates stopped
+index-R8SeRNAe.js:289 🔄 Loading balance from backend API for: 41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW
+index-R8SeRNAe.js:289 💰 Backend API Response: {walletAddress: '41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW', balanceSOL: 0.003934761, balanceLamports: 3934761, network: 'mainnet', lastUpdated: '2025-09-28T07:40:13.907Z'}
+index-R8SeRNAe.js:289 ✅ Balance loaded from API: {walletAddress: '41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW', balanceSOL: 0.003934761, balanceLamports: 3934761, network: 'mainnet', lastUpdated: '2025-09-28T07:40:13.907Z'}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-R8SeRNAe.js:289 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-28T07:40:10.904Z'}
+index-R8SeRNAe.js:289 🚀 Real-time price updates started (every 8s)
+index-R8SeRNAe.js:289 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-28T07:40:16.073Z'}
+index-R8SeRNAe.js:289 📈 Prices updated: {SOL: '$201.86', USV: '$0.2029', time: '08:40:15'}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-R8SeRNAe.js:289 ⏸️ Real-time price updates stopped
+index-R8SeRNAe.js:289 🔄 Loading balance from backend API for: 41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW
+index-R8SeRNAe.js:289 💰 Backend API Response: {walletAddress: '41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW', balanceSOL: 0.003934761, balanceLamports: 3934761, network: 'mainnet', lastUpdated: '2025-09-28T07:40:22.360Z'}
+index-R8SeRNAe.js:289 ✅ Balance loaded from API: {walletAddress: '41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW', balanceSOL: 0.003934761, balanceLamports: 3934761, network: 'mainnet', lastUpdated: '2025-09-28T07:40:22.360Z'}
+index-R8SeRNAe.js:289 🔄 Loading tokens for selection: 41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW
+index-R8SeRNAe.js:289 💰 Token data loaded: {walletAddress: '41vQDtNf5LzXUnEywmGanTc77dXHdq6hW9fKmGWc2deW', balanceSOL: 0.003934761, balanceLamports: 3934761, network: 'mainnet', lastUpdated: '2025-09-28T07:40:23.619Z'}
+index-R8SeRNAe.js:289 🪙 Token selected for sending: SOL
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0, isValidAmount: false, isValidAddress: false, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0.003934761, isValidAmount: false, isValidAddress: false, …}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0.003934761, isValidAmount: false, isValidAddress: true, …}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0.003934761, isValidAmount: false, isValidAddress: true, …}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0', amountNum: 0, maxBalance: 0.003934761, isValidAmount: false, isValidAddress: true, …}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0.0', amountNum: 0, maxBalance: 0.003934761, isValidAmount: false, isValidAddress: true, …}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0.00', amountNum: 0, maxBalance: 0.003934761, isValidAmount: false, isValidAddress: true, …}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0.003934761, isValidAmount: true, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0.003934761, isValidAmount: true, isValidAddress: true, …}
+index-R8SeRNAe.js:289 🔄 Sending SOL via custodial endpoint: {recipientAddress: '8BHGJJe77aihbA8cB9vyFymz9A7wrdkssYPHTbvN5HG', amount: 0.001}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0.003934761, isValidAmount: true, isValidAddress: true, …}
+index-R8SeRNAe.js:289 🔄 Token refreshed: {success: true, token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…yMzJ9.6hLw9ZMBUU9oOTIm5uJv7brdNVNAuFQB5UUWad1h9yk', message: 'Token refreshed successfully'}
+index-R8SeRNAe.js:289 🔧 User repair result: {success: true, message: 'User already exists in database'}
+requests.js:1  POST https://usv-app.replit.app/api/wallet/send-tokens 404 (Not Found)
+s.fetch @ requests.js:1
+(anonymous) @ traffic.js:1
+fetch @ traffic.js:1
+value @ injected.js:1
+j @ index-R8SeRNAe.js:289
+await in j
+gL @ index-R8SeRNAe.js:37
+xL @ index-R8SeRNAe.js:37
+wL @ index-R8SeRNAe.js:37
+M1 @ index-R8SeRNAe.js:37
+Dj @ index-R8SeRNAe.js:37
+(anonymous) @ index-R8SeRNAe.js:37
+Lb @ index-R8SeRNAe.js:40
+sj @ index-R8SeRNAe.js:37
+Cm @ index-R8SeRNAe.js:37
+db @ index-R8SeRNAe.js:37
+DL @ index-R8SeRNAe.js:37
+index-R8SeRNAe.js:289 ❌ Transfer error: Error: User wallet not found or no private key available
+    at j (index-R8SeRNAe.js:289:64895)
+j @ index-R8SeRNAe.js:289
+await in j
+gL @ index-R8SeRNAe.js:37
+xL @ index-R8SeRNAe.js:37
+wL @ index-R8SeRNAe.js:37
+M1 @ index-R8SeRNAe.js:37
+Dj @ index-R8SeRNAe.js:37
+(anonymous) @ index-R8SeRNAe.js:37
+Lb @ index-R8SeRNAe.js:40
+sj @ index-R8SeRNAe.js:37
+Cm @ index-R8SeRNAe.js:37
+db @ index-R8SeRNAe.js:37
+DL @ index-R8SeRNAe.js:37
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0.003934761, isValidAmount: true, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0.003934761, isValidAmount: true, isValidAddress: true, …}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0.003934761, isValidAmount: true, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0.003934761, isValidAmount: true, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0.003934761, isValidAmount: true, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-R8SeRNAe.js:289 🔍 Send validation debug: {amount: '0.001', amountNum: 0.001, maxBalance: 0.003934761, isValidAmount: true, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
