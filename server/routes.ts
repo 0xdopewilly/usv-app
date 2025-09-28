@@ -283,6 +283,9 @@ router.post('/auth/apple', async (req, res) => {
       const solanaWallet = generateSolanaWallet();
       const hashedPassword = await bcrypt.hash('apple-signin-' + Date.now(), 10);
       
+      // Encrypt private key for secure storage
+      const encryptedPrivateKey = encryptPrivateKey(solanaWallet.privateKey);
+      
       user = await storage.createUser({
         email: appleUser.email,
         fullName: appleUser.name || 'Apple User',
@@ -290,6 +293,7 @@ router.post('/auth/apple', async (req, res) => {
         balance: 0,  // Real balance starts at 0
         stakedBalance: 0,
         walletAddress: solanaWallet.publicKey,  // AUTO-GENERATED Solana wallet
+        walletPrivateKey: encryptedPrivateKey,  // Encrypted private key for custodial sending
         isVerified: true,  // Apple users are pre-verified
         twoFactorEnabled: false,
         faceIdEnabled: false,
@@ -298,7 +302,7 @@ router.post('/auth/apple', async (req, res) => {
         preferredLanguage: "en",
       });
       
-      console.log('🍎 Apple signup: Auto-generated Solana wallet:', user.email, solanaWallet.publicKey);
+      console.log('🍎 Apple signup: Auto-generated Solana wallet with custodial support:', user.email, solanaWallet.publicKey);
     }
 
     // Generate JWT token
@@ -351,6 +355,9 @@ router.post('/auth/google', async (req, res) => {
       const solanaWallet = generateSolanaWallet();
       const hashedPassword = await bcrypt.hash('google-signin-' + Date.now(), 10);
       
+      // Encrypt private key for secure storage
+      const encryptedPrivateKey = encryptPrivateKey(solanaWallet.privateKey);
+      
       user = await storage.createUser({
         email: googleUser.email,
         fullName: googleUser.name || 'Google User',
@@ -358,6 +365,7 @@ router.post('/auth/google', async (req, res) => {
         balance: 0,  // Real balance starts at 0
         stakedBalance: 0,
         walletAddress: solanaWallet.publicKey,  // AUTO-GENERATED Solana wallet
+        walletPrivateKey: encryptedPrivateKey,  // Encrypted private key for custodial sending
         isVerified: true,  // Google users are pre-verified
         twoFactorEnabled: false,
         faceIdEnabled: false,
@@ -366,7 +374,7 @@ router.post('/auth/google', async (req, res) => {
         preferredLanguage: "en",
       });
       
-      console.log('🔍 Google signup: Auto-generated Solana wallet:', user.email, solanaWallet.publicKey);
+      console.log('🔍 Google signup: Auto-generated Solana wallet with custodial support:', user.email, solanaWallet.publicKey);
     }
 
     // Generate JWT token
