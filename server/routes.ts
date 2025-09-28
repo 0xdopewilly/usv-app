@@ -699,6 +699,67 @@ router.get('/wallet/balance/:walletAddress', async (req, res) => {
 });
 
 // Authenticated user's SOL balance endpoint
+// Server-authoritative user endpoint (recommended by architect)
+router.get('/users/me', authenticateToken, async (req: any, res) => {
+  try {
+    const user = await storage.getUserById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      balance: user.balance,
+      stakedBalance: user.stakedBalance,
+      walletAddress: user.walletAddress, // Server-authoritative wallet address
+      isVerified: user.isVerified,
+      twoFactorEnabled: user.twoFactorEnabled,
+      faceIdEnabled: user.faceIdEnabled,
+      pushNotifications: user.pushNotifications,
+      emailNotifications: user.emailNotifications,
+      preferredLanguage: user.preferredLanguage,
+      profilePicture: user.profilePicture,
+    });
+  } catch (error) {
+    console.error('❌ Error fetching user profile:', error);
+    res.status(500).json({ error: 'Failed to fetch user profile' });
+  }
+});
+
+// Server-authoritative wallet balance endpoint (recommended by architect)
+router.get('/wallet/me/balance', authenticateToken, async (req: any, res) => {
+  try {
+    const user = await storage.getUserById(req.user.userId);
+    if (!user || !user.walletAddress) {
+      return res.status(400).json({ error: 'User wallet not found' });
+    }
+
+    console.log('🔍 Fetching SOL balance for user wallet:', user.walletAddress);
+    
+    // Get real SOL balance from Solana mainnet using connection
+    const publicKey = new PublicKey(user.walletAddress);
+    const balanceInLamports = await connection.getBalance(publicKey);
+    const balanceInSOL = balanceInLamports / LAMPORTS_PER_SOL;
+    
+    console.log('✅ User SOL balance fetched:', { lamports: balanceInLamports, sol: balanceInSOL });
+
+    res.json({
+      walletAddress: user.walletAddress,
+      balanceSOL: balanceInSOL,
+      balanceLamports: balanceInLamports,
+      network: 'mainnet',
+      lastUpdated: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error fetching user SOL balance:', error);
+    res.status(500).json({ error: 'Failed to fetch wallet balance' });
+  }
+});
+
+// Legacy endpoint for backward compatibility
 router.get('/wallet/my-balance', authenticateToken, async (req: any, res) => {
   try {
     const userId = req.user?.userId || req.userId;

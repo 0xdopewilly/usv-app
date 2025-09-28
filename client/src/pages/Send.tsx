@@ -28,18 +28,20 @@ export default function SendTokens() {
   const [transactionHash, setTransactionHash] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Fetch real SOL balance from user's wallet using the working endpoint
+  // Fetch real SOL balance using server-authoritative endpoint (architect recommended)
   const { data: balanceData, isLoading: isBalanceLoading, error: balanceError } = useQuery({
-    queryKey: ['/api/wallet/balance', user?.walletAddress],
+    queryKey: ['/api/wallet/me/balance'],
     queryFn: async () => {
-      if (!user?.walletAddress) throw new Error('No wallet address');
-      
-      const response = await fetch(`/api/wallet/balance/${user.walletAddress}`);
+      const response = await fetch('/api/wallet/me/balance', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
       if (!response.ok) throw new Error('Failed to fetch balance');
       
       return response.json();
     },
-    enabled: !!user?.walletAddress,
+    enabled: !!user,
     refetchInterval: 10000, // Refresh every 10 seconds
   });
 
@@ -86,46 +88,6 @@ export default function SendTokens() {
     
     try {
       console.log(`🔄 Sending ${selectedToken} via custodial wallet:`, { recipientAddress, amount: amountNum });
-      
-      // First refresh token if needed, then repair user data
-      if (user?.id && user?.email) {
-        try {
-          const refreshResponse = await fetch('/api/auth/refresh-token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId: user.id,
-              email: user.email
-            })
-          });
-          
-          if (refreshResponse.ok) {
-            const refreshData = await refreshResponse.json();
-            console.log('🔄 Token refreshed:', refreshData);
-            localStorage.setItem('token', refreshData.token);
-          }
-        } catch (refreshError) {
-          console.log('ℹ️ Token refresh failed:', refreshError);
-        }
-        
-        // Now try to repair user data if needed
-        try {
-          const repairResponse = await fetch('/api/wallet/repair-user', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-          });
-          
-          if (repairResponse.ok) {
-            const repairData = await repairResponse.json();
-            console.log('🔧 User repair result:', repairData);
-          }
-        } catch (repairError) {
-          console.log('ℹ️ User repair not needed or failed:', repairError);
-        }
-      }
       
       // Send via custodial wallet endpoint
       const response = await fetch('/api/wallet/send-tokens', {
