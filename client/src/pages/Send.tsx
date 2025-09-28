@@ -80,7 +80,7 @@ export default function SendTokens() {
       console.log(`🔄 Sending ${selectedToken} via custodial endpoint:`, { recipientAddress, amount: amountNum });
       
       // Use custodial wallet send endpoint instead of Phantom
-      const response = await fetch('/api/wallet/send-sol', {
+      const response = await fetch('/api/wallet/send-tokens', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,7 +88,8 @@ export default function SendTokens() {
         },
         body: JSON.stringify({
           recipientAddress,
-          amount: amountNum
+          amount: amountNum,
+          token: selectedToken
         })
       });
 

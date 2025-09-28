@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import path from 'path';
 import { Connection, Keypair, PublicKey, LAMPORTS_PER_SOL, Transaction, SystemProgram } from '@solana/web3.js';
+import { createTransferInstruction, getAssociatedTokenAddress, getAccount } from '@solana/spl-token';
 import { OAuth2Client } from 'google-auth-library';
 import appleSignin from 'apple-signin-auth';
 import CryptoJS from 'crypto-js';
@@ -12,6 +13,10 @@ import { loginSchema, signupSchema, verificationSchema, withdrawSchema } from '.
 
 // Solana connection for wallet operations
 const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
+
+// USV Token Configuration (from client/src/lib/solana.ts)
+const USV_TOKEN_MINT = new PublicKey('8zGuJQqwhZafTah7Uc7Z4tXRnguqkn5KLFAP8oV6PHe2');
+const USV_DECIMALS = 6;
 
 // Helper function to generate Solana wallet
 function generateSolanaWallet() {
@@ -1194,6 +1199,9 @@ router.post('/wallet/send-sol', authenticateToken, async (req: any, res) => {
     }
 
     // Check user's actual SOL balance before sending
+    if (!user.walletAddress) {
+      return res.status(400).json({ error: 'User wallet address not found' });
+    }
     const senderPublicKey = new PublicKey(user.walletAddress);
     const balanceInLamports = await connection.getBalance(senderPublicKey);
     const balanceInSOL = balanceInLamports / LAMPORTS_PER_SOL;
@@ -1259,6 +1267,146 @@ router.post('/wallet/send-sol', authenticateToken, async (req: any, res) => {
     res.status(500).json({ 
       success: false,
       error: error.message || 'Failed to send SOL' 
+    });
+  }
+});
+
+// Enhanced send tokens endpoint supporting both SOL and USV
+router.post('/wallet/send-tokens', authenticateToken, async (req: any, res) => {
+  try {
+    const { recipientAddress, amount, token = 'SOL' } = req.body;
+    const userId = req.user.userId;
+    
+    console.log(`🔄 Send ${token} request: ${amount} ${token} to ${recipientAddress} from user ${userId}`);
+    
+    // Validate inputs
+    if (!recipientAddress || !amount || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid recipient address or amount' });
+    }
+    
+    if (!['SOL', 'USV'].includes(token.toUpperCase())) {
+      return res.status(400).json({ error: 'Unsupported token type. Only SOL and USV are supported.' });
+    }
+    
+    // Get user with private key
+    const user = await storage.getUserById(userId);
+    if (!user || !user.walletPrivateKey) {
+      return res.status(404).json({ error: 'User wallet not found or no private key available' });
+    }
+
+    // Decrypt private key and create keypair
+    const privateKeyArray = decryptPrivateKey(user.walletPrivateKey);
+    const keypair = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
+    const senderPublicKey = keypair.publicKey;
+    
+    console.log(`💰 Sending from wallet: ${senderPublicKey.toBase58()}`);
+    
+    let transaction = new Transaction();
+    let signature = '';
+    
+    if (token.toUpperCase() === 'SOL') {
+      // Handle SOL transfer
+      const balanceInLamports = await connection.getBalance(senderPublicKey);
+      const balanceInSOL = balanceInLamports / LAMPORTS_PER_SOL;
+      const feeBuffer = 0.000005; // Small buffer for transaction fees
+      
+      if (amount > (balanceInSOL - feeBuffer)) {
+        return res.status(400).json({ 
+          error: `Insufficient SOL balance. Available: ${balanceInSOL.toFixed(6)} SOL, Requested: ${amount} SOL` 
+        });
+      }
+      
+      transaction.add(
+        SystemProgram.transfer({
+          fromPubkey: senderPublicKey,
+          toPubkey: new PublicKey(recipientAddress),
+          lamports: amount * LAMPORTS_PER_SOL,
+        })
+      );
+      
+    } else if (token.toUpperCase() === 'USV') {
+      // Handle USV token transfer
+      try {
+        // Get sender's associated token account
+        const senderTokenAccount = await getAssociatedTokenAddress(
+          USV_TOKEN_MINT,
+          senderPublicKey
+        );
+        
+        // Get recipient's associated token account
+        const recipientTokenAccount = await getAssociatedTokenAddress(
+          USV_TOKEN_MINT,
+          new PublicKey(recipientAddress)
+        );
+        
+        // Check sender's USV balance
+        const senderAccount = await getAccount(connection, senderTokenAccount);
+        const usvBalance = Number(senderAccount.amount) / Math.pow(10, USV_DECIMALS);
+        
+        if (amount > usvBalance) {
+          return res.status(400).json({ 
+            error: `Insufficient USV balance. Available: ${usvBalance.toFixed(6)} USV, Requested: ${amount} USV` 
+          });
+        }
+        
+        // Create transfer instruction
+        transaction.add(
+          createTransferInstruction(
+            senderTokenAccount,
+            recipientTokenAccount,
+            senderPublicKey,
+            amount * Math.pow(10, USV_DECIMALS) // Convert to token units
+          )
+        );
+        
+      } catch (tokenError: any) {
+        console.error('USV token transfer setup error:', tokenError);
+        return res.status(400).json({ 
+          error: `USV token transfer failed: ${tokenError.message}. Make sure both sender and recipient have USV token accounts.` 
+        });
+      }
+    }
+    
+    // Set recent blockhash and fee payer
+    const { blockhash } = await connection.getLatestBlockhash();
+    transaction.recentBlockhash = blockhash;
+    transaction.feePayer = senderPublicKey;
+    
+    // Sign and send transaction
+    transaction.sign(keypair);
+    signature = await connection.sendRawTransaction(transaction.serialize());
+    
+    console.log(`📡 ${token} transaction sent with signature: ${signature}`);
+    
+    // Wait for confirmation
+    await connection.confirmTransaction(signature);
+    
+    // Record transaction in database
+    await storage.createTransaction({
+      userId,
+      type: 'send',
+      amount,
+      token: token.toUpperCase(),
+      status: 'completed',
+      toAddress: recipientAddress,
+      fromAddress: user.walletAddress!,
+      txHash: signature,
+    });
+    
+    console.log(`✅ ${token} sent successfully: ${amount} ${token} to ${recipientAddress}`);
+    
+    res.json({
+      success: true,
+      signature,
+      message: `Successfully sent ${amount} ${token}`,
+      explorerUrl: `https://explorer.solana.com/tx/${signature}`
+    });
+    
+  } catch (error: any) {
+    console.error(`❌ Send ${req.body.token || 'SOL'} error:`, error);
+    res.status(500).json({ 
+      success: false,
+      error: error.message || `Failed to send ${req.body.token || 'SOL'}` 
     });
   }
 });
