@@ -12,7 +12,7 @@ import SimpleSend from "./pages/SimpleSend";
 import TokenSelection from "./pages/TokenSelection";
 import SendTokens from "./pages/Send";
 import Settings from "./pages/Settings";
-import SimpleNFT from "./pages/SimpleNFT";
+import TransactionHistory from "./pages/TransactionHistory";
 import QRScan from "./pages/QRScan";
 import NotFound from "./pages/NotFound";
 
@@ -115,9 +115,9 @@ function AppRouter() {
               <QRScan />
             </PageTransition>
           </Route>
-          <Route path="/nft-portfolio">
-            <PageTransition pageKey="nft-portfolio">
-              <SimpleNFT />
+          <Route path="/transaction-history">
+            <PageTransition pageKey="transaction-history">
+              <TransactionHistory />
             </PageTransition>
           </Route>
           <Route path="/settings">

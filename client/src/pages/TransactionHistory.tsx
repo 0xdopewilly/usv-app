@@ -143,7 +143,7 @@ export default function TransactionHistory() {
       case 'unstake':
         return 'Unstaked';
       default:
-        return transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1);
+        return (transaction.type as string).charAt(0).toUpperCase() + (transaction.type as string).slice(1);
     }
   };
 
