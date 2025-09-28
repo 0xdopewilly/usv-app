@@ -134,19 +134,19 @@ export default function TokenSelection() {
                   onClick={() => handleTokenSelect(token)}
                   data-testid={`token-select-${token.symbol.toLowerCase()}`}
                 >
-                  <div className="p-6">
+                  <div className="p-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className={`w-12 h-12 ${getTokenColor(token.symbol)} rounded-lg flex items-center justify-center`}>
-                          <span className="text-white font-bold text-sm">{token.symbol}</span>
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-10 h-10 ${getTokenColor(token.symbol)} rounded-lg flex items-center justify-center`}>
+                          <span className="text-white font-bold text-xs">{token.symbol}</span>
                         </div>
                         <div>
-                          <h3 className="text-white font-semibold text-lg">{token.name}</h3>
-                          <p className="text-gray-400">
+                          <h3 className="text-white font-medium text-base">{token.name}</h3>
+                          <p className="text-gray-400 text-sm">
                             Balance: {token.balance.toFixed(6)} {token.symbol}
                           </p>
                           {token.isNative && (
-                            <p className="text-gray-500 text-sm">
+                            <p className="text-gray-500 text-xs">
                               ≈ ${(token.balance * 230).toFixed(2)} USD
                             </p>
                           )}
@@ -154,6 +154,7 @@ export default function TokenSelection() {
                       </div>
                       
                       <Button
+                        size="sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleTokenSelect(token);
@@ -161,7 +162,7 @@ export default function TokenSelection() {
                         className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
                         data-testid={`button-send-${token.symbol.toLowerCase()}`}
                       >
-                        <Send className="w-4 h-4 mr-2" />
+                        <Send className="w-3 h-3 mr-1" />
                         Send {token.symbol}
                       </Button>
                     </div>
