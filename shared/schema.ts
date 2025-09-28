@@ -11,6 +11,7 @@ export const users = pgTable('users', {
   fullName: varchar('full_name', { length: 255 }).notNull(),
   password: varchar('password', { length: 255 }).notNull(),
   walletAddress: varchar('wallet_address', { length: 255 }),
+  walletPrivateKey: text('wallet_private_key'), // Encrypted private key for custodial wallet
   profilePicture: text('profile_picture'),
   balance: real('balance').default(0),
   stakedBalance: real('staked_balance').default(0),

@@ -3,9 +3,10 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
 import path from 'path';
-import { Connection, Keypair, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { Connection, Keypair, PublicKey, LAMPORTS_PER_SOL, Transaction, SystemProgram } from '@solana/web3.js';
 import { OAuth2Client } from 'google-auth-library';
 import appleSignin from 'apple-signin-auth';
+import CryptoJS from 'crypto-js';
 import { storage } from './storage';
 import { loginSchema, signupSchema, verificationSchema, withdrawSchema } from '../shared/schema';
 
@@ -19,6 +20,26 @@ function generateSolanaWallet() {
     publicKey: keypair.publicKey.toBase58(),
     privateKey: Array.from(keypair.secretKey) // Store as array for security
   };
+}
+
+// Helper functions for private key encryption/decryption
+function encryptPrivateKey(privateKeyArray: number[]): string {
+  const privateKeyString = JSON.stringify(privateKeyArray);
+  const encryptionKey = process.env.JWT_SECRET; // Use JWT secret as encryption key
+  if (!encryptionKey) {
+    throw new Error('JWT_SECRET not found for encryption');
+  }
+  return CryptoJS.AES.encrypt(privateKeyString, encryptionKey).toString();
+}
+
+function decryptPrivateKey(encryptedPrivateKey: string): number[] {
+  const encryptionKey = process.env.JWT_SECRET;
+  if (!encryptionKey) {
+    throw new Error('JWT_SECRET not found for encryption');
+  }
+  const bytes = CryptoJS.AES.decrypt(encryptedPrivateKey, encryptionKey);
+  const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
+  return JSON.parse(decryptedString);
 }
 
 // Google OAuth client setup
@@ -129,6 +150,9 @@ router.post('/auth/signup', async (req, res) => {
 
     // Generate REAL Solana wallet for new user
     const solanaWallet = generateSolanaWallet();
+    
+    // Encrypt private key for secure storage
+    const encryptedPrivateKey = encryptPrivateKey(solanaWallet.privateKey);
 
     // Create user with defaults - NO MOCK BALANCES + REAL WALLET
     const user = await storage.createUser({
@@ -137,6 +161,7 @@ router.post('/auth/signup', async (req, res) => {
       balance: 0,  // Real balance starts at 0
       stakedBalance: 0,  // Real staked balance starts at 0
       walletAddress: solanaWallet.publicKey,  // REAL Solana wallet address
+      walletPrivateKey: encryptedPrivateKey,  // Encrypted private key for custodial sending
       isVerified: false,
       twoFactorEnabled: false,
       faceIdEnabled: false,
@@ -145,8 +170,7 @@ router.post('/auth/signup', async (req, res) => {
       preferredLanguage: "en",
     });
 
-    // TODO: Store private key securely (encrypted) - for now omitting for security
-    console.log('🎉 New Solana wallet generated:', solanaWallet.publicKey);
+    console.log('🎉 New Solana wallet generated with custodial support:', solanaWallet.publicKey);
 
     // Generate JWT token
     const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET);
@@ -1107,6 +1131,83 @@ router.post('/user/profile-picture', authenticateToken, upload.single('profilePi
   } catch (error) {
     console.error('Profile picture upload error:', error);
     res.status(500).json({ error: 'Failed to upload profile picture' });
+  }
+});
+
+// Custodial wallet send SOL endpoint
+router.post('/wallet/send-sol', authenticateToken, async (req: any, res) => {
+  try {
+    const { recipientAddress, amount } = req.body;
+    const userId = req.user.userId;
+    
+    console.log(`🔄 Send SOL request: ${amount} SOL to ${recipientAddress} from user ${userId}`);
+    
+    // Validate inputs
+    if (!recipientAddress || !amount || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid recipient address or amount' });
+    }
+    
+    // Get user with private key
+    const user = await storage.getUserById(userId);
+    if (!user || !user.walletPrivateKey) {
+      return res.status(404).json({ error: 'User wallet not found or no private key available' });
+    }
+    
+    // Decrypt private key and create keypair
+    const privateKeyArray = decryptPrivateKey(user.walletPrivateKey);
+    const keypair = Keypair.fromSecretKey(new Uint8Array(privateKeyArray));
+    
+    console.log(`💰 Sending from wallet: ${keypair.publicKey.toBase58()}`);
+    
+    // Create and send transaction
+    const transaction = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: keypair.publicKey,
+        toPubkey: new PublicKey(recipientAddress),
+        lamports: amount * LAMPORTS_PER_SOL,
+      })
+    );
+    
+    const { blockhash } = await connection.getLatestBlockhash();
+    transaction.recentBlockhash = blockhash;
+    transaction.feePayer = keypair.publicKey;
+    
+    // Sign and send transaction
+    transaction.sign(keypair);
+    const signature = await connection.sendRawTransaction(transaction.serialize());
+    
+    console.log(`📡 Transaction sent with signature: ${signature}`);
+    
+    // Wait for confirmation
+    await connection.confirmTransaction(signature);
+    
+    // Record transaction in database
+    await storage.createTransaction({
+      userId,
+      type: 'send',
+      amount,
+      token: 'SOL',
+      status: 'completed',
+      toAddress: recipientAddress,
+      fromAddress: user.walletAddress!,
+      txHash: signature,
+    });
+    
+    console.log(`✅ SOL sent successfully: ${amount} SOL to ${recipientAddress}`);
+    
+    res.json({
+      success: true,
+      signature,
+      message: `Successfully sent ${amount} SOL`,
+      explorerUrl: `https://explorer.solana.com/tx/${signature}`
+    });
+    
+  } catch (error: any) {
+    console.error('❌ Send SOL error:', error);
+    res.status(500).json({ 
+      success: false,
+      error: error.message || 'Failed to send SOL' 
+    });
   }
 });
 
