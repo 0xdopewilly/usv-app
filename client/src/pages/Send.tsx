@@ -27,7 +27,7 @@ export default function SendTokens() {
 
   // For sending SOL, we need to check actual wallet balance, not user.balance
   // For now, allow small amounts. TODO: Fetch real SOL balance from wallet
-  const maxBalance = 0.001; // Conservative max for testing - user can send up to 0.001 SOL
+  const maxBalance = 0.005; // Increased max for testing - user can send up to 0.005 SOL
   const amountNum = parseFloat(amount) || 0;
   const isValidAmount = amountNum > 0 && amountNum <= maxBalance;
   const isValidAddress = recipientAddress.length >= 32; // Basic Solana address length check
