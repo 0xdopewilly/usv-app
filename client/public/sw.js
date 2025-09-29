@@ -33,20 +33,29 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   
-  // BYPASS cache entirely for API requests and non-GET requests - let them go directly to server
-  if (url.pathname.startsWith('/api/') || event.request.method !== 'GET') {
-    // Let API calls and POST/PUT/DELETE requests go directly to network
-    return;
+  // COMPLETELY BYPASS all API requests - let them go directly to network
+  if (url.pathname.startsWith('/api/')) {
+    console.log('🔥 SW: Bypassing API request:', url.pathname);
+    return; // Don't call event.respondWith at all for API requests
   }
   
+  // Also bypass non-GET requests
+  if (event.request.method !== 'GET') {
+    console.log('🔥 SW: Bypassing non-GET request:', event.request.method, url.pathname);
+    return; // Don't call event.respondWith at all for non-GET requests
+  }
+  
+  // Only handle GET requests for non-API paths
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
         // Cache hit - return response
         if (response) {
+          console.log('🔥 SW: Serving from cache:', url.pathname);
           return response;
         }
 
+        console.log('🔥 SW: Fetching from network:', url.pathname);
         return fetch(event.request).then(
           (response) => {
             // Check if we received a valid response
