@@ -1584,6 +1584,7 @@ router.post('/wallet/send-tokens', authenticateToken, async (req: any, res) => {
 
 // Sync incoming transactions endpoint - detects incoming SOL transfers to user's custodial wallet
 router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res) => {
+  console.log(`🔥 SYNC ENDPOINT HIT - Starting transaction sync...`);
   try {
     const userId = req.user.userId;
     
