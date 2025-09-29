@@ -31,6 +31,14 @@ self.addEventListener('install', (event) => {
 
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+  
+  // BYPASS cache entirely for API requests and non-GET requests - let them go directly to server
+  if (url.pathname.startsWith('/api/') || event.request.method !== 'GET') {
+    // Let API calls and POST/PUT/DELETE requests go directly to network
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
