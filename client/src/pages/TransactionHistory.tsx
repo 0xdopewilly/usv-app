@@ -125,54 +125,40 @@ export default function TransactionHistory() {
   // Sync incoming transactions mutation
   const syncTransactionsMutation = useMutation({
     mutationFn: async () => {
-      console.log('🔥 SYNC MUTATION STARTED');
       try {
-        console.log('🔥 Making direct fetch request to sync endpoint');
-        const token = localStorage.getItem('token');
-        const response = await fetch('/api/wallet/sync-transactions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        console.log('🔥 Sync response status:', response.status);
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('🔥 Sync error response:', errorText);
-          throw new Error(`Sync failed: ${response.status} ${errorText}`);
-        }
-        
-        const data = await response.json();
-        console.log('🔥 Sync response data:', data);
-        return data;
+        const response = await apiRequest('POST', '/api/wallet/sync-transactions');
+        return response.json();
       } catch (error: any) {
-        console.error('🔥 Sync mutation error:', error);
+        // Handle token expiry specifically
+        if (error.message.includes('Invalid token') || error.message.includes('Access token required') || error.message.includes('Session expired')) {
+          // Try to refresh token first
+          const tokenRefreshed = await refreshToken();
+          if (tokenRefreshed) {
+            // Retry the request with new token
+            const response = await apiRequest('POST', '/api/wallet/sync-transactions');
+            return response.json();
+          } else {
+            throw new Error('Session expired. Please log in again.');
+          }
+        }
         throw error;
       }
     },
     onSuccess: (data: any) => {
-      console.log('🔥 Sync success:', data);
       toast({
         title: 'Transactions synced',
-        description: `Synced ${data.syncedCount || 0} new transactions in ${data.duration || 'unknown time'}`,
+        description: `Found ${data.syncedCount || 0} new incoming transactions`,
       });
       // Refresh the transactions list
       queryClient.invalidateQueries({ queryKey: ['/api/transactions'] });
     },
     onError: (error: any) => {
-      console.error('🔥 Sync error in onError:', error);
       toast({
         title: 'Sync failed',
         description: error.message || 'Failed to sync transactions',
         variant: 'destructive',
       });
     },
-    onSettled: () => {
-      console.log('🔥 Sync mutation settled (finished)');
-    }
   });
 
   const handleSyncTransactions = () => {

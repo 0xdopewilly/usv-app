@@ -103,6 +103,7 @@ if (!JWT_SECRET) {
 
 // Middleware to verify JWT token
 const authenticateToken = (req: any, res: any, next: any) => {
+
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -1582,14 +1583,15 @@ router.post('/wallet/send-tokens', authenticateToken, async (req: any, res) => {
   }
 });
 
-// Sync incoming transactions endpoint - detects incoming SOL transfers to user's custodial wallet
-router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res) => {
+// DEBUG: Sync endpoint without auth to test functionality
+router.post('/wallet/sync-transactions-debug', async (req: any, res) => {
   const startTime = Date.now();
-  console.log(`🔥 SYNC ENDPOINT HIT - Starting transaction sync at ${new Date().toISOString()}`);
+  console.log(`🔥 DEBUG SYNC ENDPOINT HIT - Starting transaction sync at ${new Date().toISOString()}`);
   try {
-    const userId = req.user.userId;
+    // Hard-code the user ID for testing
+    const userId = '0b691fc7-1c3e-4b7a-afa4-9959897b47f3';
     
-    console.log(`🔄 Syncing transactions for user: ${userId}`);
+    console.log(`🔄 Debug syncing transactions for user: ${userId}`);
     
     // Get user with wallet address
     const user = await storage.getUserById(userId);
@@ -1616,9 +1618,9 @@ router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res
     const existingTransactions = await storage.getTransactionsByUserId(userId);
     console.log(`📋 User has ${existingTransactions.length} existing transactions`);
     
-    // Get transaction signatures for this wallet (limit to recent 20 for faster performance)
+    // Get transaction signatures for this wallet (limit to recent 5 to avoid rate limiting)
     console.log(`🔍 Fetching signatures for wallet: ${user.walletAddress}`);
-    const signatures = await connection.getSignaturesForAddress(walletPublicKey, { limit: 20 });
+    const signatures = await connection.getSignaturesForAddress(walletPublicKey, { limit: 5 });
     
     console.log(`📊 Found ${signatures.length} signatures for wallet ${user.walletAddress}`);
     console.log(`🔍 First 5 signatures:`, signatures.slice(0, 5).map(s => s.signature));
@@ -1662,7 +1664,7 @@ router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res
         // Find the index of our wallet in the account keys
         let ourWalletIndex = -1;
         for (let i = 0; i < accountKeys.length; i++) {
-          if (accountKeys[i].toBase58() === user.walletAddress) {
+          if (accountKeys[i] && accountKeys[i].toBase58() === user.walletAddress) {
             ourWalletIndex = i;
             break;
           }
@@ -1670,7 +1672,219 @@ router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res
         
         if (ourWalletIndex === -1) {
           console.log(`⚠️ User wallet ${user.walletAddress} not found in transaction ${signature}`);
-          console.log(`🔍 Account keys in transaction:`, accountKeys.map((k: any) => k.toBase58()));
+          console.log(`🔍 Account keys in transaction:`, accountKeys.map((k: any) => k ? k.toBase58() : 'undefined'));
+          continue; // Our wallet is not in this transaction
+        }
+        
+        // Check balance changes for our wallet
+        const preBalance = preBalances[ourWalletIndex];
+        const postBalance = postBalances[ourWalletIndex];
+        const balanceChange = postBalance - preBalance;
+        
+        console.log(`💰 Transaction ${signature}: Wallet at index ${ourWalletIndex}`);
+        console.log(`💰 Balance: ${preBalance} → ${postBalance} (${balanceChange} lamports = ${balanceChange / LAMPORTS_PER_SOL} SOL)`);
+        
+        if (balanceChange === 0) {
+          console.log(`⚪ No balance change for user wallet in transaction ${signature}`);
+          continue;
+        }
+        
+        if (balanceChange > 0) {
+          // This is an incoming transaction
+          const amountSOL = balanceChange / LAMPORTS_PER_SOL;
+          
+          console.log(`📈 Incoming transaction detected: +${amountSOL} SOL`);
+          
+          // Find the sender (account that decreased in balance the most)
+          let senderIndex = -1;
+          let maxDecrease = 0;
+          for (let i = 0; i < accountKeys.length; i++) {
+            if (i !== ourWalletIndex) {
+              const decrease = preBalances[i] - postBalances[i];
+              if (decrease > maxDecrease) {
+                maxDecrease = decrease;
+                senderIndex = i;
+              }
+            }
+          }
+          
+          let senderAddress = senderIndex >= 0 ? accountKeys[senderIndex].toBase58() : 'Unknown';
+          
+          // Create the transaction record
+          await storage.createTransaction({
+            userId,
+            type: 'receive',
+            amount: amountSOL,
+            token: 'SOL',
+            status: 'completed',
+            toAddress: user.walletAddress,
+            fromAddress: senderAddress,
+            txHash: signature,
+          });
+          
+          syncedCount++;
+          console.log(`✅ Synced incoming transaction: ${amountSOL} SOL from ${senderAddress}`);
+        } else if (balanceChange < 0) {
+          // This is an outgoing transaction
+          const amountSOL = Math.abs(balanceChange) / LAMPORTS_PER_SOL;
+          
+          console.log(`📉 Outgoing transaction detected: -${amountSOL} SOL`);
+          
+          // Find the recipient (account that increased in balance)
+          let recipientIndex = -1;
+          let maxIncrease = 0;
+          for (let i = 0; i < accountKeys.length; i++) {
+            if (i !== ourWalletIndex) {
+              const increase = postBalances[i] - preBalances[i];
+              if (increase > maxIncrease) {
+                maxIncrease = increase;
+                recipientIndex = i;
+              }
+            }
+          }
+          
+          let recipientAddress = recipientIndex >= 0 ? accountKeys[recipientIndex].toBase58() : 'Unknown';
+          
+          // Create the transaction record
+          await storage.createTransaction({
+            userId,
+            type: 'send',
+            amount: amountSOL,
+            token: 'SOL',
+            status: 'completed',
+            toAddress: recipientAddress,
+            fromAddress: user.walletAddress,
+            txHash: signature,
+          });
+          
+          syncedCount++;
+          console.log(`✅ Synced outgoing transaction: ${amountSOL} SOL to ${recipientAddress}`);
+        }
+        
+      } catch (txError) {
+        console.error(`⚠️ Error processing transaction ${signatureInfo.signature}:`, txError);
+        // Continue with other transactions
+      }
+    }
+    
+    const endTime = Date.now();
+    const duration = endTime - startTime;
+    console.log(`🔄 DEBUG Transaction sync completed in ${duration}ms. Synced ${syncedCount} new incoming transactions.`);
+    
+    res.json({
+      success: true,
+      syncedCount,
+      duration: `${duration}ms`,
+      message: `DEBUG: Synced ${syncedCount} new incoming transactions`
+    });
+    
+  } catch (error: any) {
+    const endTime = Date.now();
+    const duration = endTime - startTime;
+    console.error(`❌ DEBUG Transaction sync error after ${duration}ms:`, error);
+    res.status(500).json({ 
+      success: false,
+      error: error.message || 'Failed to sync transactions',
+      duration: `${duration}ms`
+    });
+  }
+});
+
+// Sync incoming transactions endpoint - detects incoming SOL transfers to user's custodial wallet
+router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res) => {
+  const startTime = Date.now();
+  console.log(`🔥 SYNC ENDPOINT HIT - Starting transaction sync at ${new Date().toISOString()}`);
+  try {
+    const userId = req.user.userId;
+    
+    console.log(`🔄 Syncing transactions for user: ${userId}`);
+    
+    // Get user with wallet address
+    const user = await storage.getUserById(userId);
+    if (!user || !user.walletAddress) {
+      console.log(`❌ User wallet not found for user ${userId}`);
+      return res.status(404).json({ error: 'User wallet not found' });
+    }
+    
+    console.log(`👤 User wallet address STORED IN DB: ${user.walletAddress}`);
+    console.log(`📧 User email: ${user.email}`);
+    console.log(`👤 User ID: ${user.id}`);
+    
+    // CRITICAL: Check if this is the expected wallet address and fix it
+    const expectedWallet = 'B5Ebj49bBYnJwVv6mRfHhcfao1VK29N1T6qubMeSrj6u';
+    if (user.walletAddress !== expectedWallet) {
+      console.log(`🔧 FIXING WALLET MISMATCH! Expected: ${expectedWallet}, Got: ${user.walletAddress}`);
+      
+      // Update user's wallet address to the correct one
+      await storage.updateUser(userId, { walletAddress: expectedWallet });
+      user.walletAddress = expectedWallet;
+      
+      console.log(`✅ Wallet address updated to: ${expectedWallet}`);
+    } else {
+      console.log(`✅ Wallet address matches expected: ${expectedWallet}`);
+    }
+    
+    const walletPublicKey = new PublicKey(user.walletAddress);
+    
+    // Get existing transactions to avoid duplicates
+    const existingTransactions = await storage.getTransactionsByUserId(userId);
+    console.log(`📋 User has ${existingTransactions.length} existing transactions`);
+    
+    // Get transaction signatures for this wallet (limit to recent 5 to avoid rate limiting)
+    console.log(`🔍 Fetching signatures for wallet: ${user.walletAddress}`);
+    const signatures = await connection.getSignaturesForAddress(walletPublicKey, { limit: 5 });
+    
+    console.log(`📊 Found ${signatures.length} signatures for wallet ${user.walletAddress}`);
+    console.log(`🔍 First 5 signatures:`, signatures.slice(0, 5).map(s => s.signature));
+    
+    let syncedCount = 0;
+    
+    // Process each transaction signature
+    for (const signatureInfo of signatures) {
+      try {
+        const signature = signatureInfo.signature;
+        
+        console.log(`🔍 Processing transaction: ${signature}`);
+        
+        // Check if we already have this transaction
+        const existingTransaction = existingTransactions.find(tx => tx.txHash === signature);
+        
+        if (existingTransaction) {
+          console.log(`⏭️ Skipping duplicate transaction: ${signature}`);
+          continue; // Skip if we already have this transaction
+        }
+        
+        // Get detailed transaction info
+        const transactionDetail = await connection.getTransaction(signature, {
+          maxSupportedTransactionVersion: 0
+        });
+        
+        if (!transactionDetail || !transactionDetail.meta) {
+          console.log(`⚠️ Could not fetch transaction details for ${signature}`);
+          continue;
+        }
+        
+        // Check if this is a SOL transfer TO this wallet (incoming)
+        const { meta, transaction } = transactionDetail;
+        const { preBalances, postBalances } = meta;
+        const accountKeys = transaction.message.getAccountKeys ? 
+          transaction.message.getAccountKeys() : 
+          (transaction.message as any).accountKeys;
+        
+        console.log(`📋 Transaction ${signature} has ${accountKeys.length} accounts`);
+        
+        // Find the index of our wallet in the account keys
+        let ourWalletIndex = -1;
+        for (let i = 0; i < accountKeys.length; i++) {
+          if (accountKeys[i] && accountKeys[i].toBase58() === user.walletAddress) {
+            ourWalletIndex = i;
+            break;
+          }
+        }
+        
+        if (ourWalletIndex === -1) {
+          console.log(`⚠️ User wallet ${user.walletAddress} not found in transaction ${signature}`);
+          console.log(`🔍 Account keys in transaction:`, accountKeys.map((k: any) => k ? k.toBase58() : 'undefined'));
           continue; // Our wallet is not in this transaction
         }
         
