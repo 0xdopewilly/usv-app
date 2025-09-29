@@ -1584,7 +1584,8 @@ router.post('/wallet/send-tokens', authenticateToken, async (req: any, res) => {
 
 // Sync incoming transactions endpoint - detects incoming SOL transfers to user's custodial wallet
 router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res) => {
-  console.log(`🔥 SYNC ENDPOINT HIT - Starting transaction sync...`);
+  const startTime = Date.now();
+  console.log(`🔥 SYNC ENDPOINT HIT - Starting transaction sync at ${new Date().toISOString()}`);
   try {
     const userId = req.user.userId;
     
@@ -1597,15 +1598,27 @@ router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res
       return res.status(404).json({ error: 'User wallet not found' });
     }
     
-    console.log(`👤 User wallet address: ${user.walletAddress}`);
+    console.log(`👤 User wallet address STORED IN DB: ${user.walletAddress}`);
+    console.log(`📧 User email: ${user.email}`);
+    console.log(`👤 User ID: ${user.id}`);
+    
+    // CRITICAL: Check if this is the expected wallet address
+    const expectedWallet = 'B5Ebj49bBYnJwVv6mRfHhcfao1VK29N1T6qubMeSrj6u';
+    if (user.walletAddress !== expectedWallet) {
+      console.log(`🚨 WALLET MISMATCH! Expected: ${expectedWallet}, Got: ${user.walletAddress}`);
+    } else {
+      console.log(`✅ Wallet address matches expected: ${expectedWallet}`);
+    }
+    
     const walletPublicKey = new PublicKey(user.walletAddress);
     
     // Get existing transactions to avoid duplicates
     const existingTransactions = await storage.getTransactionsByUserId(userId);
     console.log(`📋 User has ${existingTransactions.length} existing transactions`);
     
-    // Get transaction signatures for this wallet (limit to recent 100)
-    const signatures = await connection.getSignaturesForAddress(walletPublicKey, { limit: 100 });
+    // Get transaction signatures for this wallet (limit to recent 20 for faster performance)
+    console.log(`🔍 Fetching signatures for wallet: ${user.walletAddress}`);
+    const signatures = await connection.getSignaturesForAddress(walletPublicKey, { limit: 20 });
     
     console.log(`📊 Found ${signatures.length} signatures for wallet ${user.walletAddress}`);
     console.log(`🔍 First 5 signatures:`, signatures.slice(0, 5).map(s => s.signature));
@@ -1805,19 +1818,25 @@ router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res
       }
     }
     
-    console.log(`🔄 Transaction sync completed. Synced ${syncedCount} new incoming transactions.`);
+    const endTime = Date.now();
+    const duration = endTime - startTime;
+    console.log(`🔄 Transaction sync completed in ${duration}ms. Synced ${syncedCount} new incoming transactions.`);
     
     res.json({
       success: true,
       syncedCount,
+      duration: `${duration}ms`,
       message: `Synced ${syncedCount} new incoming transactions`
     });
     
   } catch (error: any) {
-    console.error('❌ Transaction sync error:', error);
+    const endTime = Date.now();
+    const duration = endTime - startTime;
+    console.error(`❌ Transaction sync error after ${duration}ms:`, error);
     res.status(500).json({ 
       success: false,
-      error: error.message || 'Failed to sync transactions' 
+      error: error.message || 'Failed to sync transactions',
+      duration: `${duration}ms`
     });
   }
 });
