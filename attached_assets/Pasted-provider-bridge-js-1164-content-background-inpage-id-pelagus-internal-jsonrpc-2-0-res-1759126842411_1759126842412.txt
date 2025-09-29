@@ -1,0 +1,263 @@
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"id":"pelagus-internal","jsonrpc":"2.0","result":{"method":"pelagus_getConfig","defaultWallet":false,"chainId":"0x2328"}}
+index-CFK-KOF8.js:241 🔍 Auth Debug: {storedToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…2MTR9.-REipTP4iZEMoTJyQ6MGOLyrdG9TivXXiMfBjBDCFmc', currentToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiO…2MTR9.-REipTP4iZEMoTJyQ6MGOLyrdG9TivXXiMfBjBDCFmc'}
+index-CFK-KOF8.js:241 🔍 User Query Debug: {user: undefined, isLoading: true, error: null, hasToken: true}
+index-CFK-KOF8.js:241 🔍 Profile API Response: 200 
+index-CFK-KOF8.js:241 🔍 Profile API Data: {id: '0b691fc7-1c3e-4b7a-afa4-9959897b47f3', email: 'ayooladopewilly@gmail.com', fullName: 'SFSFSF', balance: 0, stakedBalance: 0, …}
+index-CFK-KOF8.js:309 🚀 Real-time price updates started (every 8s)
+index-CFK-KOF8.js:241 🔍 User Query Debug: {user: {…}, isLoading: false, error: null, hasToken: true}
+content.js:2 Check phishing by URL: Passed.
+index-CFK-KOF8.js:309 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-29T06:16:57.847Z'}
+index-CFK-KOF8.js:309 📈 Prices updated: {SOL: '$208.23', USV: '$0.2023', time: '07:16:57'}
+injected.js:1 [TronLink] TronWeb is already initiated. TronLink will overwrite the current instance
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Provider initialised
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1
+t2o @ injected.js:1
+Z5o @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+initSelectedAddress @ injected.js:1
+initEthereumProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+getProviderInitData @ injected.js:1
+getInitTronWeb @ injected.js:1
+initTronProvider @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 Deprecation warning: tabReply will be removed
+(anonymous) @ content.js:1
+reply @ content.js:1
+(anonymous) @ content.js:1
+await in (anonymous)
+i.emit @ content.js:1
+(anonymous) @ content.js:1
+send @ injected.js:1
+send @ injected.js:1
+_initRequest @ injected.js:1
+init @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+(anonymous) @ injected.js:1
+injected.js:1 TronLink initiated
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+index-CFK-KOF8.js:309 ⏸️ Real-time price updates stopped
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-29T06:16:57.847Z'}
+index-CFK-KOF8.js:309 🚀 Real-time price updates started (every 8s)
+index-CFK-KOF8.js:309 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-29T06:17:02.866Z'}
+index-CFK-KOF8.js:309 📈 Prices updated: {SOL: '$208.22', USV: '$0.2049', time: '07:17:02'}
+index-CFK-KOF8.js:309 ⏸️ Real-time price updates stopped
+index-CFK-KOF8.js:241 🌐 API Request: POST /api/wallet/sync-transactions no data
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 🔄 Loading balance from backend API for: B5Ebj49bBYnJwVv6mRfHhcfao1VK29N1T6qubMeSrj6u
+index-CFK-KOF8.js:309 💰 Backend API Response: {walletAddress: 'B5Ebj49bBYnJwVv6mRfHhcfao1VK29N1T6qubMeSrj6u', balanceSOL: 0.00318464, balanceLamports: 3184640, network: 'mainnet', lastUpdated: '2025-09-29T06:17:23.072Z'}
+index-CFK-KOF8.js:309 ✅ Balance loaded from API: {walletAddress: 'B5Ebj49bBYnJwVv6mRfHhcfao1VK29N1T6qubMeSrj6u', balanceSOL: 0.00318464, balanceLamports: 3184640, network: 'mainnet', lastUpdated: '2025-09-29T06:17:23.072Z'}
+index-CFK-KOF8.js:309 🔄 Loading tokens for selection: B5Ebj49bBYnJwVv6mRfHhcfao1VK29N1T6qubMeSrj6u
+index-CFK-KOF8.js:309 💰 Token data loaded: {walletAddress: 'B5Ebj49bBYnJwVv6mRfHhcfao1VK29N1T6qubMeSrj6u', balanceSOL: 0.00318464, balanceLamports: 3184640, network: 'mainnet', lastUpdated: '2025-09-29T06:17:25.305Z'}
+index-CFK-KOF8.js:309 🪙 Token selected for sending: SOL
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0, isValidAmount: false, isValidAddress: false, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: false, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: false, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.0', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.00', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.003', amountNum: 0.003, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.00', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.002', amountNum: 0.002, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.00', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.003', amountNum: 0.003, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.003', amountNum: 0.003, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.003', amountNum: 0.003, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔄 Sending SOL via custodial wallet: {recipientAddress: '8BHGJJe77aihbA8cB9vyFymz9A7wrdkssYPHTbvN5HG', amount: 0.003}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.003', amountNum: 0.003, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+requests.js:1  POST https://usv-app.replit.app/api/wallet/send-tokens 500 (Internal Server Error)
+s.fetch @ requests.js:1
+(anonymous) @ traffic.js:1
+fetch @ traffic.js:1
+value @ injected.js:1
+j @ index-CFK-KOF8.js:309
+PL @ index-CFK-KOF8.js:37
+TL @ index-CFK-KOF8.js:37
+AL @ index-CFK-KOF8.js:37
+U1 @ index-CFK-KOF8.js:37
+Wj @ index-CFK-KOF8.js:37
+(anonymous) @ index-CFK-KOF8.js:37
+Hx @ index-CFK-KOF8.js:40
+pj @ index-CFK-KOF8.js:37
+$m @ index-CFK-KOF8.js:37
+xx @ index-CFK-KOF8.js:37
+UL @ index-CFK-KOF8.js:37
+index-CFK-KOF8.js:309 ❌ Transfer error: Error: Simulation failed. 
+Message: Transaction simulation failed: Transaction results in an account (0) with insufficient funds for rent. 
+Logs: 
+[
+  "Program 11111111111111111111111111111111 invoke [1]",
+  "Program 11111111111111111111111111111111 success"
+]. 
+Catch the `SendTransactionError` and call `getLogs()` on it for full details.
+    at j (index-CFK-KOF8.js:309:64172)
+j @ index-CFK-KOF8.js:309
+await in j
+PL @ index-CFK-KOF8.js:37
+TL @ index-CFK-KOF8.js:37
+AL @ index-CFK-KOF8.js:37
+U1 @ index-CFK-KOF8.js:37
+Wj @ index-CFK-KOF8.js:37
+(anonymous) @ index-CFK-KOF8.js:37
+Hx @ index-CFK-KOF8.js:40
+pj @ index-CFK-KOF8.js:37
+$m @ index-CFK-KOF8.js:37
+xx @ index-CFK-KOF8.js:37
+UL @ index-CFK-KOF8.js:37
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.003', amountNum: 0.003, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: false, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.0', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.00', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.002', amountNum: 0.002, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.0025', amountNum: 0.0025, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.0025', amountNum: 0.0025, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 🔄 Sending SOL via custodial wallet: {recipientAddress: '8BHGJJe77aihbA8cB9vyFymz9A7wrdkssYPHTbvN5HG', amount: 0.0025}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.0025', amountNum: 0.0025, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.0025', amountNum: 0.0025, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+requests.js:1  POST https://usv-app.replit.app/api/wallet/send-tokens 500 (Internal Server Error)
+s.fetch @ requests.js:1
+(anonymous) @ traffic.js:1
+fetch @ traffic.js:1
+value @ injected.js:1
+j @ index-CFK-KOF8.js:309
+PL @ index-CFK-KOF8.js:37
+TL @ index-CFK-KOF8.js:37
+AL @ index-CFK-KOF8.js:37
+U1 @ index-CFK-KOF8.js:37
+Wj @ index-CFK-KOF8.js:37
+(anonymous) @ index-CFK-KOF8.js:37
+Hx @ index-CFK-KOF8.js:40
+pj @ index-CFK-KOF8.js:37
+$m @ index-CFK-KOF8.js:37
+xx @ index-CFK-KOF8.js:37
+UL @ index-CFK-KOF8.js:37
+index-CFK-KOF8.js:309 ❌ Transfer error: Error: Simulation failed. 
+Message: Transaction simulation failed: Transaction results in an account (0) with insufficient funds for rent. 
+Logs: 
+[
+  "Program 11111111111111111111111111111111 invoke [1]",
+  "Program 11111111111111111111111111111111 success"
+]. 
+Catch the `SendTransactionError` and call `getLogs()` on it for full details.
+    at j (index-CFK-KOF8.js:309:64172)
+j @ index-CFK-KOF8.js:309
+await in j
+PL @ index-CFK-KOF8.js:37
+TL @ index-CFK-KOF8.js:37
+AL @ index-CFK-KOF8.js:37
+U1 @ index-CFK-KOF8.js:37
+Wj @ index-CFK-KOF8.js:37
+(anonymous) @ index-CFK-KOF8.js:37
+Hx @ index-CFK-KOF8.js:40
+pj @ index-CFK-KOF8.js:37
+$m @ index-CFK-KOF8.js:37
+xx @ index-CFK-KOF8.js:37
+UL @ index-CFK-KOF8.js:37
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.0025', amountNum: 0.0025, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: false, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: false, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.0', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: false, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.00', amountNum: 0, maxBalance: 0.00318464, isValidAmount: false, isValidAddress: false, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.002', amountNum: 0.002, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: false, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.002', amountNum: 0.002, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: false, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.002', amountNum: 0.002, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.002', amountNum: 0.002, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔄 Sending SOL via custodial wallet: {recipientAddress: '8BHGJJe77aihbA8cB9vyFymz9A7wrdkssYPHTbvN5HG', amount: 0.002}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.002', amountNum: 0.002, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 ✅ SOL sent successfully: {success: true, signature: '39EddM4NjzcPEqYtGARusMwo5LDz1ztzG1tgTTRZ4uKN3yBc55C1kYZ4e9ViABoXAHkXaPgR9TDzxoAyMKmfzdCq', message: 'Successfully sent 0.002 SOL', explorerUrl: 'https://explorer.solana.com/tx/39EddM4NjzcPEqYtGAR…Z4uKN3yBc55C1kYZ4e9ViABoXAHkXaPgR9TDzxoAyMKmfzdCq'}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.002', amountNum: 0.002, maxBalance: 0.00318464, isValidAmount: true, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.002', amountNum: 0.002, maxBalance: 0.00117964, isValidAmount: false, isValidAddress: true, …}
+index-CFK-KOF8.js:309 🔍 Send validation debug: {amount: '0.002', amountNum: 0.002, maxBalance: 0.00117964, isValidAmount: false, isValidAddress: true, …}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-29T06:17:02.866Z'}
+index-CFK-KOF8.js:309 🚀 Real-time price updates started (every 8s)
+index-CFK-KOF8.js:309 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-29T06:18:08.079Z'}
+index-CFK-KOF8.js:309 📈 Prices updated: {SOL: '$208.22', USV: '$0.1962', time: '07:18:07'}
+index-CFK-KOF8.js:309 ⏸️ Real-time price updates stopped
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:241 🌐 API Request: POST /api/wallet/sync-transactions no data
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:241 📡 API Response: 200 
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-29T06:18:08.079Z'}
+index-CFK-KOF8.js:309 🚀 Real-time price updates started (every 8s)
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:309 💰 Real-time prices updated: {SOL: {…}, USV: {…}, lastUpdated: '2025-09-29T06:19:42.031Z'}
+index-CFK-KOF8.js:309 📈 Prices updated: {SOL: '$208.28', USV: '$0.1991', time: '07:19:41'}
+index-CFK-KOF8.js:309 ⏸️ Real-time price updates stopped
+index-CFK-KOF8.js:241 🌐 API Request: POST /api/wallet/sync-transactions no data
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+index-CFK-KOF8.js:241 📡 API Response: 200 
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}
+provider-bridge.js:1164  content: background > inpage: {"jsonrpc":"2.0","result":{"method":"pelagus_healthCheck"}}

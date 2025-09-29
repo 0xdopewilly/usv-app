@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowUpRight, ArrowDownLeft, Clock, Search, RefreshCw } from 'lucide-react';
 import { useLocation } from 'wouter';
@@ -92,6 +93,18 @@ export default function TransactionHistory() {
   const { user, refreshToken } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Force unregister service worker on component mount
+  React.useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => {
+          console.log('🚫 Force unregistering service worker:', registration);
+          registration.unregister();
+        });
+      });
+    }
+  }, []);
 
   // Fetch user transactions
   const { data: transactions = [], isLoading } = useQuery({
