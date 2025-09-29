@@ -11,6 +11,11 @@ app.use((req, res, next) => {
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
+  // Log every API request immediately
+  if (path.startsWith("/api")) {
+    console.log(`🚀 ${req.method} ${path} - REQUEST STARTED`);
+  }
+
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
     capturedJsonResponse = bodyJson;
@@ -29,6 +34,7 @@ app.use((req, res, next) => {
         logLine = logLine.slice(0, 79) + "…";
       }
 
+      console.log(`✅ ${logLine}`);
       log(logLine);
     }
   });
