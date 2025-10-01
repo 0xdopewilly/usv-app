@@ -1,7 +1,7 @@
-import { User, Transaction, NFT, QRCode, VapeStore, InsertUser, InsertTransaction, InsertNFT, InsertQRCode, InsertVapeStore } from '../shared/schema';
+import { User, Transaction, NFT, QRCode, VapeStore, SavedAddress, InsertUser, InsertTransaction, InsertNFT, InsertQRCode, InsertVapeStore, InsertSavedAddress } from '../shared/schema';
 import { db } from './db';
 import { eq } from 'drizzle-orm';
-import { users, transactions, nfts, qrCodes, vapeStores } from '../shared/schema';
+import { users, transactions, nfts, qrCodes, vapeStores, savedAddresses } from '../shared/schema';
 
 export interface IStorage {
   // User operations
@@ -32,6 +32,11 @@ export interface IStorage {
   createVapeStore(store: InsertVapeStore): Promise<VapeStore>;
   getAllVapeStores(): Promise<VapeStore[]>;
   getVapeStoreById(id: string): Promise<VapeStore | null>;
+  
+  // Saved Address operations
+  createSavedAddress(address: InsertSavedAddress): Promise<SavedAddress>;
+  getSavedAddressesByUserId(userId: string): Promise<SavedAddress[]>;
+  deleteSavedAddress(id: string): Promise<void>;
 }
 
 // Helper function to convert undefined to null for Drizzle compatibility
@@ -54,6 +59,7 @@ export class MemStorage implements IStorage {
   private nfts: Map<string, NFT> = new Map();
   private qrCodes: Map<string, QRCode> = new Map();
   private vapeStores: Map<string, VapeStore> = new Map();
+  private savedAddresses: Map<string, SavedAddress> = new Map();
 
   constructor() {
     // Initialize with sample vape stores
@@ -268,6 +274,26 @@ export class MemStorage implements IStorage {
   async getVapeStoreById(id: string): Promise<VapeStore | null> {
     return this.vapeStores.get(id) || null;
   }
+
+  // Saved Address operations
+  async createSavedAddress(addressData: InsertSavedAddress): Promise<SavedAddress> {
+    const id = this.generateId();
+    const address: SavedAddress = convertUndefinedToNull({
+      ...addressData,
+      id,
+      createdAt: new Date(),
+    }) as SavedAddress;
+    this.savedAddresses.set(id, address);
+    return address;
+  }
+
+  async getSavedAddressesByUserId(userId: string): Promise<SavedAddress[]> {
+    return Array.from(this.savedAddresses.values()).filter(a => a.userId === userId);
+  }
+
+  async deleteSavedAddress(id: string): Promise<void> {
+    this.savedAddresses.delete(id);
+  }
 }
 
 // DatabaseStorage implementation using PostgreSQL - blueprint:javascript_database
@@ -397,6 +423,23 @@ export class DatabaseStorage implements IStorage {
   async getVapeStoreById(id: string): Promise<VapeStore | null> {
     const [store] = await db.select().from(vapeStores).where(eq(vapeStores.id, id));
     return store || null;
+  }
+
+  // Saved Address operations
+  async createSavedAddress(addressData: InsertSavedAddress): Promise<SavedAddress> {
+    const [address] = await db
+      .insert(savedAddresses)
+      .values(addressData)
+      .returning();
+    return address;
+  }
+
+  async getSavedAddressesByUserId(userId: string): Promise<SavedAddress[]> {
+    return await db.select().from(savedAddresses).where(eq(savedAddresses.userId, userId));
+  }
+
+  async deleteSavedAddress(id: string): Promise<void> {
+    await db.delete(savedAddresses).where(eq(savedAddresses.id, id));
   }
 }
 

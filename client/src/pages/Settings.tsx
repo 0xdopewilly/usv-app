@@ -20,7 +20,6 @@ export default function Settings() {
   const [localSettings, setLocalSettings] = useState({
     pushNotifications: user?.pushNotifications ?? true,
     emailNotifications: user?.emailNotifications ?? true,
-    faceIdEnabled: user?.faceIdEnabled ?? false,
     twoFactorEnabled: user?.twoFactorEnabled ?? false,
     preferredLanguage: user?.preferredLanguage ?? 'en',
   });
@@ -355,55 +354,37 @@ export default function Settings() {
         </motion.div>
         
         {/* Security Settings */}
-        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
-          <div className="p-4 border-b border-dark-accent">
-            <h3 className="font-semibold text-white">Security</h3>
-          </div>
-          <div className="p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="face-id" className="text-gray-300">
-                Use Face ID
-              </Label>
-              <Switch
-                id="face-id"
-                checked={localSettings.faceIdEnabled}
-                onCheckedChange={(checked) => handleToggle('faceIdEnabled', checked)}
-                className="data-[state=checked]:bg-cyan-400"
-                data-testid="switch-face-id"
-              />
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.6, type: "spring" }}
+        >
+          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
+            <div className="p-4 border-b border-dark-accent">
+              <h3 className="font-semibold text-white">Security</h3>
             </div>
-            <div className="flex items-center justify-between">
-              <Label htmlFor="require-auth" className="text-gray-300">
-                Require Auth for Transactions
-              </Label>
-              <Switch
-                id="require-auth"
-                checked={localSettings.twoFactorEnabled}
-                onCheckedChange={(checked) => handleToggle('twoFactorEnabled', checked)}
-                className="data-[state=checked]:bg-cyan-400"
-                data-testid="switch-require-auth"
-              />
-            </div>
-            <motion.div
-              whileHover={{ 
-                scale: 1.01,
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                boxShadow: "0 4px 15px rgba(34, 211, 238, 0.15)"
-              }}
-              whileTap={{ scale: 0.99 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            >
-              <Button
-                variant="ghost"
-                className="w-full text-left py-2 text-gray-300 flex items-center justify-between hover:bg-transparent"
-                data-testid="button-2fa-setup"
+            <div className="p-4 space-y-4">
+              <motion.div
+                whileHover={{ 
+                  scale: 1.01,
+                  backgroundColor: "rgba(255, 255, 255, 0.05)",
+                  boxShadow: "0 4px 15px rgba(34, 211, 238, 0.15)"
+                }}
+                whileTap={{ scale: 0.99 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
               >
-                <span>Two-Factor Authentication</span>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </Button>
-            </motion.div>
-          </div>
-        </Card>
+                <Button
+                  variant="ghost"
+                  className="w-full text-left py-2 text-gray-300 flex items-center justify-between hover:bg-transparent"
+                  data-testid="button-2fa-setup"
+                >
+                  <span>Two-Factor Authentication</span>
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </Button>
+              </motion.div>
+            </div>
+          </Card>
+        </motion.div>
 
         {/* Account Actions */}
         <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">

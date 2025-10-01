@@ -9,7 +9,7 @@ import { OAuth2Client } from 'google-auth-library';
 import appleSignin from 'apple-signin-auth';
 import CryptoJS from 'crypto-js';
 import { storage } from './storage';
-import { loginSchema, signupSchema, verificationSchema, withdrawSchema } from '../shared/schema';
+import { loginSchema, signupSchema, verificationSchema, withdrawSchema, insertSavedAddressSchema } from '../shared/schema';
 
 // Solana connection for wallet operations
 const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
@@ -2052,6 +2052,59 @@ router.post('/wallet/sync-transactions', authenticateToken, async (req: any, res
       error: error.message || 'Failed to sync transactions',
       duration: `${duration}ms`
     });
+  }
+});
+
+// Saved Addresses API Routes
+router.get('/saved-addresses', authenticateToken, async (req: any, res) => {
+  try {
+    const userId = req.user.userId;
+    const addresses = await storage.getSavedAddressesByUserId(userId);
+    res.json({ success: true, addresses });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/saved-addresses', authenticateToken, async (req: any, res) => {
+  try {
+    const userId = req.user.userId;
+    
+    // Validate request body with Zod
+    const validationResult = insertSavedAddressSchema.omit({ id: true, createdAt: true, userId: true }).safeParse(req.body);
+    
+    if (!validationResult.success) {
+      return res.status(400).json({ success: false, error: 'Invalid address data', details: validationResult.error });
+    }
+    
+    const savedAddress = await storage.createSavedAddress({
+      userId,
+      ...validationResult.data,
+    });
+    
+    res.json({ success: true, address: savedAddress });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.delete('/saved-addresses/:id', authenticateToken, async (req: any, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+    
+    // Verify ownership before deleting
+    const userAddresses = await storage.getSavedAddressesByUserId(userId);
+    const addressToDelete = userAddresses.find(addr => addr.id === id);
+    
+    if (!addressToDelete) {
+      return res.status(404).json({ success: false, error: 'Address not found or unauthorized' });
+    }
+    
+    await storage.deleteSavedAddress(id);
+    res.json({ success: true, message: 'Address deleted successfully' });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
