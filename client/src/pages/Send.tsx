@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Send, Scan, User, AlertCircle, CheckCircle, DollarSign, Loader2 } from 'lucide-react';
+import { ArrowLeft, Send, Scan, User, AlertCircle, CheckCircle, DollarSign, Loader2, Bookmark } from 'lucide-react';
 import { useLocation, useParams } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import { solanaService } from '@/lib/solana';
+import { apiRequest } from '@/lib/queryClient';
 // New USV Logo
 import usvLogo from '@assets/image_1757431326277.png';
 
@@ -27,6 +29,9 @@ export default function SendTokens() {
   const [transactionStep, setTransactionStep] = useState<'input' | 'confirm' | 'processing' | 'success' | 'error'>('input');
   const [transactionHash, setTransactionHash] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showSaveAddressDialog, setShowSaveAddressDialog] = useState(false);
+  const [addressLabel, setAddressLabel] = useState('');
+  const queryClient = useQueryClient();
 
   // Fetch real SOL balance using server-authoritative endpoint (architect recommended)
   const { data: balanceData, isLoading: isBalanceLoading, error: balanceError } = useQuery({
@@ -82,6 +87,30 @@ export default function SendTokens() {
     setTransactionStep('confirm');
   };
 
+  // Save address mutation
+  const saveAddressMutation = useMutation({
+    mutationFn: async (data: { address: string; label?: string }) => {
+      const response = await apiRequest('POST', '/api/saved-addresses', data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/saved-addresses'] });
+      toast({
+        title: 'Address Saved',
+        description: 'The address has been added to your address book',
+      });
+      setShowSaveAddressDialog(false);
+      setAddressLabel('');
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Failed to Save',
+        description: error.message || 'Unable to save address',
+        variant: 'destructive',
+      });
+    },
+  });
+
   const confirmTransaction = async () => {
     setIsLoading(true);
     setTransactionStep('processing');
@@ -109,6 +138,9 @@ export default function SendTokens() {
         setTransactionHash(result.signature);
         setTransactionStep('success');
         
+        // Show save address dialog after successful transaction
+        setShowSaveAddressDialog(true);
+        
         toast({
           title: "🎉 Transfer Successful!",
           description: `Sent ${amountNum} SOL successfully`,
@@ -131,6 +163,10 @@ export default function SendTokens() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSaveAddress = () => {
+    saveAddressMutation.mutate({ address: recipientAddress, label: addressLabel || undefined });
   };
 
   const resetTransaction = () => {
@@ -190,6 +226,59 @@ export default function SendTokens() {
             </Button>
           </div>
         </motion.div>
+        
+        {/* Save Address Dialog */}
+        <Dialog open={showSaveAddressDialog} onOpenChange={setShowSaveAddressDialog}>
+          <DialogContent className="bg-gray-900 border-gray-700 text-white">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Bookmark className="h-5 w-5 text-cyan-400" />
+                Save Address?
+              </DialogTitle>
+              <DialogDescription className="text-gray-400">
+                Would you like to save this address to your address book for future use?
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="bg-gray-800 rounded-lg p-3">
+                <p className="text-xs text-gray-400 mb-1">Recipient Address</p>
+                <p className="text-sm text-white font-mono break-all">{recipientAddress}</p>
+              </div>
+              <div>
+                <Label htmlFor="address-label" className="text-gray-300">Label (Optional)</Label>
+                <Input
+                  id="address-label"
+                  value={addressLabel}
+                  onChange={(e) => setAddressLabel(e.target.value)}
+                  placeholder="e.g., Exchange, Friend's wallet"
+                  className="mt-2 bg-gray-800 border-gray-700 text-white"
+                  data-testid="input-save-address-label"
+                />
+              </div>
+            </div>
+            <DialogFooter className="gap-2">
+              <Button
+                onClick={() => {
+                  setShowSaveAddressDialog(false);
+                  setAddressLabel('');
+                }}
+                variant="outline"
+                className="border-gray-700 text-gray-300"
+                data-testid="button-skip-save"
+              >
+                Skip
+              </Button>
+              <Button
+                onClick={handleSaveAddress}
+                disabled={saveAddressMutation.isPending}
+                className="bg-gradient-to-r from-purple-600 to-cyan-500"
+                data-testid="button-confirm-save"
+              >
+                {saveAddressMutation.isPending ? 'Saving...' : 'Save Address'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
