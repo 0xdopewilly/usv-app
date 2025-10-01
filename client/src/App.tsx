@@ -12,6 +12,7 @@ import SimpleSend from "./pages/SimpleSend";
 import TokenSelection from "./pages/TokenSelection";
 import SendTokens from "./pages/Send";
 import Settings from "./pages/Settings";
+import SavedAddresses from "./pages/SavedAddresses";
 import TransactionHistory from "./pages/TransactionHistory";
 import TransactionDetail from "./pages/TransactionDetail";
 import QRScan from "./pages/QRScan";
@@ -129,6 +130,11 @@ function AppRouter() {
           <Route path="/settings">
             <PageTransition pageKey="settings">
               <Settings />
+            </PageTransition>
+          </Route>
+          <Route path="/saved-addresses">
+            <PageTransition pageKey="saved-addresses">
+              <SavedAddresses />
             </PageTransition>
           </Route>
           <Route>

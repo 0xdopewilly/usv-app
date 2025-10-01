@@ -11,11 +11,13 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useState, useRef } from 'react';
+import { useLocation } from 'wouter';
 
 export default function Settings() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
 
   const [localSettings, setLocalSettings] = useState({
     pushNotifications: user?.pushNotifications ?? true,
@@ -304,6 +306,7 @@ export default function Settings() {
           >
             <Button
               variant="ghost"
+              onClick={() => setLocation('/saved-addresses')}
               className="w-full p-4 text-left flex items-center justify-between hover:bg-transparent"
               data-testid="button-address-book"
             >
