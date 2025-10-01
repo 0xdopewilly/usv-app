@@ -12,12 +12,14 @@ import { useToast } from '@/hooks/use-toast';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useState, useRef } from 'react';
 import { useLocation } from 'wouter';
+import { useTranslation } from 'react-i18next';
 
 export default function Settings() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
+  const { t, i18n } = useTranslation();
 
   const [localSettings, setLocalSettings] = useState({
     pushNotifications: user?.pushNotifications ?? true,
@@ -97,6 +99,8 @@ export default function Settings() {
     const updates = { preferredLanguage: language };
     setLocalSettings(prev => ({ ...prev, ...updates }));
     updateProfileMutation.mutate(updates);
+    // Change i18n language
+    i18n.changeLanguage(language);
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
