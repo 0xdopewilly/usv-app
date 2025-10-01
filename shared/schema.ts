@@ -17,7 +17,7 @@ export const users = pgTable('users', {
   stakedBalance: real('staked_balance').default(0),
   isVerified: boolean('is_verified').default(false),
   twoFactorEnabled: boolean('two_factor_enabled').default(false),
-  faceIdEnabled: boolean('face_id_enabled').default(false),
+  twoFactorSecret: text('two_factor_secret'), // Encrypted TOTP secret for 2FA
   pushNotifications: boolean('push_notifications').default(true),
   emailNotifications: boolean('email_notifications').default(true),
   preferredLanguage: varchar('preferred_language', { length: 10 }).default('en'),
@@ -131,6 +131,15 @@ export const tradeOrders = pgTable('trade_orders', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
+// Saved Addresses table
+export const savedAddresses = pgTable('saved_addresses', {
+  id: varchar('id').primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar('user_id', { length: 255 }).notNull(),
+  address: varchar('address', { length: 255 }).notNull(),
+  label: varchar('label', { length: 100 }), // Optional label like "Mom's wallet", "Exchange", etc.
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
 // Generate Drizzle Zod schemas for type-safe validation
 export const insertUserSchema = createInsertSchema(users);
 export const insertTransactionSchema = createInsertSchema(transactions);
@@ -141,6 +150,7 @@ export const insertProductSchema = createInsertSchema(products);
 export const insertAnalyticsSchema = createInsertSchema(analytics);
 export const insertNotificationSchema = createInsertSchema(notifications);
 export const insertTradeOrderSchema = createInsertSchema(tradeOrders);
+export const insertSavedAddressSchema = createInsertSchema(savedAddresses);
 
 // TypeScript types from Drizzle
 export type User = typeof users.$inferSelect;
@@ -161,6 +171,8 @@ export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = typeof notifications.$inferInsert;
 export type TradeOrder = typeof tradeOrders.$inferSelect;
 export type InsertTradeOrder = typeof tradeOrders.$inferInsert;
+export type SavedAddress = typeof savedAddresses.$inferSelect;
+export type InsertSavedAddress = typeof savedAddresses.$inferInsert;
 
 // Auth schemas (pure Zod - not database tables)
 export const loginSchema = z.object({
