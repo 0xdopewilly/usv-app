@@ -170,7 +170,7 @@ export default function Settings() {
   // 2FA mutations
   const enable2FAMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest('/api/user/2fa/enable', 'POST');
+      const response = await apiRequest('POST', '/api/user/2fa/enable');
       return response.json();
     },
     onSuccess: (data) => {
@@ -189,7 +189,7 @@ export default function Settings() {
 
   const verify2FAMutation = useMutation({
     mutationFn: async (code: string) => {
-      const response = await apiRequest('/api/user/2fa/verify-enable', 'POST', { code });
+      const response = await apiRequest('POST', '/api/user/2fa/verify-enable', { code });
       return response.json();
     },
     onSuccess: () => {
@@ -213,7 +213,7 @@ export default function Settings() {
 
   const disable2FAMutation = useMutation({
     mutationFn: async (code: string) => {
-      const response = await apiRequest('/api/user/2fa/disable', 'POST', { code });
+      const response = await apiRequest('POST', '/api/user/2fa/disable', { code });
       return response.json();
     },
     onSuccess: () => {

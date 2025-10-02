@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { MoreHorizontal } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import BottomNavigation from '@/components/BottomNavigation';
 import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
 import PriceUpdateIndicator from '@/components/PriceUpdateIndicator';
@@ -35,6 +36,23 @@ export default function Home() {
   const [prices, setPrices] = useState<AllPricesResponse | null>(null);
   const [isLoadingPrices, setIsLoadingPrices] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
+
+  // Fetch real wallet balance from blockchain
+  const { data: walletBalance, isLoading: balanceLoading } = useQuery({
+    queryKey: ['wallet-balance', user?.walletAddress],
+    queryFn: async () => {
+      if (!user?.walletAddress) return null;
+      const response = await fetch(`/api/wallet/balance/${user.walletAddress}`);
+      if (!response.ok) throw new Error('Failed to fetch balance');
+      return response.json();
+    },
+    enabled: !!user?.walletAddress,
+    refetchInterval: 10000, // Refresh every 10 seconds for real-time updates
+  });
+
+  // Calculate total portfolio value in USD
+  const totalPortfolioValue = walletBalance && prices ? 
+    (walletBalance.balanceSOL * (prices.SOL?.price || 0)) : 0;
 
   // Setup real-time price updates
   useEffect(() => {
@@ -163,7 +181,7 @@ export default function Home() {
           transition={{ delay: 0.4, type: "spring" }}
         >
           {/* Balance Loading State */}
-          {isLoadingPrices ? (
+          {isLoadingPrices || balanceLoading ? (
             <div className="skeleton w-48 h-14 mx-auto rounded-[16px] mb-3" />
           ) : (
             <motion.h1 
@@ -171,14 +189,14 @@ export default function Home() {
               animate={{ scale: [1, 1.02, 1] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
-              <span className="relative z-10">${user?.balance?.toFixed(2) || '0.00'}</span>
+              <span className="relative z-10">${totalPortfolioValue.toFixed(2)}</span>
               {/* Glow Effect */}
               <motion.div 
                 className="absolute inset-0 text-transparent bg-gradient-electric bg-clip-text blur-sm opacity-50"
                 animate={{ opacity: [0.3, 0.7, 0.3] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                ${user?.balance?.toFixed(2) || '0.00'}
+                ${totalPortfolioValue.toFixed(2)}
               </motion.div>
             </motion.h1>
           )}

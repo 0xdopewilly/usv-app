@@ -127,7 +127,7 @@ export default function TransactionHistory() {
   const syncTransactionsMutation = useMutation({
     mutationFn: async () => {
       try {
-        const response = await apiRequest('/api/wallet/sync-transactions', 'POST');
+        const response = await apiRequest('POST', '/api/wallet/sync-transactions');
         return response.json();
       } catch (error: any) {
         // Handle token expiry specifically
@@ -136,7 +136,7 @@ export default function TransactionHistory() {
           const tokenRefreshed = await refreshToken();
           if (tokenRefreshed) {
             // Retry the request with new token
-            const response = await apiRequest('/api/wallet/sync-transactions', 'POST');
+            const response = await apiRequest('POST', '/api/wallet/sync-transactions');
             return response.json();
           } else {
             throw new Error('Session expired. Please log in again.');

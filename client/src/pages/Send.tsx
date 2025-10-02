@@ -91,7 +91,7 @@ export default function SendTokens() {
   // Save address mutation
   const saveAddressMutation = useMutation({
     mutationFn: async (data: { address: string; label?: string }) => {
-      const response = await apiRequest('/api/saved-addresses', 'POST', data);
+      const response = await apiRequest('POST', '/api/saved-addresses', data);
       return response.json();
     },
     onSuccess: () => {
