@@ -42,7 +42,7 @@ export default function Settings() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (updates: Partial<typeof localSettings>) => {
-      return await apiRequest('/api/user/profile', 'PATCH', updates);
+      return await apiRequest('PATCH', '/api/user/profile', updates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });

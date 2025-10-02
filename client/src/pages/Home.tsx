@@ -50,9 +50,9 @@ export default function Home() {
     refetchInterval: 10000, // Refresh every 10 seconds for real-time updates
   });
 
-  // Calculate total portfolio value in USD
-  const totalPortfolioValue = walletBalance && prices ? 
-    (walletBalance.balanceSOL * (prices.SOL?.price || 0)) : 0;
+  // Calculate total portfolio value in USD - only when both balance and prices are loaded
+  const totalPortfolioValue = walletBalance?.balanceSOL && prices?.SOL?.price ? 
+    (walletBalance.balanceSOL * prices.SOL.price) : 0;
 
   // Setup real-time price updates
   useEffect(() => {
