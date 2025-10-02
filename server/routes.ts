@@ -969,17 +969,129 @@ router.post('/verify/captcha', async (req, res) => {
 
 router.post('/verify/2fa', authenticateToken, async (req: any, res) => {
   try {
-    const data = verificationSchema.parse(req.body);
+    const { code } = req.body;
     
-    // Simple 2FA verification simulation
-    // In production, this would verify against TOTP or SMS code
-    if (data.code === '123456') {
+    if (!code) {
+      return res.status(400).json({ error: 'Code is required' });
+    }
+    
+    const user = await storage.getUserById(req.user.userId);
+    if (!user || !user.twoFactorSecret) {
+      return res.status(400).json({ error: '2FA not set up' });
+    }
+    
+    // Verify TOTP code
+    const { authenticator } = await import('otplib');
+    const isValid = authenticator.verify({ token: code, secret: user.twoFactorSecret });
+    
+    if (isValid) {
       res.json({ success: true });
     } else {
       res.status(400).json({ error: 'Invalid verification code' });
     }
   } catch (error) {
+    console.error('2FA verification error:', error);
     res.status(400).json({ error: 'Invalid verification code format' });
+  }
+});
+
+// Enable 2FA - Generate secret and QR code
+router.post('/user/2fa/enable', authenticateToken, async (req: any, res) => {
+  try {
+    const user = await storage.getUserById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Generate secret
+    const { authenticator } = await import('otplib');
+    const secret = authenticator.generateSecret();
+    
+    // Generate OTP auth URL for QR code
+    const otpauth = authenticator.keyuri(user.email, 'USV Token', secret);
+    
+    // Generate QR code
+    const QRCode = await import('qrcode');
+    const qrCodeUrl = await QRCode.toDataURL(otpauth);
+    
+    // Store secret temporarily (not yet enabled)
+    await storage.updateUser(req.user.userId, { twoFactorSecret: secret });
+    
+    res.json({
+      secret,
+      qrCodeUrl,
+      otpauth
+    });
+  } catch (error) {
+    console.error('2FA enable error:', error);
+    res.status(500).json({ error: 'Failed to enable 2FA' });
+  }
+});
+
+// Verify and activate 2FA
+router.post('/user/2fa/verify-enable', authenticateToken, async (req: any, res) => {
+  try {
+    const { code } = req.body;
+    
+    if (!code) {
+      return res.status(400).json({ error: 'Code is required' });
+    }
+    
+    const user = await storage.getUserById(req.user.userId);
+    if (!user || !user.twoFactorSecret) {
+      return res.status(400).json({ error: '2FA not set up' });
+    }
+    
+    // Verify TOTP code
+    const { authenticator } = await import('otplib');
+    const isValid = authenticator.verify({ token: code, secret: user.twoFactorSecret });
+    
+    if (!isValid) {
+      return res.status(400).json({ error: 'Invalid code' });
+    }
+    
+    // Enable 2FA
+    await storage.updateUser(req.user.userId, { twoFactorEnabled: true });
+    
+    res.json({ success: true, message: '2FA enabled successfully' });
+  } catch (error) {
+    console.error('2FA verification error:', error);
+    res.status(500).json({ error: 'Failed to verify 2FA' });
+  }
+});
+
+// Disable 2FA
+router.post('/user/2fa/disable', authenticateToken, async (req: any, res) => {
+  try {
+    const { code } = req.body;
+    
+    if (!code) {
+      return res.status(400).json({ error: 'Code is required to disable 2FA' });
+    }
+    
+    const user = await storage.getUserById(req.user.userId);
+    if (!user || !user.twoFactorSecret) {
+      return res.status(400).json({ error: '2FA not set up' });
+    }
+    
+    // Verify TOTP code before disabling
+    const { authenticator } = await import('otplib');
+    const isValid = authenticator.verify({ token: code, secret: user.twoFactorSecret });
+    
+    if (!isValid) {
+      return res.status(400).json({ error: 'Invalid code' });
+    }
+    
+    // Disable 2FA and clear secret
+    await storage.updateUser(req.user.userId, {
+      twoFactorEnabled: false,
+      twoFactorSecret: null
+    });
+    
+    res.json({ success: true, message: '2FA disabled successfully' });
+  } catch (error) {
+    console.error('2FA disable error:', error);
+    res.status(500).json({ error: 'Failed to disable 2FA' });
   }
 });
 

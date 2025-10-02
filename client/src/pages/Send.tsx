@@ -13,6 +13,7 @@ import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import { solanaService } from '@/lib/solana';
 import { apiRequest } from '@/lib/queryClient';
+import NotificationService from '@/lib/notifications';
 // New USV Logo
 import usvLogo from '@assets/image_1757431326277.png';
 
@@ -140,6 +141,11 @@ export default function SendTokens() {
         
         // Show save address dialog after successful transaction
         setShowSaveAddressDialog(true);
+        
+        // Show browser notification if user has enabled push notifications
+        if (user?.pushNotifications && NotificationService.hasPermission()) {
+          await NotificationService.showTransactionNotification('sent', amountNum, selectedToken);
+        }
         
         toast({
           title: "🎉 Transfer Successful!",
