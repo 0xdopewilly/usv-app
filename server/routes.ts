@@ -182,7 +182,6 @@ router.post('/auth/signup', async (req, res) => {
       walletPrivateKey: encryptedPrivateKey,  // Encrypted private key for custodial sending
       isVerified: false,
       twoFactorEnabled: false,
-      faceIdEnabled: false,
       pushNotifications: true,
       emailNotifications: true,
       preferredLanguage: "en",
@@ -314,7 +313,6 @@ router.post('/auth/apple', async (req, res) => {
         walletPrivateKey: encryptedPrivateKey,  // Encrypted private key for custodial sending
         isVerified: true,  // Apple users are pre-verified
         twoFactorEnabled: false,
-        faceIdEnabled: false,
         pushNotifications: true,
         emailNotifications: true,
         preferredLanguage: "en",
@@ -386,7 +384,6 @@ router.post('/auth/google', async (req, res) => {
         walletPrivateKey: encryptedPrivateKey,  // Encrypted private key for custodial sending
         isVerified: true,  // Google users are pre-verified
         twoFactorEnabled: false,
-        faceIdEnabled: false,
         pushNotifications: true,
         emailNotifications: true,
         preferredLanguage: "en",
@@ -465,7 +462,6 @@ router.post('/auth/phantom', async (req, res) => {
       walletAddress: walletAddress,  // USE EXISTING Phantom wallet
       isVerified: true,  // Phantom users are considered verified
       twoFactorEnabled: false,
-      faceIdEnabled: false,
       pushNotifications: true,
       emailNotifications: false, // Default false for phantom users
       preferredLanguage: "en",
@@ -512,7 +508,6 @@ router.get('/user/profile', authenticateToken, async (req: any, res) => {
       walletAddress: user.walletAddress,
       isVerified: user.isVerified,
       twoFactorEnabled: user.twoFactorEnabled,
-      faceIdEnabled: user.faceIdEnabled,
       pushNotifications: user.pushNotifications,
       emailNotifications: user.emailNotifications,
       preferredLanguage: user.preferredLanguage,
@@ -535,7 +530,6 @@ router.patch('/user/profile', authenticateToken, async (req: any, res) => {
       walletAddress: user.walletAddress,
       isVerified: user.isVerified,
       twoFactorEnabled: user.twoFactorEnabled,
-      faceIdEnabled: user.faceIdEnabled,
       pushNotifications: user.pushNotifications,
       emailNotifications: user.emailNotifications,
       preferredLanguage: user.preferredLanguage,
@@ -717,7 +711,6 @@ router.get('/users/me', authenticateToken, async (req: any, res) => {
       walletAddress: user.walletAddress, // Server-authoritative wallet address
       isVerified: user.isVerified,
       twoFactorEnabled: user.twoFactorEnabled,
-      faceIdEnabled: user.faceIdEnabled,
       pushNotifications: user.pushNotifications,
       emailNotifications: user.emailNotifications,
       preferredLanguage: user.preferredLanguage,
@@ -1535,7 +1528,6 @@ router.post('/wallet/repair-user', authenticateToken, async (req: any, res) => {
       walletPrivateKey: encryptedPrivateKey,
       isVerified: true, // Assume verified since they're authenticated
       twoFactorEnabled: false,
-      faceIdEnabled: false,
       pushNotifications: true,
       emailNotifications: true,
       preferredLanguage: "en",

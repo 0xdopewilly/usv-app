@@ -11,6 +11,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import { useAuth } from '@/lib/auth';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import NotificationService from '@/lib/notifications';
 
 // Date utility functions
 const formatDate = (date: Date) => {
@@ -126,7 +127,7 @@ export default function TransactionHistory() {
   const syncTransactionsMutation = useMutation({
     mutationFn: async () => {
       try {
-        const response = await apiRequest('POST', '/api/wallet/sync-transactions');
+        const response = await apiRequest('/api/wallet/sync-transactions', 'POST');
         return response.json();
       } catch (error: any) {
         // Handle token expiry specifically
@@ -135,7 +136,7 @@ export default function TransactionHistory() {
           const tokenRefreshed = await refreshToken();
           if (tokenRefreshed) {
             // Retry the request with new token
-            const response = await apiRequest('POST', '/api/wallet/sync-transactions');
+            const response = await apiRequest('/api/wallet/sync-transactions', 'POST');
             return response.json();
           } else {
             throw new Error('Session expired. Please log in again.');
@@ -144,11 +145,22 @@ export default function TransactionHistory() {
         throw error;
       }
     },
-    onSuccess: (data: any) => {
+    onSuccess: async (data: any) => {
+      const syncedCount = data.syncedCount || 0;
+      
       toast({
         title: 'Transactions synced',
-        description: `Found ${data.syncedCount || 0} new incoming transactions`,
+        description: `Found ${syncedCount} new incoming transactions`,
       });
+      
+      // Trigger push notification for new incoming transactions
+      if (syncedCount > 0 && user?.pushNotifications && NotificationService.hasPermission()) {
+        await NotificationService.showNotification('New Transaction', {
+          body: `You have ${syncedCount} new incoming transaction${syncedCount > 1 ? 's' : ''}`,
+          tag: 'incoming-transactions'
+        });
+      }
+      
       // Refresh the transactions list
       queryClient.invalidateQueries({ queryKey: ['/api/transactions'] });
     },
