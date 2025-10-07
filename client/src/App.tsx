@@ -16,6 +16,7 @@ import SavedAddresses from "./pages/SavedAddresses";
 import TransactionHistory from "./pages/TransactionHistory";
 import TransactionDetail from "./pages/TransactionDetail";
 import QRScan from "./pages/QRScan";
+import QRAdmin from "./pages/QRAdmin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -135,6 +136,11 @@ function AppRouter() {
           <Route path="/saved-addresses">
             <PageTransition pageKey="saved-addresses">
               <SavedAddresses />
+            </PageTransition>
+          </Route>
+          <Route path="/qr-admin">
+            <PageTransition pageKey="qr-admin">
+              <QRAdmin />
             </PageTransition>
           </Route>
           <Route>
