@@ -25,9 +25,9 @@ if (!USV_TOKEN_MINT_ADDRESS) {
   throw new Error('USV_TOKEN_MINT_ADDRESS environment variable is required');
 }
 
-// Initialize Solana connection
+// Initialize Solana connection with better RPC endpoints
 const SOLANA_RPC_URL = SOLANA_NETWORK === 'mainnet-beta' 
-  ? 'https://api.mainnet-beta.solana.com'
+  ? 'https://mainnet.helius-rpc.com/?api-key=free' // Free tier with better rate limits
   : 'https://api.devnet.solana.com';
 
 const connection = new Connection(SOLANA_RPC_URL, 'confirmed');
