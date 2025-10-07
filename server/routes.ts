@@ -1284,30 +1284,6 @@ router.post('/user/transfer', authenticateToken, async (req: any, res) => {
   }
 });
 
-// Generate QR codes for stores (admin function)
-router.post('/qr/generate', authenticateToken, async (req: any, res) => {
-  try {
-    const { storeId, productId, tokenReward = 25 } = req.body;
-    
-    const qrCode = `USV-${storeId}-${productId}-${Date.now()}`;
-    
-    await storage.createQRCode({
-      code: qrCode,
-      storeId,
-      productId,
-      tokenReward,
-      isActive: true
-    });
-    
-    res.json({
-      qrCode,
-      message: 'QR code generated successfully'
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to generate QR code' });
-  }
-});
-
 // Profile picture upload configuration
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -2352,37 +2328,6 @@ router.post('/qr/claim', authenticateToken, async (req: any, res) => {
     
   } catch (error: any) {
     console.error('QR Claim Error:', error);
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-// Get QR Code Statistics (Admin)
-router.get('/qr/stats', authenticateToken, async (req: any, res) => {
-  try {
-    const stats = await storage.getQRCodeStats();
-    res.json({ success: true, stats });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-// Get All QR Codes (Admin)
-router.get('/qr/codes', authenticateToken, async (req: any, res) => {
-  try {
-    const codes = await storage.getAllQRCodes();
-    res.json({ success: true, codes });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-// Get QR Codes by Product (Admin)
-router.get('/qr/codes/:productId', authenticateToken, async (req: any, res) => {
-  try {
-    const { productId } = req.params;
-    const codes = await storage.getQRCodesByProduct(productId);
-    res.json({ success: true, codes, count: codes.length });
-  } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
