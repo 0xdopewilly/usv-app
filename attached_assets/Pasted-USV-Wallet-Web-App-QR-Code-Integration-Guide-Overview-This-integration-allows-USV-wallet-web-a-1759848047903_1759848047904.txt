@@ -1,0 +1,151 @@
+USV Wallet (Web App) - QR Code Integration Guide
+Overview
+This integration allows USV wallet web app users to scan QR codes and automatically claim USV tokens on the Solana blockchain.
+
+1. QR Code Format
+Your web app will scan QR codes containing this URI:
+
+usv://claim?code=USV-XXXX-XXXX-XXXX&tokens=1000&product=Strawberry%20Ice
+Parameters:
+
+code - Unique claim code (required)
+tokens - Token amount to claim (recommended for instant UI)
+product - Product name, URL-encoded (recommended for instant UI)
+2. QR Scanner Setup (Web)
+Use a JavaScript QR scanner library. Recommended: html5-qrcode
+
+npm install html5-qrcode
+Example Scanner Component:
+
+import { Html5QrcodeScanner } from "html5-qrcode";
+const onScanSuccess = (decodedText) => {
+  // decodedText = "usv://claim?code=USV-XXXX&tokens=1000&product=Vape"
+  handleQRCode(decodedText);
+};
+const scanner = new Html5QrcodeScanner("qr-reader", {
+  fps: 10,
+  qrbox: 250
+});
+scanner.render(onScanSuccess);
+3. API Integration
+Base URL: https://usv-qr-backend.replit.app
+
+A. Verify QR Code (Optional)
+Preview claim details before user confirms:
+
+const verifyQRCode = async (code) => {
+  const response = await fetch(`https://usv-qr-backend.replit.app/api/qr/verify/${code}`);
+  return await response.json();
+};
+Response:
+
+{
+  "success": true,
+  "data": {
+    "code": "USV-XXXX-XXXX-XXXX",
+    "tokens": 1000,
+    "product": "Strawberry Ice",
+    "claimed": false
+  }
+}
+B. Claim Tokens (Main)
+Execute the token claim:
+
+const claimTokens = async (qrCode, walletAddress) => {
+  const response = await fetch('https://usv-qr-backend.replit.app/api/qr/claim', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      qr_code: qrCode,
+      wallet_address: walletAddress
+    })
+  });
+  
+  return await response.json();
+};
+Success Response:
+
+{
+  "success": true,
+  "message": "Tokens claimed successfully!",
+  "data": {
+    "tokens": 1000,
+    "transaction": "5FHneE8...SolanaTransactionHash",
+    "product": "Strawberry Ice"
+  }
+}
+Error Responses:
+
+{ "success": false, "error": "Invalid or already claimed QR code" }
+{ "success": false, "error": "You already claimed tokens for this product type" }
+4. Complete Implementation Example
+// Parse QR code URI
+const parseQRCode = (uri) => {
+  const url = new URL(uri);
+  return {
+    code: url.searchParams.get('code'),
+    tokens: parseInt(url.searchParams.get('tokens')),
+    product: decodeURIComponent(url.searchParams.get('product'))
+  };
+};
+// Handle scanned QR code
+const handleQRCode = async (scannedData) => {
+  try {
+    // Parse the scanned URI
+    const qrData = parseQRCode(scannedData);
+    
+    // Show confirmation modal
+    showConfirmModal({
+      tokens: qrData.tokens,
+      product: qrData.product,
+      onConfirm: async () => {
+        // User confirmed, claim tokens
+        const userWallet = getUserWalletAddress(); // Your function
+        
+        const result = await claimTokens(qrData.code, userWallet);
+        
+        if (result.success) {
+          // Show success
+          showSuccess({
+            tokens: result.data.tokens,
+            transaction: result.data.transaction,
+            product: result.data.product
+          });
+          
+          // Refresh wallet balance
+          refreshWalletBalance();
+        } else {
+          // Show error
+          showError(result.error);
+        }
+      }
+    });
+    
+  } catch (error) {
+    showError('Failed to process QR code');
+  }
+};
+5. User Flow
+1. User clicks "Scan QR" button in web app
+2. Camera permission popup (browser asks for camera access)
+3. QR scanner opens in browser
+4. User scans QR code
+5. App receives: usv://claim?code=X&tokens=Y&product=Z
+6. Parse URI and show confirmation:
+   "Claim 1000 USV tokens from Strawberry Ice?"
+7. User clicks "Claim"
+8. POST to /api/qr/claim
+9. Show success with transaction hash
+10. Update wallet balance
+6. Important Notes
+✅ Web-based scanner - Uses browser camera API
+✅ No authentication needed - Claim endpoint is public
+✅ Cross-browser compatible - Works on mobile browsers
+✅ HTTPS required - Camera access needs secure connection
+✅ One claim per QR - Each code can only be claimed once
+✅ Instant transfer - Tokens transfer immediately on Solana
+
+7. Testing
+Health check: GET https://usv-qr-backend.replit.app/api/health
+Test QR generation: https://usv-qr-backend.replit.app
+That's everything for your web app! 🚀
