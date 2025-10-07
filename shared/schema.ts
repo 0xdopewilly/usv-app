@@ -143,6 +143,18 @@ export const savedAddresses = pgTable('saved_addresses', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
+// Webhooks table
+export const webhooks = pgTable('webhooks', {
+  id: varchar('id').primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar('name', { length: 255 }).notNull(),
+  url: varchar('url', { length: 500 }).notNull(),
+  secret: varchar('secret', { length: 255 }), // Optional webhook secret for signature verification
+  events: json('events').$type<string[]>().default(['qr.claimed']), // Events to subscribe to
+  isActive: boolean('is_active').default(true),
+  lastTriggered: timestamp('last_triggered'),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
 // Generate Drizzle Zod schemas for type-safe validation
 export const insertUserSchema = createInsertSchema(users);
 export const insertTransactionSchema = createInsertSchema(transactions);
@@ -154,6 +166,7 @@ export const insertAnalyticsSchema = createInsertSchema(analytics);
 export const insertNotificationSchema = createInsertSchema(notifications);
 export const insertTradeOrderSchema = createInsertSchema(tradeOrders);
 export const insertSavedAddressSchema = createInsertSchema(savedAddresses);
+export const insertWebhookSchema = createInsertSchema(webhooks);
 
 // TypeScript types from Drizzle
 export type User = typeof users.$inferSelect;
@@ -176,6 +189,8 @@ export type TradeOrder = typeof tradeOrders.$inferSelect;
 export type InsertTradeOrder = typeof tradeOrders.$inferInsert;
 export type SavedAddress = typeof savedAddresses.$inferSelect;
 export type InsertSavedAddress = typeof savedAddresses.$inferInsert;
+export type Webhook = typeof webhooks.$inferSelect;
+export type InsertWebhook = typeof webhooks.$inferInsert;
 
 // Auth schemas (pure Zod - not database tables)
 export const loginSchema = z.object({

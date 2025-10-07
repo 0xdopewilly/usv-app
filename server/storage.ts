@@ -1,7 +1,7 @@
-import { User, Transaction, NFT, QRCode, VapeStore, SavedAddress, InsertUser, InsertTransaction, InsertNFT, InsertQRCode, InsertVapeStore, InsertSavedAddress } from '../shared/schema';
+import { User, Transaction, NFT, QRCode, VapeStore, SavedAddress, Webhook, InsertUser, InsertTransaction, InsertNFT, InsertQRCode, InsertVapeStore, InsertSavedAddress, InsertWebhook } from '../shared/schema';
 import { db } from './db';
 import { eq } from 'drizzle-orm';
-import { users, transactions, nfts, qrCodes, vapeStores, savedAddresses } from '../shared/schema';
+import { users, transactions, nfts, qrCodes, vapeStores, savedAddresses, webhooks } from '../shared/schema';
 
 export interface IStorage {
   // User operations
@@ -41,6 +41,13 @@ export interface IStorage {
   createSavedAddress(address: InsertSavedAddress): Promise<SavedAddress>;
   getSavedAddressesByUserId(userId: string): Promise<SavedAddress[]>;
   deleteSavedAddress(id: string): Promise<void>;
+  
+  // Webhook operations
+  createWebhook(webhook: InsertWebhook): Promise<Webhook>;
+  getAllWebhooks(): Promise<Webhook[]>;
+  getActiveWebhooks(event: string): Promise<Webhook[]>;
+  updateWebhook(id: string, updates: Partial<Webhook>): Promise<Webhook>;
+  deleteWebhook(id: string): Promise<void>;
 }
 
 // Helper function to convert undefined to null for Drizzle compatibility
@@ -327,6 +334,26 @@ export class MemStorage implements IStorage {
   async deleteSavedAddress(id: string): Promise<void> {
     this.savedAddresses.delete(id);
   }
+  
+  async createWebhook(webhook: InsertWebhook): Promise<Webhook> {
+    throw new Error('Webhooks are only supported in DatabaseStorage');
+  }
+  
+  async getAllWebhooks(): Promise<Webhook[]> {
+    return [];
+  }
+  
+  async getActiveWebhooks(event: string): Promise<Webhook[]> {
+    return [];
+  }
+  
+  async updateWebhook(id: string, updates: Partial<Webhook>): Promise<Webhook> {
+    throw new Error('Webhooks are only supported in DatabaseStorage');
+  }
+  
+  async deleteWebhook(id: string): Promise<void> {
+    throw new Error('Webhooks are only supported in DatabaseStorage');
+  }
 }
 
 // DatabaseStorage implementation using PostgreSQL - blueprint:javascript_database
@@ -497,6 +524,29 @@ export class DatabaseStorage implements IStorage {
 
   async deleteSavedAddress(id: string): Promise<void> {
     await db.delete(savedAddresses).where(eq(savedAddresses.id, id));
+  }
+  
+  async createWebhook(webhook: InsertWebhook): Promise<Webhook> {
+    const [created] = await db.insert(webhooks).values(convertUndefinedToNull(webhook)).returning();
+    return created;
+  }
+  
+  async getAllWebhooks(): Promise<Webhook[]> {
+    return await db.select().from(webhooks);
+  }
+  
+  async getActiveWebhooks(event: string): Promise<Webhook[]> {
+    const allWebhooks = await db.select().from(webhooks).where(eq(webhooks.isActive, true));
+    return allWebhooks.filter(w => (w.events as string[]).includes(event));
+  }
+  
+  async updateWebhook(id: string, updates: Partial<Webhook>): Promise<Webhook> {
+    const [updated] = await db.update(webhooks).set(convertUndefinedToNull(updates)).where(eq(webhooks.id, id)).returning();
+    return updated;
+  }
+  
+  async deleteWebhook(id: string): Promise<void> {
+    await db.delete(webhooks).where(eq(webhooks.id, id));
   }
 }
 

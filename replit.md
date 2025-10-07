@@ -44,7 +44,8 @@ Preferred communication style: Simple, everyday language.
 - **User management** with profile, balance, and preferences
 - **Transaction tracking** for all token operations
 - **NFT portfolio** management for authenticated products
-- **QR code system** for product verification
+- **QR code system** for product verification with real blockchain transfers
+- **Webhook system** for real-time QR claim notifications to external systems
 - **Vape store** directory with geolocation
 
 ### UI/UX Architecture
@@ -54,6 +55,15 @@ Preferred communication style: Simple, everyday language.
 - **QR scanner** integration with camera access
 - **Bottom navigation** for main app sections
 - **Toast notifications** for user feedback
+
+### Webhook System
+- **Real-time notifications** for QR code claims sent to external systems
+- **RESTful webhook management** API with CRUD operations
+- **Event-based triggers** supporting multiple webhook subscriptions
+- **Secure webhook delivery** with secret key verification
+- **QR Generator integration** - Separate QR generator system receives instant notifications when codes are claimed
+- **Payload includes**: QR code details, user information, blockchain transaction data, and timestamp
+- **Reliable delivery** with 10-second timeout and error handling
 
 ## External Dependencies
 

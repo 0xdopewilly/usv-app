@@ -10,6 +10,7 @@ import appleSignin from 'apple-signin-auth';
 import CryptoJS from 'crypto-js';
 import { storage } from './storage';
 import { loginSchema, signupSchema, verificationSchema, withdrawSchema, insertSavedAddressSchema } from '../shared/schema';
+import { webhookService } from './webhooks';
 
 // Solana connection for wallet operations
 const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
@@ -687,6 +688,29 @@ router.post('/qr/claim', authenticateToken, async (req: any, res) => {
     // Update user balance
     await storage.updateUser(req.user.userId, {
       balance: (user.balance ?? 0) + tokenAmount,
+    });
+
+    // Trigger webhook notification for QR generator
+    webhookService.trigger('qr.claimed', {
+      qrCode: {
+        code: qrCode.code,
+        tokenReward: tokenAmount,
+        productId: qrCode.productId,
+      },
+      user: {
+        id: user.id,
+        email: user.email,
+        walletAddress: user.walletAddress,
+      },
+      transaction: {
+        id: transaction.id,
+        txHash: transferResult.signature,
+        explorerUrl: transferResult.explorerUrl,
+      },
+      claimedAt: new Date().toISOString(),
+    }).catch(err => {
+      console.error('Error triggering webhooks:', err);
+      // Don't fail the request if webhook fails
     });
 
     res.json({ 
@@ -2276,6 +2300,90 @@ router.get('/admin/solana-health', async (req, res) => {
       success: false,
       error: error.message,
       status: 'error'
+    });
+  }
+});
+
+// Webhook management endpoints
+router.post('/webhooks', async (req, res) => {
+  try {
+    const { name, url, secret, events } = req.body;
+    
+    if (!name || !url) {
+      return res.status(400).json({
+        success: false,
+        error: 'Name and URL are required'
+      });
+    }
+    
+    const webhook = await storage.createWebhook({
+      name,
+      url,
+      secret,
+      events: events || ['qr.claimed'],
+      isActive: true,
+    });
+    
+    res.json({
+      success: true,
+      webhook
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.get('/webhooks', async (req, res) => {
+  try {
+    const webhooks = await storage.getAllWebhooks();
+    res.json({
+      success: true,
+      webhooks
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.patch('/webhooks/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    
+    const webhook = await storage.updateWebhook(id, updates);
+    
+    res.json({
+      success: true,
+      webhook
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.delete('/webhooks/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    await storage.deleteWebhook(id);
+    
+    res.json({
+      success: true,
+      message: 'Webhook deleted'
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message
     });
   }
 });
