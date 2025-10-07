@@ -8,7 +8,7 @@ declare global {
   interface Window {
     solana?: {
       isPhantom?: boolean;
-      connect: () => Promise<{ publicKey: { toString: () => string } }>;
+      connect: (options?: { onlyIfTrusted?: boolean }) => Promise<{ publicKey: { toString: () => string } }>;
       disconnect: () => Promise<void>;
       isConnected: boolean;
       publicKey: { toString: () => string } | null;
@@ -77,7 +77,7 @@ export default function ConnectWallet({ onConnected, className = "" }: ConnectWa
         return;
       }
 
-      const response = await window.solana.connect();
+      const response = await window.solana.connect({ onlyIfTrusted: false });
       const publicKey = response.publicKey.toString();
       
       setIsConnected(true);

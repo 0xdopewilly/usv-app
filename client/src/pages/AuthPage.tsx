@@ -40,7 +40,7 @@ export default function AuthPage() {
   const [appleLoading, setAppleLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   
-  const { login, signup } = useAuth();
+  const { login, signup, setAuthState } = useAuth();
   const { toast } = useToast();
 
   // Initialize Apple Sign-In & Google Sign-In SDKs
@@ -486,17 +486,15 @@ export default function AuthPage() {
 
                   const data = await response.json();
                   
-                  // Store JWT token
-                  if (data.token) {
-                    localStorage.setItem('token', data.token);
-                    // Force page refresh to update auth state
-                    window.location.reload();
+                  // Properly set auth state without reloading
+                  if (data.token && data.user) {
+                    setAuthState(data.token, data.user);
+                    
+                    toast({
+                      title: "Welcome to USV Token!",
+                      description: `Logged in with Phantom wallet`,
+                    });
                   }
-
-                  toast({
-                    title: "Welcome to USV Token!",
-                    description: `Logged in with Phantom wallet`,
-                  });
                 } catch (error) {
                   console.error('Phantom auth error:', error);
                   toast({
