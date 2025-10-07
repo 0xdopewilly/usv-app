@@ -586,16 +586,25 @@ router.post('/transactions/withdraw', authenticateToken, async (req: any, res) =
 });
 
 // QR Code routes
-// Verify QR code without claiming (for preview)
-router.get('/qr/verify/:code', authenticateToken, async (req: any, res) => {
+// Verify QR code without claiming (for preview) - PUBLIC ENDPOINT
+router.get('/qr/verify/:code', async (req: any, res) => {
   try {
     const { code } = req.params;
+    
+    console.log(`🔍 Verifying QR code (public): ${code}`);
     
     // Find QR code
     const qrCode = await storage.getQRCodeByCode(code);
     if (!qrCode) {
+      console.log(`❌ QR code not found: ${code}`);
       return res.status(404).json({ error: 'Invalid QR code' });
     }
+
+    console.log(`✅ QR code found:`, { 
+      code: qrCode.code, 
+      tokens: qrCode.tokenReward, 
+      claimed: !!qrCode.claimedBy 
+    });
 
     // Return QR code details for preview
     res.json({
@@ -605,7 +614,8 @@ router.get('/qr/verify/:code', authenticateToken, async (req: any, res) => {
       isActive: qrCode.isActive && !qrCode.claimedBy,
       claimed: !!qrCode.claimedBy,
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error('❌ Error verifying QR code:', error);
     res.status(500).json({ error: 'Failed to verify QR code' });
   }
 });
