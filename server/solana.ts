@@ -92,7 +92,8 @@ export async function transferUsvTokens(
     console.log(`🚀 Starting USV token transfer:`, {
       recipient: recipientWalletAddress,
       amount,
-      network: SOLANA_NETWORK
+      network: SOLANA_RPC_URL,
+      mintAddress: USV_TOKEN_MINT_ADDRESS
     });
 
     // Validate recipient address
