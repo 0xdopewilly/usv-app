@@ -18,7 +18,7 @@ export default function QRScan() {
   const [scanning, setScanning] = useState(false);
   const [qrDetected, setQrDetected] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
-  const [claimResult, setClaimResult] = useState<{ tokens: number; productId: string } | null>(null);
+  const [claimResult, setClaimResult] = useState<{ tokens: number; product: string; code: string } | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const qrScannerRef = useRef<QrScanner | null>(null);
@@ -48,8 +48,10 @@ export default function QRScan() {
       qrScannerRef.current.stop();
     }
     
-    // Extract claim code from URL if needed (supports all URI formats)
+    // Extract claim code and metadata from QR data (supports all URI formats)
     let claimCode = qrData;
+    let tokensFromURI: number | null = null;
+    let productFromURI: string | null = null;
     
     // Try to parse as URL (supports http://, https://, usv://, etc.)
     let isURL = false;
@@ -57,8 +59,10 @@ export default function QRScan() {
       const url = new URL(qrData);
       isURL = true;
       
-      // Extract claim code from URL (supports query params and hash fragments)
+      // Extract claim code and metadata from URL (supports query params and hash fragments)
       let codeParam = url.searchParams.get('code') || url.searchParams.get('claim');
+      tokensFromURI = url.searchParams.get('tokens') ? parseFloat(url.searchParams.get('tokens')!) : null;
+      productFromURI = url.searchParams.get('product') ? decodeURIComponent(url.searchParams.get('product')!) : null;
       
       // If not in query params, check hash fragment
       if (!codeParam && url.hash) {
@@ -68,6 +72,8 @@ export default function QRScan() {
         if (hash.includes('?')) {
           const hashParams = new URLSearchParams(hash.split('?')[1]);
           codeParam = hashParams.get('code') || hashParams.get('claim');
+          if (!tokensFromURI) tokensFromURI = hashParams.get('tokens') ? parseFloat(hashParams.get('tokens')!) : null;
+          if (!productFromURI) productFromURI = hashParams.get('product') ? decodeURIComponent(hashParams.get('product')!) : null;
         } 
         // Check if hash is direct code assignment (e.g., #code=XYZ)
         else if (hash.includes('=')) {
@@ -84,7 +90,7 @@ export default function QRScan() {
       
       if (codeParam) {
         claimCode = codeParam;
-        console.log('📋 Extracted claim code from URL:', claimCode);
+        console.log('📋 Extracted from URI:', { claimCode, tokens: tokensFromURI, product: productFromURI });
       } else {
         // If we can't extract a code from a valid URL, treat the whole thing as invalid
         throw new Error('No claim code found in URL');
@@ -129,8 +135,9 @@ export default function QRScan() {
       
       // Set claim result for success animation
       setClaimResult({
-        tokens: result.reward || 0,
-        productId: claimCode,
+        tokens: tokensFromURI || result.reward || 0,
+        product: productFromURI || 'USV Token',
+        code: claimCode,
       });
       
       // Show success toast
@@ -617,6 +624,9 @@ export default function QRScan() {
                     <p className="text-gray-300 text-sm mb-2">You received</p>
                     <p className="text-5xl font-bold text-green-400">+{claimResult.tokens}</p>
                     <p className="text-2xl font-semibold text-white mt-1">USV Tokens</p>
+                    {claimResult.product && claimResult.product !== 'USV Token' && (
+                      <p className="text-sm text-gray-400 mt-3">From: {claimResult.product}</p>
+                    )}
                   </div>
                   
                   <motion.p

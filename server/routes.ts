@@ -586,6 +586,30 @@ router.post('/transactions/withdraw', authenticateToken, async (req: any, res) =
 });
 
 // QR Code routes
+// Verify QR code without claiming (for preview)
+router.get('/qr/verify/:code', authenticateToken, async (req: any, res) => {
+  try {
+    const { code } = req.params;
+    
+    // Find QR code
+    const qrCode = await storage.getQRCodeByCode(code);
+    if (!qrCode) {
+      return res.status(404).json({ error: 'Invalid QR code' });
+    }
+
+    // Return QR code details for preview
+    res.json({
+      code: qrCode.code,
+      tokens: qrCode.tokenReward ?? 0,
+      product: qrCode.productId || 'USV Token',
+      isActive: qrCode.isActive && !qrCode.claimedBy,
+      claimed: !!qrCode.claimedBy,
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to verify QR code' });
+  }
+});
+
 router.post('/qr/claim', authenticateToken, async (req: any, res) => {
   try {
     const { code } = req.body;
