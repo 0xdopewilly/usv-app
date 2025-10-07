@@ -1678,18 +1678,21 @@ router.post('/wallet/send-tokens', authenticateToken, async (req: any, res) => {
       );
       
     } else if (token.toUpperCase() === 'USV') {
-      // Handle USV token transfer
+      // Handle USV token transfer with auto-create recipient account
       try {
+        const { createAssociatedTokenAccountInstruction } = await import('@solana/spl-token');
+        
         // Get sender's associated token account
         const senderTokenAccount = await getAssociatedTokenAddress(
           USV_TOKEN_MINT,
           senderPublicKey
         );
         
-        // Get recipient's associated token account
+        // Get recipient's associated token account address
+        const recipientPubkey = new PublicKey(recipientAddress);
         const recipientTokenAccount = await getAssociatedTokenAddress(
           USV_TOKEN_MINT,
-          new PublicKey(recipientAddress)
+          recipientPubkey
         );
         
         // Check sender's USV balance
@@ -1702,7 +1705,24 @@ router.post('/wallet/send-tokens', authenticateToken, async (req: any, res) => {
           });
         }
         
-        // Create transfer instruction
+        // Check if recipient token account exists, if not create it
+        try {
+          await getAccount(connection, recipientTokenAccount);
+          console.log('✅ Recipient USV token account exists');
+        } catch (error) {
+          // Recipient doesn't have a USV token account - create it automatically
+          console.log('📝 Creating USV token account for recipient...');
+          transaction.add(
+            createAssociatedTokenAccountInstruction(
+              senderPublicKey, // Payer
+              recipientTokenAccount, // Token account to create
+              recipientPubkey, // Owner
+              USV_TOKEN_MINT // Mint
+            )
+          );
+        }
+        
+        // Add transfer instruction
         transaction.add(
           createTransferInstruction(
             senderTokenAccount,
@@ -1715,7 +1735,7 @@ router.post('/wallet/send-tokens', authenticateToken, async (req: any, res) => {
       } catch (tokenError: any) {
         console.error('USV token transfer setup error:', tokenError);
         return res.status(400).json({ 
-          error: `USV token transfer failed: ${tokenError.message}. Make sure both sender and recipient have USV token accounts.` 
+          error: `USV token transfer failed: ${tokenError.message}` 
         });
       }
     }
