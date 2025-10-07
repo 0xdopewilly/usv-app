@@ -435,38 +435,6 @@ export default function Settings() {
         </Card>
         </motion.div>
         
-        {/* QR Admin */}
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          transition={{ delay: 0.65, duration: 0.6, type: "spring" }}
-        >
-          <Card className="bg-black/40 backdrop-blur-sm border-2 border-cyan-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-cyan-500/10 transition-all duration-300">
-          <div className="p-4 border-b border-dark-accent">
-            <h3 className="font-semibold text-white">QR Code Management</h3>
-          </div>
-          <motion.div
-            whileHover={{ 
-              scale: 1.01,
-              backgroundColor: "rgba(255, 255, 255, 0.05)",
-              boxShadow: "0 4px 15px rgba(6, 182, 212, 0.15)"
-            }}
-            whileTap={{ scale: 0.99 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          >
-            <Button
-              variant="ghost"
-              onClick={() => setLocation('/qr-admin')}
-              className="w-full p-4 text-left flex items-center justify-between hover:bg-transparent"
-              data-testid="button-qr-admin"
-            >
-              <span className="text-gray-300">Generate QR Codes (Admin)</span>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
-            </Button>
-          </motion.div>
-        </Card>
-        </motion.div>
-        
         {/* Notifications */}
         <motion.div
           initial={{ scale: 0.95, opacity: 0, y: 20 }}

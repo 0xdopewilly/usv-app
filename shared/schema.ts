@@ -59,17 +59,14 @@ export const nfts = pgTable('nfts', {
 export const qrCodes = pgTable('qr_codes', {
   id: varchar('id').primaryKey().default(sql`gen_random_uuid()`),
   code: varchar('code', { length: 255 }).notNull().unique(),
-  storeId: varchar('store_id', { length: 255 }),
+  storeId: varchar('store_id', { length: 255 }).notNull(),
   productId: varchar('product_id', { length: 255 }).notNull(),
   isActive: boolean('is_active').default(true),
   scannedBy: varchar('scanned_by', { length: 255 }),
   scannedAt: timestamp('scanned_at'),
   claimedBy: varchar('claimed_by', { length: 255 }),
   claimedAt: timestamp('claimed_at'),
-  tokenReward: real('token_reward').default(1000),
-  qrImage: text('qr_image'), // Base64 QR code image
-  txHash: varchar('tx_hash', { length: 255 }), // Blockchain transaction hash
-  claimed: boolean('claimed').default(false), // Quick claimed status
+  tokenReward: real('token_reward').default(25),
   createdAt: timestamp('created_at').defaultNow(),
 });
 

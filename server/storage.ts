@@ -24,12 +24,8 @@ export interface IStorage {
   
   // QR Code operations
   createQRCode(qrCode: InsertQRCode): Promise<QRCode>;
-  createQRCodeBatch(qrCodes: InsertQRCode[]): Promise<QRCode[]>;
   getQRCode(code: string): Promise<QRCode | null>;
   getQRCodeByCode(code: string): Promise<QRCode | null>;
-  getAllQRCodes(): Promise<QRCode[]>;
-  getQRCodesByProduct(productId: string): Promise<QRCode[]>;
-  getQRCodeStats(): Promise<{ total: number; claimed: number; unclaimed: number }>;
   updateQRCode(id: string, updates: Partial<QRCode>): Promise<QRCode>;
   
   // Vape Store operations
@@ -259,35 +255,6 @@ export class MemStorage implements IStorage {
     return updatedQRCode;
   }
 
-  async createQRCodeBatch(qrCodesData: InsertQRCode[]): Promise<QRCode[]> {
-    const created: QRCode[] = [];
-    for (const qrCodeData of qrCodesData) {
-      const qrCode = await this.createQRCode(qrCodeData);
-      created.push(qrCode);
-    }
-    return created;
-  }
-
-  async getAllQRCodes(): Promise<QRCode[]> {
-    return Array.from(this.qrCodes.values()).sort((a, b) => 
-      (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0)
-    );
-  }
-
-  async getQRCodesByProduct(productId: string): Promise<QRCode[]> {
-    return Array.from(this.qrCodes.values())
-      .filter(qr => qr.productId === productId)
-      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
-  }
-
-  async getQRCodeStats(): Promise<{ total: number; claimed: number; unclaimed: number }> {
-    const allCodes = Array.from(this.qrCodes.values());
-    const total = allCodes.length;
-    const claimed = allCodes.filter(qr => qr.claimed === true).length;
-    const unclaimed = total - claimed;
-    return { total, claimed, unclaimed };
-  }
-
   // Vape Store operations
   async createVapeStore(storeData: InsertVapeStore): Promise<VapeStore> {
     const id = this.generateId();
@@ -438,30 +405,6 @@ export class DatabaseStorage implements IStorage {
       .where(eq(qrCodes.id, id))
       .returning();
     return qrCode;
-  }
-
-  async createQRCodeBatch(qrCodesData: InsertQRCode[]): Promise<QRCode[]> {
-    const result = await db
-      .insert(qrCodes)
-      .values(qrCodesData)
-      .returning();
-    return result;
-  }
-
-  async getAllQRCodes(): Promise<QRCode[]> {
-    return await db.select().from(qrCodes);
-  }
-
-  async getQRCodesByProduct(productId: string): Promise<QRCode[]> {
-    return await db.select().from(qrCodes).where(eq(qrCodes.productId, productId));
-  }
-
-  async getQRCodeStats(): Promise<{ total: number; claimed: number; unclaimed: number }> {
-    const allCodes = await db.select().from(qrCodes);
-    const total = allCodes.length;
-    const claimed = allCodes.filter(qr => qr.claimed === true).length;
-    const unclaimed = total - claimed;
-    return { total, claimed, unclaimed };
   }
 
   // Vape Store operations

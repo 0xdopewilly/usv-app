@@ -23,7 +23,6 @@ interface AuthContextType {
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (data: SignupData) => Promise<void>;
-  setAuthState: (token: string, user: User) => void;
   logout: () => void;
   refreshToken: () => Promise<boolean>;
   isAuthenticated: boolean;
@@ -117,12 +116,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signupMutation.mutateAsync(data);
   };
 
-  const setAuthState = (newToken: string, newUser: User) => {
-    setToken(newToken);
-    localStorage.setItem('token', newToken);
-    queryClient.setQueryData(['/api/user/profile'], newUser);
-  };
-
   const logout = () => {
     // Clear token and storage first
     setToken(null);
@@ -180,7 +173,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         token,
         login,
         signup,
-        setAuthState,
         logout,
         refreshToken,
         isAuthenticated: !!token && !!user,
