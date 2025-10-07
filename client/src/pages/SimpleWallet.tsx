@@ -34,10 +34,15 @@ export default function SimpleWallet() {
       
       // Fetch balance from our working backend API instead of browser RPC calls
       const response = await fetch(`/api/wallet/balance/${address}`);
-      if (!response.ok) throw new Error('Failed to fetch balance');
+      if (!response.ok) {
+        console.error('❌ API response not OK:', response.status, response.statusText);
+        throw new Error('Failed to fetch balance');
+      }
       
       const balanceData = await response.json();
       console.log('💰 Backend API Response:', balanceData);
+      console.log('💰 USV Balance from API:', balanceData.balanceUSV);
+      console.log('💰 SOL Balance from API:', balanceData.balanceSOL);
       
       // Convert API response to token format for UI
       const solToken: TokenAccount = {
@@ -59,11 +64,17 @@ export default function SimpleWallet() {
       };
       
       const tokens = [usvToken, solToken]; // USV first, then SOL
+      console.log('🪙 Created tokens array:', tokens);
+      console.log('🪙 USV Token:', usvToken);
+      console.log('🪙 SOL Token:', solToken);
+      
       setTokens(tokens);
+      console.log('✅ Tokens set in state');
       
       // Calculate total value
       const totalValue = (balanceData.balanceSOL * 230) + (balanceData.balanceUSV * 0.20); // SOL + USV prices
       setTotalValue(totalValue);
+      console.log('💵 Total value calculated:', totalValue);
       
       toast({
         title: "💰 Balance Updated!",
