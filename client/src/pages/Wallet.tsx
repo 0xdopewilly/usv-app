@@ -77,6 +77,15 @@ export default function Wallet() {
   // Calculate balances from real-time API data
   const currentSolBalance = walletBalance?.balanceSOL || 0;
   const usvTokens = walletBalance?.balanceUSV || 0; // Real USV balance from blockchain
+  
+  // Debug logging
+  console.log('💰 Wallet Balance Data:', {
+    walletBalance,
+    usvTokens,
+    currentSolBalance,
+    prices
+  });
+  
   const usvValue = usvTokens * (prices?.USV?.price || 0.20);
   const solValue = currentSolBalance * (prices?.SOL?.price || 23.45);
   const totalBalance = solValue + usvValue;
