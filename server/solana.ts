@@ -110,6 +110,27 @@ export async function transferUsvTokens(
     // Get or create token accounts for both company and recipient
     console.log('📦 Getting/creating token accounts...');
     
+    // First, let's check if company token account exists
+    const { getAssociatedTokenAddress } = await import('@solana/spl-token');
+    const companyATA = await getAssociatedTokenAddress(
+      usvTokenMint,
+      companyWallet.publicKey
+    );
+    
+    console.log('🔍 Company ATA should be:', companyATA.toBase58());
+    
+    // Check if it exists
+    const companyAccountInfo = await connection.getAccountInfo(companyATA);
+    console.log('🔍 Company token account exists?', companyAccountInfo !== null);
+    
+    if (!companyAccountInfo) {
+      console.log('⚠️  Company token account does not exist! This means the 1B tokens are NOT in this wallet for this mint.');
+      console.log('🔍 Debugging info:');
+      console.log('  - Company Wallet:', companyWallet.publicKey.toBase58());
+      console.log('  - Token Mint:', usvTokenMint.toBase58());
+      console.log('  - Expected ATA:', companyATA.toBase58());
+    }
+    
     const companyTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
       companyWallet,
