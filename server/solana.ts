@@ -25,10 +25,13 @@ if (!USV_TOKEN_MINT_ADDRESS) {
   throw new Error('USV_TOKEN_MINT_ADDRESS environment variable is required');
 }
 
-// Initialize Solana connection
-const SOLANA_RPC_URL = SOLANA_NETWORK === 'mainnet-beta' 
-  ? 'https://api.mainnet-beta.solana.com'
-  : 'https://api.devnet.solana.com';
+// Initialize Solana connection with Helius for better reliability
+const HELIUS_API_KEY = process.env.HELIUS_API_KEY;
+const SOLANA_RPC_URL = HELIUS_API_KEY
+  ? `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`
+  : SOLANA_NETWORK === 'mainnet-beta' 
+    ? 'https://api.mainnet-beta.solana.com'
+    : 'https://api.devnet.solana.com';
 
 const connection = new Connection(SOLANA_RPC_URL, 'confirmed');
 

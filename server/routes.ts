@@ -12,8 +12,12 @@ import { storage } from './storage';
 import { loginSchema, signupSchema, verificationSchema, withdrawSchema, insertSavedAddressSchema } from '../shared/schema';
 import { webhookService } from './webhooks';
 
-// Solana connection for wallet operations
-const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
+// Solana connection for wallet operations using Helius for better reliability
+const HELIUS_API_KEY = process.env.HELIUS_API_KEY;
+const SOLANA_RPC_URL = HELIUS_API_KEY
+  ? `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`
+  : 'https://api.mainnet-beta.solana.com';
+const connection = new Connection(SOLANA_RPC_URL, 'confirmed');
 
 // USV Token Configuration (from client/src/lib/solana.ts)
 const USV_TOKEN_MINT = new PublicKey('8zGuJQqwhZafTah7Uc7Z4tXRnguqkn5KLFAP8oV6PHe2');
