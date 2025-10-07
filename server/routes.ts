@@ -624,6 +624,38 @@ router.post('/qr/claim', authenticateToken, async (req: any, res) => {
       return res.status(400).json({ error: 'QR code already claimed or inactive' });
     }
 
+    // Get user to check wallet address
+    const user = await storage.getUserById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (!user.walletAddress) {
+      return res.status(400).json({ error: 'User wallet address not set. Please connect your Solana wallet first.' });
+    }
+
+    const tokenAmount = qrCode.tokenReward ?? 0;
+    
+    console.log(`🎫 Processing QR claim:`, {
+      code,
+      userId: req.user.userId,
+      userWallet: user.walletAddress,
+      tokenAmount
+    });
+
+    // Execute actual Solana token transfer from company wallet
+    const { transferUsvTokens } = await import('./solana');
+    const transferResult = await transferUsvTokens(user.walletAddress, tokenAmount);
+
+    if (!transferResult.success) {
+      console.error('❌ Token transfer failed:', transferResult.error);
+      return res.status(500).json({ 
+        error: 'Token transfer failed: ' + transferResult.error 
+      });
+    }
+
+    console.log('✅ Token transfer successful:', transferResult.signature);
+
     // Update QR code as claimed
     await storage.updateQRCode(qrCode.id, {
       claimedBy: req.user.userId,
@@ -631,30 +663,32 @@ router.post('/qr/claim', authenticateToken, async (req: any, res) => {
       isActive: false,
     });
 
-    // Create claim transaction
+    // Create claim transaction with Solana signature
     const transaction = await storage.createTransaction({
       userId: req.user.userId,
       type: 'claim',
-      amount: qrCode.tokenReward ?? 0,
+      amount: tokenAmount,
       token: 'USV',
       status: 'completed',
+      txHash: transferResult.signature || undefined,
+      toAddress: user.walletAddress,
     });
 
     // Update user balance
-    const user = await storage.getUserById(req.user.userId);
-    if (user) {
-      await storage.updateUser(req.user.userId, {
-        balance: (user.balance ?? 0) + (qrCode.tokenReward ?? 0),
-      });
-    }
+    await storage.updateUser(req.user.userId, {
+      balance: (user.balance ?? 0) + tokenAmount,
+    });
 
     res.json({ 
-      message: 'QR code claimed successfully',
-      reward: qrCode.tokenReward,
+      message: 'QR code claimed successfully! USV tokens transferred to your wallet.',
+      reward: tokenAmount,
       transaction,
+      solanaSignature: transferResult.signature,
+      explorerUrl: transferResult.explorerUrl,
     });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to claim QR code' });
+  } catch (error: any) {
+    console.error('❌ QR claim error:', error);
+    res.status(500).json({ error: error.message || 'Failed to claim QR code' });
   }
 });
 
@@ -2209,6 +2243,30 @@ router.delete('/saved-addresses/:id', authenticateToken, async (req: any, res) =
     res.json({ success: true, message: 'Address deleted successfully' });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Solana Integration Health Check
+router.get('/admin/solana-health', async (req, res) => {
+  try {
+    const { getSolanaNetworkInfo, getCompanyWalletBalance } = await import('./solana');
+    const networkInfo = getSolanaNetworkInfo();
+    const balance = await getCompanyWalletBalance();
+    
+    res.json({
+      success: true,
+      network: networkInfo.network,
+      companyWallet: networkInfo.companyWallet,
+      tokenMint: networkInfo.tokenMint,
+      companyBalance: balance,
+      status: 'operational'
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      status: 'error'
+    });
   }
 });
 
