@@ -616,8 +616,8 @@ router.get('/qr/verify/:code', async (req: any, res) => {
       code: qrCode.code,
       tokens: qrCode.tokenReward ?? 0,
       product: qrCode.productId || 'USV Token',
-      isActive: qrCode.isActive && !qrCode.claimedBy,
-      claimed: !!qrCode.claimedBy,
+      isActive: qrCode.isActive && !qrCode.claimed,
+      claimed: qrCode.claimed || false,
     });
   } catch (error: any) {
     console.error('❌ Error verifying QR code:', error);
@@ -635,7 +635,7 @@ router.post('/qr/claim', authenticateToken, async (req: any, res) => {
       return res.status(404).json({ error: 'Invalid QR code' });
     }
 
-    if (!qrCode.isActive || qrCode.claimedBy) {
+    if (!qrCode.isActive || qrCode.claimed) {
       return res.status(400).json({ error: 'QR code already claimed or inactive' });
     }
 
