@@ -27,24 +27,33 @@ export default function SimpleWallet() {
   // No longer needed - using auto-generated wallet
 
   const loadRealBalances = async (address: string) => {
+    console.log('🚀 Step 1: Starting loadRealBalances for:', address);
     setIsRefreshing(true);
     
     try {
-      console.log('🔄 Loading balance from backend API for:', address);
-      
-      // Fetch balance from our working backend API instead of browser RPC calls
+      console.log('🚀 Step 2: About to fetch from API...');
       const response = await fetch(`/api/wallet/balance/${address}`);
+      console.log('🚀 Step 3: Fetch complete. Status:', response.status, 'OK:', response.ok);
+      
       if (!response.ok) {
         console.error('❌ API response not OK:', response.status, response.statusText);
-        throw new Error('Failed to fetch balance');
+        throw new Error(`API returned ${response.status}`);
       }
       
+      console.log('🚀 Step 4: About to parse JSON...');
       const balanceData = await response.json();
-      console.log('💰 Backend API Response:', balanceData);
-      console.log('💰 USV Balance from API:', balanceData.balanceUSV);
-      console.log('💰 SOL Balance from API:', balanceData.balanceSOL);
+      console.log('🚀 Step 5: JSON parsed successfully:', JSON.stringify(balanceData));
       
-      // Convert API response to token format for UI
+      console.log('🚀 Step 6: Creating token objects...');
+      const usvToken: TokenAccount = {
+        mint: 'A9Vnuav6Wd4azfrzKwpK1Z62frmJb7G3Ydr3FkvGKH8W',
+        symbol: 'USV',
+        name: 'Ultra Smooth Vape',
+        balance: balanceData.balanceUSV || 0,
+        decimals: 6,
+        isNative: false
+      };
+      
       const solToken: TokenAccount = {
         mint: 'So11111111111111111111111111111111111111112',
         symbol: 'SOL',
@@ -54,42 +63,37 @@ export default function SimpleWallet() {
         isNative: true
       };
       
-      const usvToken: TokenAccount = {
-        mint: process.env.USV_TOKEN_MINT_ADDRESS || 'A9Vnuav6Wd4azfrzKwpK1Z62frmJb7G3Ydr3FkvGKH8W',
-        symbol: 'USV',
-        name: 'Ultra Smooth Vape',
-        balance: balanceData.balanceUSV || 0,
-        decimals: 6,
-        isNative: false
-      };
+      console.log('🚀 Step 7: Tokens created:', { usvToken, solToken });
       
-      const tokens = [usvToken, solToken]; // USV first, then SOL
-      console.log('🪙 Created tokens array:', tokens);
-      console.log('🪙 USV Token:', usvToken);
-      console.log('🪙 SOL Token:', solToken);
+      console.log('🚀 Step 8: Setting tokens state...');
+      setTokens([usvToken, solToken]);
       
-      setTokens(tokens);
-      console.log('✅ Tokens set in state');
-      
-      // Calculate total value
-      const totalValue = (balanceData.balanceSOL * 230) + (balanceData.balanceUSV * 0.20); // SOL + USV prices
+      console.log('🚀 Step 9: Calculating total value...');
+      const totalValue = (balanceData.balanceSOL * 230) + (balanceData.balanceUSV * 0.20);
+      console.log('🚀 Step 10: Setting total value:', totalValue);
       setTotalValue(totalValue);
-      console.log('💵 Total value calculated:', totalValue);
       
+      console.log('🚀 Step 11: Showing toast notification...');
       toast({
         title: "💰 Balance Updated!",
-        description: `${balanceData.balanceUSV || 0} USV and ${balanceData.balanceSOL?.toFixed(4) || 0} SOL loaded from mainnet`,
+        description: `${balanceData.balanceUSV || 0} USV and ${balanceData.balanceSOL?.toFixed(4) || 0} SOL loaded`,
       });
       
-      console.log('✅ Balance loaded from API:', balanceData);
+      console.log('✅ Step 12: All steps completed successfully!');
     } catch (error) {
-      console.error('❌ Failed to load balance:', error);
+      console.error('❌❌❌ ERROR CAUGHT IN STEP:', error);
+      console.error('❌ Error name:', (error as any)?.name);
+      console.error('❌ Error message:', (error as any)?.message);
+      console.error('❌ Error stack:', (error as any)?.stack);
+      console.error('❌ Full error object:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
+      
       toast({
         title: "❌ Balance Load Failed", 
-        description: "Failed to fetch balance from API",
+        description: (error as Error)?.message || "Unknown error occurred",
         variant: "destructive"
       });
     } finally {
+      console.log('🏁 Finally block: Setting isRefreshing to false');
       setIsRefreshing(false);
     }
   };
