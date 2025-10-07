@@ -11,22 +11,41 @@ import QrScanner from 'qr-scanner';
 
 export default function QRScan() {
   console.log('🚀 QRScan component mounted!');
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [flashOn, setFlashOn] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [qrDetected, setQrDetected] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [claimResult, setClaimResult] = useState<{ tokens: number; productId: string } | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const qrScannerRef = useRef<QrScanner | null>(null);
   const { toast } = useToast();
   const { user } = useAuth();
+  
+  // Check for claim code in URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const claimCode = urlParams.get('claim');
+    if (claimCode) {
+      console.log('🎯 Claim code found in URL:', claimCode);
+      handleQRDetected(claimCode);
+    }
+  }, []);
 
   // Handle REAL QR code detection
   const handleQRDetected = async (qrData: string) => {
-    console.log('🎯 REAL QR Code detected:', qrData);
-    setQrDetected(qrData);
+    console.log('🎯 QR Code detected:', qrData);
+    
+    // Extract code from URL if it's a full URL
+    let code = qrData;
+    if (qrData.includes('/scanner?claim=') || qrData.includes('/qrscan?claim=')) {
+      const urlParams = new URLSearchParams(qrData.split('?')[1]);
+      code = urlParams.get('claim') || qrData;
+    }
+    
+    setQrDetected(code);
     setScanning(false);
     setProcessing(true);
     
@@ -35,32 +54,36 @@ export default function QRScan() {
       qrScannerRef.current.stop();
     }
     
-    // Process the QR code with REAL API
+    // Claim tokens via QR code
     try {
-      const response = await fetch('/api/qr/scan', {
+      const response = await fetch('/api/qr/claim', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({ qrData, userId: user?.id })
+        body: JSON.stringify({ code })
       });
       
       const result = await response.json();
       
-      if (response.ok) {
+      if (result.success) {
+        setClaimResult({ tokens: result.tokens, productId: result.productId });
+        setProcessing(false);
+        
         toast({
-          title: "🎉 QR Code Scanned Successfully!",
-          description: `Earned ${result.reward || 25} USV tokens! Balance updated.`,
+          title: "🎉 Tokens Claimed Successfully!",
+          description: `You received ${result.tokens} USV tokens for ${result.productId}!`,
         });
         
-        // Show success for 3 seconds then redirect
+        // Redirect to home after 3 seconds
         setTimeout(() => {
           setLocation('/');
         }, 3000);
       } else {
+        setProcessing(false);
         toast({
-          title: "QR Code Error",
+          title: "Claim Failed",
           description: result.error || "This QR code is invalid or already claimed",
           variant: "destructive",
         });
@@ -68,7 +91,7 @@ export default function QRScan() {
         // Resume scanning after 3 seconds
         setTimeout(() => {
           setQrDetected(null);
-          setProcessing(false);
+          setClaimResult(null);
           setScanning(true);
           if (qrScannerRef.current) {
             qrScannerRef.current.start();
@@ -76,17 +99,18 @@ export default function QRScan() {
         }, 3000);
       }
     } catch (error) {
-      console.error('QR processing error:', error);
+      console.error('QR claim error:', error);
+      setProcessing(false);
       toast({
         title: "Network Error",
-        description: "Unable to process QR code. Please check your connection.",
+        description: "Unable to claim tokens. Please check your connection.",
         variant: "destructive",
       });
       
-      // Resume scanning
+      // Resume scanning after error
       setTimeout(() => {
         setQrDetected(null);
-        setProcessing(false);
+        setClaimResult(null);
         setScanning(true);
         if (qrScannerRef.current) {
           qrScannerRef.current.start();
@@ -478,17 +502,23 @@ export default function QRScan() {
               <CheckCircle className="w-12 h-12 text-white" />
             </motion.div>
             
-            <h2 className="text-2xl font-bold mb-2">QR Code Detected!</h2>
+            <h2 className="text-2xl font-bold mb-2">
+              {claimResult ? '🎉 Tokens Claimed!' : 'QR Code Detected!'}
+            </h2>
             <p className="text-gray-300 mb-4">Code: {qrDetected}</p>
             
             {processing ? (
               <div className="flex items-center justify-center space-x-2">
                 <div className="w-4 h-4 border-2 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-pink-500">Processing reward...</p>
+                <p className="text-pink-500">Claiming tokens...</p>
               </div>
-            ) : (
-              <p className="text-green-400">✅ Successfully processed!</p>
-            )}
+            ) : claimResult ? (
+              <div className="space-y-2">
+                <p className="text-green-400 text-xl font-bold">+{claimResult.tokens} USV</p>
+                <p className="text-gray-400">Product: {claimResult.productId}</p>
+                <p className="text-sm text-gray-500 mt-4">Redirecting to home...</p>
+              </div>
+            ) : null}
           </div>
         </motion.div>
       )}
