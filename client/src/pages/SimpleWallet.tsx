@@ -49,16 +49,25 @@ export default function SimpleWallet() {
         isNative: true
       };
       
-      const tokens = [solToken];
+      const usvToken: TokenAccount = {
+        mint: process.env.USV_TOKEN_MINT_ADDRESS || 'A9Vnuav6Wd4azfrzKwpK1Z62frmJb7G3Ydr3FkvGKH8W',
+        symbol: 'USV',
+        name: 'Ultra Smooth Vape',
+        balance: balanceData.balanceUSV || 0,
+        decimals: 6,
+        isNative: false
+      };
+      
+      const tokens = [usvToken, solToken]; // USV first, then SOL
       setTokens(tokens);
       
       // Calculate total value
-      const totalValue = balanceData.balanceSOL * 230; // SOL price estimate
+      const totalValue = (balanceData.balanceSOL * 230) + (balanceData.balanceUSV * 0.20); // SOL + USV prices
       setTotalValue(totalValue);
       
       toast({
         title: "💰 Balance Updated!",
-        description: `${balanceData.balanceSOL?.toFixed(4) || 0} SOL loaded from mainnet`,
+        description: `${balanceData.balanceUSV || 0} USV and ${balanceData.balanceSOL?.toFixed(4) || 0} SOL loaded from mainnet`,
       });
       
       console.log('✅ Balance loaded from API:', balanceData);
