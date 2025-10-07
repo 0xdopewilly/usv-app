@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Flashlight, FlashlightOff, CheckCircle, Camera, QrCode } from 'lucide-react';
+import { ArrowLeft, Flashlight, FlashlightOff, CheckCircle, Camera, QrCode, Coins } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
 import QrScanner from 'qr-scanner';
+import { apiRequest } from '@/lib/queryClient';
+import NotificationService from '@/lib/notifications';
 
 
 export default function QRScan() {
@@ -33,23 +35,24 @@ export default function QRScan() {
     }
   }, []);
 
-  // Handle REAL QR code detection
+  // Handle REAL QR code detection - AUTOMATIC CLAIM!
   const handleQRDetected = async (qrData: string) => {
     console.log('🎯 QR Code detected:', qrData);
     
     setQrDetected(qrData);
     setScanning(false);
+    setProcessing(true);
     
     // Stop scanning temporarily
     if (qrScannerRef.current) {
       qrScannerRef.current.stop();
     }
     
-    // Check if this is a URL
+    // Check if this is a URL (legacy format - still redirect)
     const isURL = qrData.startsWith('http://') || qrData.startsWith('https://');
     
     if (isURL) {
-      // Open the URL in the same window (redirects user to claim site)
+      // Legacy URL format - redirect to external claim site
       console.log('🌐 Opening claim URL:', qrData);
       
       toast({
@@ -57,25 +60,70 @@ export default function QRScan() {
         description: "Redirecting you to claim your tokens...",
       });
       
-      // Redirect to the external claim site
       setTimeout(() => {
         window.location.href = qrData;
       }, 1000);
-    } else {
-      // For non-URL codes, show the detected code
-      toast({
-        title: "QR Code Detected",
-        description: `Code: ${qrData}`,
+      return;
+    }
+    
+    // AUTOMATIC CLAIM: QR code contains claim code directly
+    try {
+      console.log('💰 Attempting automatic claim for code:', qrData);
+      
+      // Call the claim API
+      const response = await apiRequest('POST', '/api/qr/claim', {
+        code: qrData,
       });
       
-      // Resume scanning after 3 seconds
+      const result = await response.json();
+      console.log('✅ Claim successful:', result);
+      
+      // Set claim result for success animation
+      setClaimResult({
+        tokens: result.reward || 0,
+        productId: qrData,
+      });
+      
+      // Show success toast
+      toast({
+        title: "🎉 Tokens Claimed!",
+        description: `You received ${result.reward} USV tokens!`,
+      });
+      
+      // Send push notification if enabled
+      if (user?.pushNotifications && NotificationService.hasPermission()) {
+        await NotificationService.showTransactionNotification('received', result.reward, 'USV');
+      }
+      
+      // Stop processing after 3 seconds and reset
+      setTimeout(() => {
+        setProcessing(false);
+        setQrDetected(null);
+        setClaimResult(null);
+        setScanning(true);
+        if (qrScannerRef.current) {
+          qrScannerRef.current.start();
+        }
+      }, 3000);
+      
+    } catch (error: any) {
+      console.error('❌ Claim failed:', error);
+      setProcessing(false);
+      
+      toast({
+        title: "Claim Failed",
+        description: error.message || "This QR code may have already been claimed or is invalid.",
+        variant: "destructive",
+      });
+      
+      // Resume scanning after error
       setTimeout(() => {
         setQrDetected(null);
         setScanning(true);
         if (qrScannerRef.current) {
           qrScannerRef.current.start();
         }
-      }, 3000);
+      }, 2000);
     }
   };
 
@@ -443,40 +491,100 @@ export default function QRScan() {
         </div>
       )}
 
-      {/* QR Detected Success */}
+      {/* QR Detected Success - AUTOMATIC CLAIM ANIMATION! */}
       {qrDetected && (
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="absolute inset-0 flex items-center justify-center z-20 bg-black/80 backdrop-blur-sm"
+          className="absolute inset-0 flex items-center justify-center z-20 bg-black/90 backdrop-blur-md"
         >
-          <div className="text-center text-white">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6"
-            >
-              <CheckCircle className="w-12 h-12 text-white" />
-            </motion.div>
-            
-            <h2 className="text-2xl font-bold mb-2">
-              {claimResult ? '🎉 Tokens Claimed!' : 'QR Code Detected!'}
-            </h2>
-            <p className="text-gray-300 mb-4">Code: {qrDetected}</p>
-            
+          <div className="text-center text-white max-w-sm mx-auto px-6">
             {processing ? (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="w-4 h-4 border-2 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-pink-500">Claiming tokens...</p>
+              // Processing animation
+              <div className="flex flex-col items-center justify-center space-y-4">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="w-24 h-24 rounded-full border-4 border-pink-500 border-t-transparent flex items-center justify-center"
+                >
+                  <Coins className="w-12 h-12 text-pink-500" />
+                </motion.div>
+                <h2 className="text-2xl font-bold text-pink-500">Claiming Tokens...</h2>
+                <p className="text-gray-400">Processing your reward</p>
               </div>
             ) : claimResult ? (
-              <div className="space-y-2">
-                <p className="text-green-400 text-xl font-bold">+{claimResult.tokens} USV</p>
-                <p className="text-gray-400">Product: {claimResult.productId}</p>
-                <p className="text-sm text-gray-500 mt-4">Redirecting to home...</p>
+              // Success animation
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+              >
+                {/* Success icon with burst effect */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: [0, 1.2, 1] }}
+                  transition={{ delay: 0.1, duration: 0.6 }}
+                  className="relative w-32 h-32 mx-auto mb-6"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-20 h-20 text-white" />
+                  </div>
+                  {/* Coin particles */}
+                  {[...Array(8)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ scale: 0, x: 0, y: 0, opacity: 1 }}
+                      animate={{ 
+                        scale: [0, 1, 0],
+                        x: Math.cos(i * 45 * Math.PI / 180) * 80,
+                        y: Math.sin(i * 45 * Math.PI / 180) * 80,
+                        opacity: [1, 1, 0]
+                      }}
+                      transition={{ delay: 0.3, duration: 0.8 }}
+                      className="absolute top-1/2 left-1/2 w-4 h-4 bg-yellow-400 rounded-full"
+                    />
+                  ))}
+                </motion.div>
+                
+                <motion.h2
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-3xl font-bold mb-3 bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent"
+                >
+                  🎉 SUCCESS!
+                </motion.h2>
+                
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="space-y-3"
+                >
+                  <div className="bg-gradient-to-r from-pink-600/20 to-purple-600/20 rounded-2xl p-6 border border-pink-500/30">
+                    <p className="text-gray-300 text-sm mb-2">You received</p>
+                    <p className="text-5xl font-bold text-green-400">+{claimResult.tokens}</p>
+                    <p className="text-2xl font-semibold text-white mt-1">USV Tokens</p>
+                  </div>
+                  
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8 }}
+                    className="text-sm text-gray-400 mt-4"
+                  >
+                    Tokens added to your wallet!
+                  </motion.p>
+                </motion.div>
+              </motion.div>
+            ) : (
+              // QR detected but not claimed yet
+              <div>
+                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                <h2 className="text-xl font-bold">QR Code Detected!</h2>
+                <p className="text-gray-400 mt-2">Processing...</p>
               </div>
-            ) : null}
+            )}
           </div>
         </motion.div>
       )}
