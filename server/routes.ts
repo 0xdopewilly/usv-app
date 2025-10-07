@@ -673,6 +673,7 @@ router.post('/qr/claim', authenticateToken, async (req: any, res) => {
 
     // Update QR code as claimed
     await storage.updateQRCode(qrCode.id, {
+      claimed: true,
       claimedBy: req.user.userId,
       claimedAt: new Date(),
       isActive: false,
