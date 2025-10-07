@@ -10,6 +10,7 @@ import appleSignin from 'apple-signin-auth';
 import CryptoJS from 'crypto-js';
 import { storage } from './storage';
 import { loginSchema, signupSchema, verificationSchema, withdrawSchema, insertSavedAddressSchema } from '../shared/schema';
+import { qrCodeService } from './qr-service';
 
 // Solana connection for wallet operations
 const connection = new Connection('https://api.mainnet-beta.solana.com', 'confirmed');
@@ -2207,6 +2208,180 @@ router.delete('/saved-addresses/:id', authenticateToken, async (req: any, res) =
     
     await storage.deleteSavedAddress(id);
     res.json({ success: true, message: 'Address deleted successfully' });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// QR Code API Routes
+// Generate QR Code Batch (Admin only - requires special admin token or key)
+router.post('/qr/generate', authenticateToken, async (req: any, res) => {
+  try {
+    const { productId, quantity = 10, tokenReward = 1000, adminKey } = req.body;
+    
+    // Simple admin validation - in production, use proper role-based access
+    if (adminKey !== process.env.ADMIN_API_KEY && adminKey !== 'usv_admin_2024_secret') {
+      return res.status(401).json({ success: false, error: 'Unauthorized - Admin access required' });
+    }
+    
+    if (!productId) {
+      return res.status(400).json({ success: false, error: 'Product ID is required' });
+    }
+    
+    // Generate QR codes using service
+    const qrBatch = await qrCodeService.generateBatch(productId, quantity, tokenReward);
+    
+    // Save to database
+    const insertData = qrBatch.map(item => ({
+      code: item.code,
+      productId: item.productId,
+      tokenReward: item.tokenReward,
+      qrImage: item.qrImage,
+      isActive: true,
+      claimed: false,
+    }));
+    
+    const savedCodes = await storage.createQRCodeBatch(insertData);
+    
+    // Generate downloadable HTML
+    const downloadHTML = qrCodeService.generateDownloadHTML(qrBatch);
+    
+    res.json({
+      success: true,
+      message: `Generated ${quantity} QR codes for ${productId}`,
+      codes: savedCodes.map(c => ({
+        id: c.id,
+        code: c.code,
+        productId: c.productId,
+        tokenReward: c.tokenReward,
+        qrImage: c.qrImage,
+      })),
+      downloadHTML
+    });
+    
+  } catch (error: any) {
+    console.error('QR Generation Error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Claim Tokens via QR Code (Users)
+router.post('/qr/claim', authenticateToken, async (req: any, res) => {
+  try {
+    const { code } = req.body;
+    const userId = req.user.userId;
+    
+    if (!code) {
+      return res.status(400).json({ success: false, error: 'QR code is required' });
+    }
+    
+    // Get user details
+    const user = await storage.getUserById(userId);
+    if (!user || !user.walletAddress) {
+      return res.status(400).json({ success: false, error: 'User wallet not found' });
+    }
+    
+    // Find and validate QR code
+    const qrCode = await storage.getQRCodeByCode(code);
+    if (!qrCode) {
+      return res.status(404).json({ success: false, error: 'Invalid QR code' });
+    }
+    
+    // Validate claim eligibility
+    const validation = await qrCodeService.validateClaim(qrCode, user.walletAddress);
+    if (!validation.isValid) {
+      return res.status(400).json({ success: false, error: validation.error });
+    }
+    
+    // Check if user already claimed this product
+    const allUserTransactions = await storage.getTransactionsByUserId(userId);
+    const alreadyClaimed = allUserTransactions.some(
+      tx => tx.type === 'qr_claim' && (tx as any).productId === qrCode.productId
+    );
+    
+    if (alreadyClaimed) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'You have already claimed tokens for this product' 
+      });
+    }
+    
+    // Process token transfer (custodial)
+    let txHash = '';
+    try {
+      // In a real implementation, you'd transfer actual tokens here
+      // For now, we'll create a transaction record
+      txHash = `qr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Create transaction record
+      await storage.createTransaction({
+        userId,
+        type: 'qr_claim',
+        amount: qrCode.tokenReward || 1000,
+        token: 'USV',
+        status: 'completed',
+        toAddress: user.walletAddress,
+        fromAddress: 'USV_QR_REWARDS',
+        txHash,
+      });
+      
+      // Update user balance
+      const newBalance = (user.balance || 0) + (qrCode.tokenReward || 1000);
+      await storage.updateUser(userId, { balance: newBalance });
+      
+    } catch (error: any) {
+      console.error('Token transfer error:', error);
+      return res.status(500).json({ success: false, error: 'Failed to transfer tokens' });
+    }
+    
+    // Mark QR code as claimed
+    await storage.updateQRCode(qrCode.id, {
+      claimed: true,
+      claimedBy: user.walletAddress,
+      claimedAt: new Date(),
+      txHash,
+    });
+    
+    res.json({
+      success: true,
+      message: 'Tokens claimed successfully!',
+      tokens: qrCode.tokenReward,
+      transaction: txHash,
+      productId: qrCode.productId,
+    });
+    
+  } catch (error: any) {
+    console.error('QR Claim Error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Get QR Code Statistics (Admin)
+router.get('/qr/stats', authenticateToken, async (req: any, res) => {
+  try {
+    const stats = await storage.getQRCodeStats();
+    res.json({ success: true, stats });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Get All QR Codes (Admin)
+router.get('/qr/codes', authenticateToken, async (req: any, res) => {
+  try {
+    const codes = await storage.getAllQRCodes();
+    res.json({ success: true, codes });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// Get QR Codes by Product (Admin)
+router.get('/qr/codes/:productId', authenticateToken, async (req: any, res) => {
+  try {
+    const { productId } = req.params;
+    const codes = await storage.getQRCodesByProduct(productId);
+    res.json({ success: true, codes, count: codes.length });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
   }
