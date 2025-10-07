@@ -37,6 +37,15 @@ export default function TokenSelection() {
       console.log('💰 Token data loaded:', balanceData);
       
       // Convert API response to token format for UI
+      const usvToken: TokenAccount = {
+        mint: 'A9Vnuav6Wd4azfrzKwpK1Z62frmJb7G3Ydr3FkvGKH8W',
+        symbol: 'USV',
+        name: 'Ultra Smooth Vape',
+        balance: balanceData.balanceUSV || 0,
+        decimals: 6,
+        isNative: false
+      };
+
       const solToken: TokenAccount = {
         mint: 'So11111111111111111111111111111111111111112',
         symbol: 'SOL',
@@ -46,8 +55,8 @@ export default function TokenSelection() {
         isNative: true
       };
       
-      // In the future, add more tokens here (USV, etc.)
-      const availableTokens = [solToken];
+      // Show both USV and SOL tokens
+      const availableTokens = [usvToken, solToken];
       setTokens(availableTokens);
       
     } catch (error) {
@@ -69,10 +78,16 @@ export default function TokenSelection() {
     setLocation(`/send/${token.symbol.toLowerCase()}`);
   };
 
-  const getTokenColor = (symbol: string) => {
-    if (symbol === 'SOL') return 'bg-gradient-to-r from-purple-500 to-blue-500';
-    if (symbol === 'USV') return 'bg-purple-500';
-    return 'bg-gradient-to-r from-blue-500 to-green-500';
+  const getTokenLogo = (symbol: string) => {
+    if (symbol === 'SOL') return 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png';
+    if (symbol === 'USV') return '/usv-logo.png';
+    return null;
+  };
+
+  const getTokenPrice = (symbol: string) => {
+    if (symbol === 'SOL') return 230;
+    if (symbol === 'USV') return 0.20;
+    return 0;
   };
 
   return (
@@ -137,19 +152,25 @@ export default function TokenSelection() {
                   <div className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className={`w-10 h-10 ${getTokenColor(token.symbol)} rounded-lg flex items-center justify-center`}>
-                          <span className="text-white font-bold text-xs">{token.symbol}</span>
-                        </div>
+                        {getTokenLogo(token.symbol) ? (
+                          <img 
+                            src={getTokenLogo(token.symbol)!} 
+                            alt={token.symbol} 
+                            className="w-10 h-10 rounded-lg object-contain" 
+                          />
+                        ) : (
+                          <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+                            <span className="text-white font-bold text-xs">{token.symbol}</span>
+                          </div>
+                        )}
                         <div>
                           <h3 className="text-white font-medium text-base">{token.name}</h3>
                           <p className="text-gray-400 text-sm">
-                            Balance: {token.balance.toFixed(6)} {token.symbol}
+                            Balance: {token.balance.toFixed(token.symbol === 'SOL' ? 6 : 2)} {token.symbol}
                           </p>
-                          {token.isNative && (
-                            <p className="text-gray-500 text-xs">
-                              ≈ ${(token.balance * 230).toFixed(2)} USD
-                            </p>
-                          )}
+                          <p className="text-gray-500 text-xs">
+                            ≈ ${(token.balance * getTokenPrice(token.symbol)).toFixed(2)} USD
+                          </p>
                         </div>
                       </div>
                       
