@@ -38,11 +38,53 @@ export default function QRScan() {
   const handleQRDetected = async (qrData: string) => {
     console.log('🎯 QR Code detected:', qrData);
     
-    // Extract code from URL if it's a full URL
+    // Check if this is a URL
+    const isURL = qrData.startsWith('http://') || qrData.startsWith('https://');
+    
+    // Extract code from URL if it's a full URL with claim code
     let code = qrData;
-    if (qrData.includes('/scanner?claim=') || qrData.includes('/qrscan?claim=')) {
-      const urlParams = new URLSearchParams(qrData.split('?')[1]);
-      code = urlParams.get('claim') || qrData;
+    if (isURL) {
+      try {
+        const url = new URL(qrData);
+        
+        // Check for 'code' parameter (e.g., /claim?code=USV-XXX)
+        const codeParam = url.searchParams.get('code');
+        if (codeParam) {
+          code = codeParam;
+          console.log('📦 Extracted code from URL:', code);
+        }
+        // Check for 'claim' parameter (e.g., /scanner?claim=USV-XXX)
+        else {
+          const claimParam = url.searchParams.get('claim');
+          if (claimParam) {
+            code = claimParam;
+            console.log('📦 Extracted claim from URL:', code);
+          }
+          // If no code/claim parameter, it's just a regular URL - open it
+          else {
+            console.log('🌐 Regular URL detected, opening:', qrData);
+            window.open(qrData, '_blank');
+            
+            toast({
+              title: "🔗 Opening Link",
+              description: "Opening the scanned URL in a new tab",
+            });
+            
+            // Resume scanning after 2 seconds
+            setTimeout(() => {
+              setQrDetected(null);
+              setScanning(true);
+              if (qrScannerRef.current) {
+                qrScannerRef.current.start();
+              }
+            }, 2000);
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to parse URL:', error);
+        // If URL parsing fails, use the original data
+      }
     }
     
     setQrDetected(code);
