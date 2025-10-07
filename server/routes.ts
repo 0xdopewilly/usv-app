@@ -832,25 +832,30 @@ router.get('/wallet/me/balance', authenticateToken, async (req: any, res) => {
       return res.status(400).json({ error: 'User wallet not found' });
     }
 
-    console.log('🔍 Fetching SOL balance for user wallet:', user.walletAddress);
+    console.log('🔍 Fetching balances for user wallet:', user.walletAddress);
     
     // Get real SOL balance from Solana mainnet using connection
     const publicKey = new PublicKey(user.walletAddress);
     const balanceInLamports = await connection.getBalance(publicKey);
     const balanceInSOL = balanceInLamports / LAMPORTS_PER_SOL;
     
-    console.log('✅ User SOL balance fetched:', { lamports: balanceInLamports, sol: balanceInSOL });
+    // Get USV token balance
+    const { getUsvBalance } = await import('./solana');
+    const usvBalance = await getUsvBalance(user.walletAddress);
+    
+    console.log('✅ User balances fetched:', { sol: balanceInSOL, usv: usvBalance });
 
     res.json({
       walletAddress: user.walletAddress,
       balanceSOL: balanceInSOL,
+      balanceUSV: usvBalance,
       balanceLamports: balanceInLamports,
       network: 'mainnet',
       lastUpdated: new Date().toISOString()
     });
     
   } catch (error) {
-    console.error('❌ Error fetching user SOL balance:', error);
+    console.error('❌ Error fetching user balances:', error);
     res.status(500).json({ error: 'Failed to fetch wallet balance' });
   }
 });
