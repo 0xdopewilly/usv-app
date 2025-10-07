@@ -22,10 +22,10 @@ export default function BottomNavigation() {
 
   return (
     <motion.div 
-      className="fixed bottom-0 left-0 right-0 z-[9999] p-2"
-      initial={{ y: 80, opacity: 0 }}
+      className="fixed bottom-0 left-0 right-0 z-[9999] p-2 pb-safe"
+      initial={{ y: 60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, type: "spring", stiffness: 150 }}
+      transition={{ duration: 0.3, type: "spring", stiffness: 250, damping: 25 }}
       style={{ 
         position: 'fixed',
         bottom: 0,
@@ -51,13 +51,13 @@ export default function BottomNavigation() {
               <motion.div
                 key={item.path}
                 whileHover={{
-                  scale: item.isCenter ? 1.1 : 1.05,
-                  y: -2,
+                  scale: item.isCenter ? 1.08 : 1.03,
+                  y: -1,
                 }}
                 whileTap={{ 
-                  scale: 0.95
+                  scale: 0.96
                 }}
-                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 className="flex flex-col items-center"
               >
                 {/* Center QR Button */}
