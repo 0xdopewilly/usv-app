@@ -481,23 +481,24 @@ export default function SendTokens() {
         >
           {/* Token Selector */}
           <Card className="bg-gray-900/50 border-gray-700/50 p-6">
-            <Label className="text-white mb-3 block">Select Token</Label>
+            <Label className="text-white mb-3 block">Select Token to Send</Label>
             <Select value={selectedToken} onValueChange={setSelectedToken}>
               <SelectTrigger className="bg-black/50 border-gray-600 text-white" data-testid="select-token">
-                <SelectValue />
+                <div className="flex items-center space-x-2">
+                  <img 
+                    src={selectedToken === 'SOL' ? 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png' : '/usv-logo.png'} 
+                    alt={selectedToken} 
+                    className="w-5 h-5 rounded" 
+                  />
+                  <span>{selectedToken} - {selectedToken === 'SOL' ? 'Solana' : 'Ultra Smooth Vape'}</span>
+                </div>
               </SelectTrigger>
               <SelectContent className="bg-gray-900 border-gray-700">
                 <SelectItem value="USV" className="text-white hover:bg-gray-800">
-                  <div className="flex items-center space-x-2">
-                    <img src="/usv-logo.png" alt="USV" className="w-5 h-5 rounded" />
-                    <span>USV - Ultra Smooth Vape</span>
-                  </div>
+                  USV - Ultra Smooth Vape
                 </SelectItem>
                 <SelectItem value="SOL" className="text-white hover:bg-gray-800">
-                  <div className="flex items-center space-x-2">
-                    <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" alt="SOL" className="w-5 h-5 rounded" />
-                    <span>SOL - Solana</span>
-                  </div>
+                  SOL - Solana
                 </SelectItem>
               </SelectContent>
             </Select>
