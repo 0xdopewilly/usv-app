@@ -1,0 +1,74 @@
+Yes! Here's everything for your mobile app developer:
+
+USV Wallet QR Code Integration Guide
+1. QR Code Format
+When users scan QR codes, they'll get this URI:
+
+usv://claim?code=USV-XXXX-XXXX-XXXX&tokens=1000&product=vape-starter
+Register the URI scheme: Configure your app to handle usv:// deep links
+
+2. API Endpoints
+Base URL: https://usv-app.replit.app
+A. Verify QR Code (Optional - for preview)
+GET /api/qr/verify/:code
+Example:
+
+GET https://usv-app.replit.app/api/qr/verify/USV-XXXX-XXXX-XXXX
+Response:
+
+{
+  "success": true,
+  "data": {
+    "code": "USV-XXXX-XXXX-XXXX",
+    "tokens": 1000,
+    "product": "vape-starter",
+    "claimed": false
+  }
+}
+B. Claim Tokens (Main endpoint)
+POST /api/qr/claim
+Content-Type: application/json
+Request Body:
+
+{
+  "qr_code": "USV-XXXX-XXXX-XXXX",
+  "wallet_address": "user_solana_wallet_address"
+}
+Success Response (200):
+
+{
+  "success": true,
+  "message": "Tokens claimed successfully!",
+  "data": {
+    "tokens": 1000,
+    "transaction": "5FHneE...TransactionHash",
+    "product": "vape-starter"
+  }
+}
+Error Responses:
+
+// Already claimed
+{
+  "success": false,
+  "error": "Invalid or already claimed QR code"
+}
+// User already claimed this product type
+{
+  "success": false,
+  "error": "You already claimed tokens for this product type"
+}
+3. Implementation Flow
+User scans QR code → App receives usv://claim?code=X&tokens=Y&product=Z
+Parse URI parameters (decode URL components)
+Show confirmation screen with token amount and product
+User taps "Claim"
+Call POST /api/qr/claim with code + user's wallet address
+Show success with transaction hash, or error message
+Update wallet balance
+4. Notes
+No authentication needed for claim endpoint (it's public)
+Backend automatically transfers tokens from company wallet
+Transaction happens instantly on Solana blockchain
+Each user can only claim once per product type (fraud prevention)
+QR codes can only be claimed once total
+That's it! Copy this to your mobile dev and they'll have everything they need. 🚀
