@@ -121,34 +121,55 @@ export default function QRScan() {
       // Otherwise use as direct claim code
     }
     
-    // AUTOMATIC CLAIM: Claim tokens directly from the app!
+    // STEP 1: VERIFY QR CODE - Preview the claim before confirming
     try {
-      console.log('💰 Attempting automatic claim for code:', claimCode);
+      console.log('🔍 Verifying QR code:', claimCode);
       
-      // Call the claim API
-      const response = await apiRequest('POST', '/api/qr/claim', {
+      // Call the verify API to get claim details
+      const verifyResponse = await apiRequest('GET', `/api/qr/verify/${claimCode}`);
+      const verifyData = await verifyResponse.json();
+      
+      console.log('✅ Verification result:', verifyData);
+      
+      // Check if QR code is valid and active
+      if (!verifyData.isActive || verifyData.claimed) {
+        throw new Error('This QR code has already been claimed or is no longer active');
+      }
+      
+      // Use verified backend data first, fallback to URI params only if backend lacks them
+      const finalTokens = verifyData.tokens || tokensFromURI || 0;
+      const finalProduct = verifyData.product || productFromURI || 'USV Token';
+      
+      console.log('💰 Verified claim details:', { tokens: finalTokens, product: finalProduct, code: claimCode });
+      
+      // STEP 2: AUTOMATIC CLAIM - Claim tokens directly in the app!
+      console.log('💰 Proceeding with automatic claim...');
+      
+      const claimResponse = await apiRequest('POST', '/api/qr/claim', {
         code: claimCode,
       });
       
-      const result = await response.json();
-      console.log('✅ Claim successful:', result);
+      const claimResult = await claimResponse.json();
+      console.log('✅ Claim successful:', claimResult);
       
-      // Set claim result for success animation
+      // Set claim result for success animation (use actual claimed amount from backend)
+      const actualTokens = claimResult.reward || finalTokens || 0;
+      
       setClaimResult({
-        tokens: tokensFromURI || result.reward || 0,
-        product: productFromURI || 'USV Token',
+        tokens: actualTokens,
+        product: finalProduct,
         code: claimCode,
       });
       
       // Show success toast
       toast({
         title: "🎉 Tokens Claimed!",
-        description: `You received ${result.reward} USV tokens!`,
+        description: `You received ${actualTokens} USV tokens!`,
       });
       
       // Send push notification if enabled
       if (user?.pushNotifications && NotificationService.hasPermission()) {
-        await NotificationService.showTransactionNotification('received', result.reward, 'USV');
+        await NotificationService.showTransactionNotification('received', actualTokens, 'USV');
       }
       
       // IMPORTANT: Invalidate user query to refresh balance in UI
