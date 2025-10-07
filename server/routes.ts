@@ -330,6 +330,43 @@ router.get('/admin/qr/:code', async (req, res) => {
   }
 });
 
+// Debug endpoint to check wallet token account
+router.get('/debug/wallet/:address/usv', async (req, res) => {
+  try {
+    const walletAddress = req.params.address;
+    const { getAssociatedTokenAddress, getAccount } = await import('@solana/spl-token');
+    
+    const walletPubkey = new PublicKey(walletAddress);
+    const tokenAccount = await getAssociatedTokenAddress(
+      USV_TOKEN_MINT,
+      walletPubkey
+    );
+    
+    try {
+      const account = await getAccount(connection, tokenAccount);
+      const balance = Number(account.amount) / Math.pow(10, USV_DECIMALS);
+      
+      res.json({
+        exists: true,
+        walletAddress,
+        tokenAccount: tokenAccount.toBase58(),
+        balance,
+        mint: USV_TOKEN_MINT.toBase58()
+      });
+    } catch (error) {
+      res.json({
+        exists: false,
+        walletAddress,
+        tokenAccount: tokenAccount.toBase58(),
+        error: 'Token account not found on blockchain',
+        mint: USV_TOKEN_MINT.toBase58()
+      });
+    }
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Admin endpoint to add QR codes to database
 router.post('/admin/qr/add', async (req, res) => {
   try {
