@@ -23,7 +23,9 @@ export default function SendTokens() {
   const params = useParams();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [selectedToken, setSelectedToken] = useState('USV'); // Default to USV
+  // Get token from URL or default to USV
+  const tokenFromUrl = params.token?.toUpperCase() || 'USV';
+  const [selectedToken, setSelectedToken] = useState(tokenFromUrl);
   
   const [recipientAddress, setRecipientAddress] = useState('');
   const [amount, setAmount] = useState('');
@@ -60,7 +62,7 @@ export default function SendTokens() {
   // Get token price
   const tokenPrice = selectedToken === 'SOL' ? 230 : 0.20;
   const amountNum = parseFloat(amount) || 0;
-  const feeBuffer = 0.000005; // Small buffer for transaction fees
+  const feeBuffer = selectedToken === 'SOL' ? 0.000005 : 0; // Only SOL needs fee buffer
   
   // Allow sending if we can't fetch balance (server will validate)
   const isValidAmount = isBalanceLoading ? (amountNum > 0) : (amountNum > 0 && amountNum <= (maxBalance - feeBuffer));
