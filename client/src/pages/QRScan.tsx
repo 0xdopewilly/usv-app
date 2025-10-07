@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
 import QrScanner from 'qr-scanner';
-import { apiRequest } from '@/lib/queryClient';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 import NotificationService from '@/lib/notifications';
 
 
@@ -48,31 +48,80 @@ export default function QRScan() {
       qrScannerRef.current.stop();
     }
     
-    // Check if this is a URL (legacy format - still redirect)
-    const isURL = qrData.startsWith('http://') || qrData.startsWith('https://');
+    // Extract claim code from URL if needed (supports all URI formats)
+    let claimCode = qrData;
     
-    if (isURL) {
-      // Legacy URL format - redirect to external claim site
-      console.log('🌐 Opening claim URL:', qrData);
+    // Try to parse as URL (supports http://, https://, usv://, etc.)
+    let isURL = false;
+    try {
+      const url = new URL(qrData);
+      isURL = true;
       
-      toast({
-        title: "🔗 Opening Claim Site",
-        description: "Redirecting you to claim your tokens...",
-      });
+      // Extract claim code from URL (supports query params and hash fragments)
+      let codeParam = url.searchParams.get('code') || url.searchParams.get('claim');
       
-      setTimeout(() => {
-        window.location.href = qrData;
-      }, 1000);
-      return;
+      // If not in query params, check hash fragment
+      if (!codeParam && url.hash) {
+        const hash = url.hash.substring(1); // Remove the # symbol
+        
+        // Check if hash contains query params (e.g., #/claim?code=XYZ)
+        if (hash.includes('?')) {
+          const hashParams = new URLSearchParams(hash.split('?')[1]);
+          codeParam = hashParams.get('code') || hashParams.get('claim');
+        } 
+        // Check if hash is direct code assignment (e.g., #code=XYZ)
+        else if (hash.includes('=')) {
+          const hashParts = hash.split('=');
+          if (hashParts[0] === 'code' || hashParts[0] === 'claim') {
+            codeParam = hashParts[1];
+          }
+        }
+        // Check if hash is just the code itself (e.g., #ABC123)
+        else if (hash.length > 0) {
+          codeParam = hash;
+        }
+      }
+      
+      if (codeParam) {
+        claimCode = codeParam;
+        console.log('📋 Extracted claim code from URL:', claimCode);
+      } else {
+        // If we can't extract a code from a valid URL, treat the whole thing as invalid
+        throw new Error('No claim code found in URL');
+      }
+    } catch (urlError) {
+      // Not a valid URL - treat as direct claim code
+      console.log('📋 Not a URL, using as direct claim code:', qrData);
+      
+      // If it looks like it could be a malformed URL, show error
+      if (qrData.includes('://') || qrData.includes('http')) {
+        console.error('❌ Invalid URL format:', urlError);
+        setProcessing(false);
+        toast({
+          title: "Invalid QR Code",
+          description: "This QR code format is not supported.",
+          variant: "destructive",
+        });
+        
+        setTimeout(() => {
+          setQrDetected(null);
+          setScanning(true);
+          if (qrScannerRef.current) {
+            qrScannerRef.current.start();
+          }
+        }, 2000);
+        return;
+      }
+      // Otherwise use as direct claim code
     }
     
-    // AUTOMATIC CLAIM: QR code contains claim code directly
+    // AUTOMATIC CLAIM: Claim tokens directly from the app!
     try {
-      console.log('💰 Attempting automatic claim for code:', qrData);
+      console.log('💰 Attempting automatic claim for code:', claimCode);
       
       // Call the claim API
       const response = await apiRequest('POST', '/api/qr/claim', {
-        code: qrData,
+        code: claimCode,
       });
       
       const result = await response.json();
@@ -81,7 +130,7 @@ export default function QRScan() {
       // Set claim result for success animation
       setClaimResult({
         tokens: result.reward || 0,
-        productId: qrData,
+        productId: claimCode,
       });
       
       // Show success toast
@@ -94,6 +143,9 @@ export default function QRScan() {
       if (user?.pushNotifications && NotificationService.hasPermission()) {
         await NotificationService.showTransactionNotification('received', result.reward, 'USV');
       }
+      
+      // IMPORTANT: Invalidate user query to refresh balance in UI
+      queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
       
       // Stop processing after 3 seconds and reset
       setTimeout(() => {
