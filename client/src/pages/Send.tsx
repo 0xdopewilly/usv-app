@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Send, Scan, User, AlertCircle, CheckCircle, DollarSign, Loader2, Bookmark } from 'lucide-react';
+import { ArrowLeft, Send, Scan, User, AlertCircle, CheckCircle, DollarSign, Loader2, Bookmark, ChevronDown } from 'lucide-react';
 import { useLocation, useParams } from 'wouter';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import BottomNavigation from '@/components/BottomNavigation';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
@@ -20,9 +21,9 @@ import usvLogo from '@assets/image_1757431326277.png';
 export default function SendTokens() {
   const [, setLocation] = useLocation();
   const params = useParams();
-  const selectedToken = params.token?.toUpperCase() || 'SOL';
   const { user } = useAuth();
   const { toast } = useToast();
+  const [selectedToken, setSelectedToken] = useState('USV'); // Default to USV
   
   const [recipientAddress, setRecipientAddress] = useState('');
   const [amount, setAmount] = useState('');
@@ -34,7 +35,7 @@ export default function SendTokens() {
   const [addressLabel, setAddressLabel] = useState('');
   const queryClient = useQueryClient();
 
-  // Fetch real SOL balance using server-authoritative endpoint (architect recommended)
+  // Fetch real balance using server-authoritative endpoint
   const { data: balanceData, isLoading: isBalanceLoading, error: balanceError } = useQuery({
     queryKey: ['/api/wallet/me/balance'],
     queryFn: async () => {
@@ -51,7 +52,13 @@ export default function SendTokens() {
     refetchInterval: 10000, // Refresh every 10 seconds
   });
 
-  const maxBalance = (balanceData as any)?.balanceSOL || 0;
+  // Get balance based on selected token
+  const maxBalance = selectedToken === 'SOL' 
+    ? ((balanceData as any)?.balanceSOL || 0)
+    : ((balanceData as any)?.balanceUSV || 0);
+  
+  // Get token price
+  const tokenPrice = selectedToken === 'SOL' ? 230 : 0.20;
   const amountNum = parseFloat(amount) || 0;
   const feeBuffer = 0.000005; // Small buffer for transaction fees
   
@@ -149,12 +156,12 @@ export default function SendTokens() {
         
         toast({
           title: "🎉 Transfer Successful!",
-          description: `Sent ${amountNum} SOL successfully`,
+          description: `Sent ${amountNum} ${selectedToken} successfully`,
         });
         
-        console.log('✅ SOL sent successfully:', result);
+        console.log(`✅ ${selectedToken} sent successfully:`, result);
       } else {
-        throw new Error(result.error || 'Failed to send SOL');
+        throw new Error(result.error || `Failed to send ${selectedToken}`);
       }
     } catch (error: any) {
       console.error('❌ Transfer error:', error);
@@ -163,7 +170,7 @@ export default function SendTokens() {
       
       toast({
         title: "Transfer Failed",
-        description: error.message || "Failed to send SOL",
+        description: error.message || `Failed to send ${selectedToken}`,
         variant: "destructive",
       });
     } finally {
@@ -204,7 +211,7 @@ export default function SendTokens() {
           
           <h2 className="text-white text-2xl font-bold mb-2">Transfer Successful!</h2>
           <p className="text-gray-400 mb-6">
-            {amountNum} SOL sent successfully
+            {amountNum} {selectedToken} sent successfully
           </p>
           
           <div className="bg-gray-900 rounded-xl p-4 mb-6">
@@ -342,7 +349,7 @@ export default function SendTokens() {
           
           <h2 className="text-white text-2xl font-bold mb-2">Processing Transfer</h2>
           <p className="text-gray-400 mb-6">
-            Sending {amountNum} SOL to the recipient...
+            Sending {amountNum} {selectedToken} to the recipient...
           </p>
           
           <p className="text-purple-400 text-sm">
@@ -381,14 +388,14 @@ export default function SendTokens() {
             <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/20 p-6">
               <div className="text-center mb-6">
                 <img 
-                  src={selectedToken === 'SOL' ? '/solana-logo.png' : '/usv-logo.png'} 
+                  src={selectedToken === 'SOL' ? 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png' : '/usv-logo.png'} 
                   alt={selectedToken} 
                   className="w-16 h-16 rounded-xl object-contain mx-auto mb-4" 
                 />
                 <h2 className="text-white text-3xl font-bold mb-2" data-testid="text-confirm-amount">
                   {amountNum} {selectedToken}
                 </h2>
-                <p className="text-gray-400">≈ ${(amountNum * 230).toFixed(2)} USD</p>
+                <p className="text-gray-400">≈ ${(amountNum * tokenPrice).toFixed(2)} USD</p>
               </div>
 
               <div className="space-y-4">
@@ -472,17 +479,41 @@ export default function SendTokens() {
           animate={{ y: 0, opacity: 1 }}
           className="space-y-6"
         >
+          {/* Token Selector */}
+          <Card className="bg-gray-900/50 border-gray-700/50 p-6">
+            <Label className="text-white mb-3 block">Select Token</Label>
+            <Select value={selectedToken} onValueChange={setSelectedToken}>
+              <SelectTrigger className="bg-black/50 border-gray-600 text-white" data-testid="select-token">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-900 border-gray-700">
+                <SelectItem value="USV" className="text-white hover:bg-gray-800">
+                  <div className="flex items-center space-x-2">
+                    <img src="/usv-logo.png" alt="USV" className="w-5 h-5 rounded" />
+                    <span>USV - Ultra Smooth Vape</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="SOL" className="text-white hover:bg-gray-800">
+                  <div className="flex items-center space-x-2">
+                    <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" alt="SOL" className="w-5 h-5 rounded" />
+                    <span>SOL - Solana</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </Card>
+
           {/* Balance Card */}
           <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border-purple-500/20 p-6">
             <div className="flex items-center space-x-3 mb-4">
               <img 
-                src={selectedToken === 'SOL' ? '/solana-logo.png' : '/usv-logo.png'} 
+                src={selectedToken === 'SOL' ? 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png' : '/usv-logo.png'} 
                 alt={selectedToken} 
                 className="w-10 h-10 rounded-xl object-contain" 
               />
               <div>
                 <h3 className="text-white font-semibold">Available Balance</h3>
-                <p className="text-gray-400 text-sm">{selectedToken} ({selectedToken === 'SOL' ? 'Solana' : 'USV Token'})</p>
+                <p className="text-gray-400 text-sm">{selectedToken} ({selectedToken === 'SOL' ? 'Solana' : 'Ultra Smooth Vape'})</p>
               </div>
             </div>
             {isBalanceLoading ? (
@@ -495,9 +526,9 @@ export default function SendTokens() {
             ) : (
               <>
                 <p className="text-white text-3xl font-bold" data-testid="text-available-balance">
-                  {maxBalance.toFixed(6)} SOL
+                  {maxBalance.toFixed(selectedToken === 'SOL' ? 6 : 2)} {selectedToken}
                 </p>
-                <p className="text-gray-400 text-sm">≈ ${(maxBalance * 230).toFixed(2)} USD</p>
+                <p className="text-gray-400 text-sm">≈ ${(maxBalance * tokenPrice).toFixed(2)} USD</p>
               </>
             )}
           </Card>
@@ -581,7 +612,7 @@ export default function SendTokens() {
             </div>
             
             <p className="text-gray-400 text-sm mt-2">
-              ≈ ${(amountNum * 230).toFixed(2)} USD
+              ≈ ${(amountNum * tokenPrice).toFixed(2)} USD
             </p>
 
             {/* Quick Amount Buttons */}
