@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { queryClient } from "@/lib/queryClient";
 import SimpleLoadingScreen from "@/components/SimpleLoadingScreen";
+import BottomNavigation from "@/components/BottomNavigation";
 import AuthPage from "@/pages/AuthPage";
 import Home from "@/pages/Home";
 import SimpleWallet from "@/pages/SimpleWallet";
@@ -140,13 +141,24 @@ function AppRouter() {
   );
 }
 
+function AuthenticatedLayout() {
+  const { isAuthenticated } = useAuth();
+  
+  return (
+    <>
+      <AppRouter />
+      {isAuthenticated && <BottomNavigation />}
+      <Toaster />
+    </>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <div className="min-h-screen bg-black text-white">
-          <AppRouter />
-          <Toaster />
+          <AuthenticatedLayout />
         </div>
       </AuthProvider>
     </QueryClientProvider>

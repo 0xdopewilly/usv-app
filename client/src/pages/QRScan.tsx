@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Flashlight, FlashlightOff, CheckCircle, Camera, QrCode } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
-import BottomNavigation from '@/components/BottomNavigation';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
 import QrScanner from 'qr-scanner';
@@ -345,8 +344,6 @@ export default function QRScan() {
 
   return (
     <div className="min-h-screen bg-black relative">
-      <BottomNavigation />
-      
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-6 pt-12">
         <motion.div

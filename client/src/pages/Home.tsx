@@ -4,7 +4,6 @@ import { MoreHorizontal } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import BottomNavigation from '@/components/BottomNavigation';
 import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
 import PriceUpdateIndicator from '@/components/PriceUpdateIndicator';
 import { useAuth } from '@/lib/auth';
@@ -86,8 +85,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black relative pb-20 overflow-hidden">
-      <BottomNavigation />
-      
       {/* Animated Background Gradient */}
       <div className="absolute inset-0 animate-gradient-shift opacity-5 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-radial from-purple-900/10 via-transparent to-transparent" />

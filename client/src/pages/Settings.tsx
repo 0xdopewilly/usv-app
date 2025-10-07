@@ -11,7 +11,6 @@ import { useAuth } from '@/lib/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import BottomNavigation from '@/components/BottomNavigation';
 import { useState, useRef } from 'react';
 import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
@@ -256,8 +255,6 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-black relative pb-20">
-      <BottomNavigation />
-      
       {/* Header */}
       <motion.div
         initial={{ y: -60, opacity: 0, scale: 0.95 }}

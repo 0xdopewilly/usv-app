@@ -7,7 +7,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import BottomNavigation from '@/components/BottomNavigation';
 import { useAuth } from '@/lib/auth';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -235,8 +234,6 @@ export default function TransactionHistory() {
 
   return (
     <div className="min-h-screen bg-black text-white pb-20">
-      <BottomNavigation />
-      
       {/* Header */}
       <motion.div
         initial={{ y: -50, opacity: 0 }}

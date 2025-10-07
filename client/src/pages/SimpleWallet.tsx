@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Copy, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { useLocation } from 'wouter';
-import BottomNavigation from '@/components/BottomNavigation';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
 import { refreshRealWalletBalances, type TokenAccount } from '@/lib/realSolana';
@@ -196,8 +195,6 @@ export default function SimpleWallet() {
   return (
     <>
       <div className="min-h-screen bg-black text-white relative pb-20">
-        <BottomNavigation />
-        
         {/* Header */}
         <div className="px-6 pt-12 pb-6">
           <div className="flex items-center justify-between mb-8">
