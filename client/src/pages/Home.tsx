@@ -50,8 +50,9 @@ export default function Home() {
   });
 
   // Calculate total portfolio value in USD - only when both balance and prices are loaded
-  const totalPortfolioValue = walletBalance?.balanceSOL && prices?.SOL?.price ? 
-    (walletBalance.balanceSOL * prices.SOL.price) : 0;
+  const totalPortfolioValue = 
+    (walletBalance?.balanceSOL && prices?.SOL?.price ? (walletBalance.balanceSOL * prices.SOL.price) : 0) +
+    (walletBalance?.balanceUSV && prices?.USV?.price ? (walletBalance.balanceUSV * prices.USV.price) : 0);
 
   // Setup real-time price updates
   useEffect(() => {
@@ -235,7 +236,7 @@ export default function Home() {
                 <div className="w-2 h-2 bg-white rounded-[4px]"></div>
               </motion.div>
               <span className="text-white/80 text-sm font-medium">
-                {user?.balance ? (user.balance / (prices?.USV?.price || 0.20)).toFixed(5) : '0.00000'} USV
+                {walletBalance?.balanceUSV ? walletBalance.balanceUSV.toFixed(2) : '0.00'} USV
               </span>
             </motion.div>
           </motion.div>
