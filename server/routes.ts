@@ -19,8 +19,12 @@ const SOLANA_RPC_URL = HELIUS_API_KEY
   : 'https://api.mainnet-beta.solana.com';
 const connection = new Connection(SOLANA_RPC_URL, 'confirmed');
 
-// USV Token Configuration (from client/src/lib/solana.ts)
-const USV_TOKEN_MINT = new PublicKey('8zGuJQqwhZafTah7Uc7Z4tXRnguqkn5KLFAP8oV6PHe2');
+// USV Token Configuration - Use from environment variable
+const USV_TOKEN_MINT_ADDRESS = process.env.USV_TOKEN_MINT_ADDRESS;
+if (!USV_TOKEN_MINT_ADDRESS) {
+  throw new Error('USV_TOKEN_MINT_ADDRESS environment variable is required');
+}
+const USV_TOKEN_MINT = new PublicKey(USV_TOKEN_MINT_ADDRESS);
 const USV_DECIMALS = 6;
 
 // Helper function to generate Solana wallet
