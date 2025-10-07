@@ -10,6 +10,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | null>;
   getUserByWallet(walletAddress: string): Promise<User | null>;
   updateUser(id: string, updates: Partial<User>): Promise<User>;
+  deleteAllUsers(): Promise<void>;
   
   // Transaction operations
   createTransaction(transaction: InsertTransaction): Promise<Transaction>;
@@ -172,6 +173,10 @@ export class MemStorage implements IStorage {
     const updatedUser = { ...user, ...updates };
     this.users.set(id, updatedUser);
     return updatedUser;
+  }
+
+  async deleteAllUsers(): Promise<void> {
+    this.users.clear();
   }
 
   // Transaction operations
@@ -389,6 +394,10 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, id))
       .returning();
     return user;
+  }
+
+  async deleteAllUsers(): Promise<void> {
+    await db.delete(users);
   }
 
   // Transaction operations

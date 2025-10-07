@@ -281,6 +281,27 @@ router.post('/auth/login', async (req, res) => {
   }
 });
 
+// Admin endpoint to delete all users (use with caution!)
+router.delete('/admin/users/deleteall', async (req, res) => {
+  try {
+    console.log('🗑️ Admin: Deleting all users from database');
+    
+    // Delete all users
+    await storage.deleteAllUsers();
+    
+    console.log('✅ All users deleted successfully');
+    res.json({ 
+      success: true, 
+      message: 'All users have been deleted from the database' 
+    });
+  } catch (error) {
+    console.error('❌ Failed to delete users:', error);
+    res.status(500).json({ 
+      error: error instanceof Error ? error.message : 'Failed to delete users' 
+    });
+  }
+});
+
 // Apple Sign-In Route - AUTO-GENERATES Solana wallet
 router.post('/auth/apple', async (req, res) => {
   try {
