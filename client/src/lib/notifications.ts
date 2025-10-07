@@ -54,6 +54,8 @@ export class NotificationService {
   }
 
   static async showTransactionNotification(type: 'sent' | 'received', amount: number, token: string = 'SOL') {
+    console.log(`🔔 Attempting to show ${type} notification: ${amount} ${token}`);
+    
     const title = type === 'sent' ? '💸 Transaction Sent' : '💰 Transaction Received';
     const body = type === 'sent' 
       ? `You sent ${amount} ${token}`
@@ -64,6 +66,8 @@ export class NotificationService {
       tag: 'transaction',
       requireInteraction: false,
     });
+    
+    console.log(`✅ Notification ${type} displayed successfully`);
   }
 }
 

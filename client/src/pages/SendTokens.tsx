@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import BottomNavigation from '@/components/BottomNavigation';
 import { useToast } from '@/hooks/use-toast';
 import { solanaService } from '@/lib/solana';
+import NotificationService from '@/lib/notifications';
+import { useAuth } from '@/lib/auth';
 
 const recentContacts = [
   { address: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM', name: 'Alex Chen', avatar: '👨‍💼' },
@@ -24,6 +25,7 @@ export default function SendTokens() {
   const [memo, setMemo] = useState('');
   const [isSending, setIsSending] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleSend = async () => {
     if (!recipientAddress || !amount) {
@@ -62,6 +64,21 @@ export default function SendTokens() {
         description: `Successfully sent ${amount} ${selectedToken}. TX: ${signature.slice(0, 8)}...`,
       });
 
+      // Send push notification for outgoing transaction
+      console.log('🔔 Checking notification conditions:', {
+        pushNotificationsEnabled: user?.pushNotifications,
+        hasPermission: NotificationService.hasPermission(),
+        amount: parseFloat(amount),
+        token: selectedToken
+      });
+      
+      if (user?.pushNotifications && NotificationService.hasPermission()) {
+        console.log('🔔 Triggering send notification...');
+        await NotificationService.showTransactionNotification('sent', parseFloat(amount), selectedToken);
+      } else {
+        console.log('⚠️ Notification skipped - check settings or permissions');
+      }
+
       // Reset form
       setRecipientAddress('');
       setAmount('');
@@ -96,8 +113,6 @@ export default function SendTokens() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black relative pb-20">
-      <BottomNavigation />
-      
       {/* Header */}
       <motion.div
         initial={{ y: -50, opacity: 0 }}
