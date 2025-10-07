@@ -286,20 +286,21 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-6">
       
-      {/* Background Effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        {Array.from({ length: 8 }).map((_, i) => (
+      {/* Background Effects - Optimized */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {Array.from({ length: 3 }).map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-32 h-32 bg-purple-500/5 rounded-full blur-3xl"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: `${(i + 1) * 25}%`,
+              top: `${(i + 1) * 30}%`,
+              willChange: 'transform',
             }}
             animate={{
-              x: [0, 50, 0],
-              y: [0, -50, 0],
-              scale: [1, 1.2, 1],
+              x: [0, 30, 0],
+              y: [0, -30, 0],
+              scale: [1, 1.1, 1],
             }}
             transition={{
               duration: 8 + Math.random() * 4,
@@ -310,19 +311,19 @@ export default function AuthPage() {
         ))}
       </div>
 
-      {/* Auth Card */}
+      {/* Auth Card - Optimized animations */}
       <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.3 }}
         className="w-full max-w-md bg-black/20 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/20 relative z-10"
       >
         
         {/* USV Logo */}
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.05 }}
           className="flex justify-center mb-8"
         >
           <img src="/usv-logo.png" alt="USV" className="w-20 h-20 object-contain" />
@@ -330,9 +331,9 @@ export default function AuthPage() {
 
         {/* Title */}
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.1 }}
           className="text-center mb-8"
         >
           <h1 className="text-white text-2xl font-bold mb-2">
@@ -345,9 +346,9 @@ export default function AuthPage() {
 
         {/* Auth Form */}
         <motion.form
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.15 }}
           onSubmit={handleSubmit}
           className="space-y-6"
         >
@@ -411,7 +412,7 @@ export default function AuthPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.9 }}
+          transition={{ duration: 0.2, delay: 0.2 }}
           className="flex items-center my-8"
         >
           <div className="flex-1 h-px bg-gray-700"></div>
@@ -421,9 +422,9 @@ export default function AuthPage() {
 
         {/* Alternative Auth Methods */}
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1.1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.25 }}
           className="space-y-4"
         >
           {/* REAL Google Sign In */}
@@ -470,11 +471,40 @@ export default function AuthPage() {
           {/* Wallet Connect */}
           <div className="pt-2">
             <ConnectWallet 
-              onConnected={(publicKey) => {
-                toast({
-                  title: "Wallet Connected! (Mainnet)",
-                  description: `Connected to ${publicKey.slice(0, 8)}... on Solana Mainnet`,
-                });
+              onConnected={async (publicKey) => {
+                try {
+                  // Call Phantom authentication endpoint
+                  const response = await fetch('/api/auth/phantom', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ walletAddress: publicKey }),
+                  });
+
+                  if (!response.ok) {
+                    throw new Error('Phantom authentication failed');
+                  }
+
+                  const data = await response.json();
+                  
+                  // Store JWT token
+                  if (data.token) {
+                    localStorage.setItem('token', data.token);
+                    // Force page refresh to update auth state
+                    window.location.reload();
+                  }
+
+                  toast({
+                    title: "Welcome to USV Token!",
+                    description: `Logged in with Phantom wallet`,
+                  });
+                } catch (error) {
+                  console.error('Phantom auth error:', error);
+                  toast({
+                    title: "Authentication failed",
+                    description: "Failed to authenticate with Phantom wallet",
+                    variant: "destructive",
+                  });
+                }
               }}
               className="w-full"
             />
@@ -488,7 +518,7 @@ export default function AuthPage() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1.3 }}
+          transition={{ duration: 0.2, delay: 0.3 }}
           className="text-center mt-8"
         >
           <p className="text-gray-400 text-sm">
