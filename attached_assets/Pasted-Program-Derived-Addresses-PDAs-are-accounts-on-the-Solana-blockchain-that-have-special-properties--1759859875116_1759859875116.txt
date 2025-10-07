@@ -1,0 +1,98 @@
+Program Derived Addresses (PDAs) are accounts on the Solana blockchain that have special properties. Using PDAs properly can make Solana dApp development fast and efficient since they aid in cross-program communication. 
+
+This article will explain PDAs, what they are, which problems they solve, how they work, and how they are different from other accounts in Solana's account model.
+
+What is a Program Derived Address (PDA)?
+A Program Derived Address is an account on the Solana blockchain that does not have a private key. Since a PDA is not a public key, the address of the account is found using the program ID, a SHA-512 hashing function, seed array, and a special bump seed.
+
+What is a standard account on Solana?
+A standard Solana account has both private and public keys (32 bytes each), and together they form a keypair, which is 64 bytes long and sits on an elliptic curve (ED25519). In order for the keypair to be valid it must lie on this curve. 
+
+Here is a representation of an ED25519 Elliptic Curve:
+
+ED25519 Elliptic Curve on Solana
+ED25519 Elliptic Curve on Solana
+How are program addresses derived?
+PDAs require three main components:
+
+Parent Program ID - the ID of the parent program that creates the PDA
+
+Seeds - an array of strings*
+
+Bump Seed - makes sure that the PDA does not have a private key
+
+Creating a valid Program Derived Address requires taking the ID of its parent program, the seeds array, and running them through a SHA-512 hashing function. 
+
+In about 50% of the cases, however, the result of this hash is a keypair that lies on the ED25519 Elliptic Curve. Because PDAs do not have a private key, Program Derived Addresses must not lie on the elliptic curve. To prevent PDAs from having private keys, a special bump seed is used to “bump” the hash result off the curve. 
+
+The bump seed is nothing more than a number, starting at 255. In the case where even with the bump seed, the hash result still resides on the curve, the hashing function is run again, with a bump equating to 254, then 253, etc. until the generated result is not on curve.
+
+*Note: Seeds can be any arbitrary string, but developers use them in a context specific to the state variables of the parent program to create hashmap-like structures.
+
+What problems do PDAs solve?
+Program derived addresses streamline transaction confirmation by programmatically generating transaction signatures, thus helping trustless services like DeFi accounts to function seamlessly.
+
+Here is a hypothetical example use case for PDAs.
+
+Consider a Solana program that lets the user set an NFT as their default profile picture (PFP). The program will consist of two programs:
+
+The PFP program - creates accounts to store a user’s selected profile picture
+
+The Core program - acts as a proxy between the user’s inputs and the PFP program
+
+For the PFP program to update a user’s selected profile picture, it would need to use its private key to sign a transaction that will change the user’s profile picture. However, this would also mean that the program would need to store its private key on-chain.
+
+A Solana program cannot use its private key to sign a transaction on its own behalf, because the key itself would be stored on-chain, making it visible to everyone. If this happened, the private key could be used to sign transactions on behalf of the program and change the profile picture of any user.
+
+Imagine that the PFP program was responsible for handling millions of SOL tokens. Such an exploit would become a major hack. Program Derived Addresses solve this.
+
+Why are PDAs important?
+Program Derived Addresses play an instrumental part in Solana programming because they aid the communication between different programs (Cross Program Invocations) and can act as a hashmap for storing specific data that its parent program can easily update and change.
+
+1. Storing a Program’s State Variables
+PDAs allow Solana developers to store and track a variable or a set of variables, related to a specific user. A PDA’s best use case is storing state variables or data for its parent program because by default it has authorized the parent program to make changes on its behalf.
+
+2. Use PDAs as Hashmaps
+Mapping represents a set of key-value pairs, and is used to easily find information that is associated with a key. In Solana development, a PDA’s seeds and the correct strings can be used to achieve the same result. 
+
+Let's go back to our previous wallet profile picture example.
+
+Once a user selects their wallet’s PFP, the PFP program takes the selected image, the user’s address, and uses those as ‘seeds’ for creating a PDA that would store the user’s choice.
+
+Once the Program Derived Address is successfully found by the hashing algorithm, its public key is ‘mapped’ to the user’s address and chosen NFT avatar.
+
+The hashmap feature could be utilized even better by providing another PDA as a third seed. We can take all the available profile pictures and store them in a separate PDA, and we will pass each profile picture as its seed, and we end up with a PDA that stores all the profile pictures.
+
+Now, when a user comes and picks their profile picture, the PDA will look like a hashmap because the seeds are passed so that if you look at them, you will know that out of a selection of profile pictures (the PFP group PDA), a user’s address that we passed as a first seed, has chosen the profile picture that we passed as the second seed. 
+
+This example could be built upon to create even deeper hashmap structures.
+
+A PDA as a hashmap program flow - NFT example
+A PDA as a hashmap program flow - NFT example
+3. Cross Program Invocations
+Cross Program Invocations (CPI) is the process of one program calling a function in another program. CPIs are useful because they allow for better code composability.
+
+Going back to our example, let's say that a user wants to change their profile picture from a Degen Ape to a Solana Monkey Business avatar.
+
+Here’s what happens under the hood:
+
+Upon logging into their wallet, the core contract will take the user’s address (public key) and will look for an already created PDA, whose seeds include the user’s public key. 
+
+After finding it, the core program will invoke a function in the PFP program called ‘changePFP()’ (this is a Cross-Program Invocation), which would accept the PDA that has already been ‘selected’ by the Core program as an argument. 
+
+Once the function is called, the selected PDA will check if the account that is ‘asking’ for the change to happen is its parent. If the PDA is a mismatch the transaction will be rejected, because only a parent program can modify the data of a PDA. 
+
+Since the PFP program is the parent of the selected PDA, it will be allowed to change the selected profile picture of the user from a Degen Ape to an SMB avatar.
+
+Cross program invocation with PDA - Changing NFT images
+Cross program invocation with PDA - Changing NFT images
+Program Derived Addresses allow their parent programs to sign on their behalf and can be used to store a program’s state, hashmaps and in cross-program invocations. PDAs are a foundational topic in the realm of Solana programming that enable fast and efficient dApp development.
+
+Program Derived Address FAQs
+When working with Program Derived Addresses, it may be helpful to understand how Solana handles transactions and data. The two primary types of accounts are executable and non-executable.
+
+What is an executable account?
+Executable accounts, also known as programs, are similar to an Ethereum smart contract — a piece of code that changes its state when an account interacts with it.
+
+What is a non-executable account?
+Non-executable data accounts are simply used for storing data (e.g. the amount of SOL that the account owns, NFTs, token balances, etc.), essentially, the state variables of a program.
