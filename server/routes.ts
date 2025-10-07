@@ -302,6 +302,34 @@ router.delete('/admin/users/deleteall', async (req, res) => {
   }
 });
 
+// Admin endpoint to check QR code status
+router.get('/admin/qr/:code', async (req, res) => {
+  try {
+    const code = req.params.code;
+    const qrCode = await storage.getQRCodeByCode(code);
+    
+    if (!qrCode) {
+      return res.json({ exists: false, code });
+    }
+    
+    res.json({
+      exists: true,
+      code: qrCode.code,
+      claimed: qrCode.claimed,
+      isActive: qrCode.isActive,
+      tokenReward: qrCode.tokenReward,
+      productId: qrCode.productId,
+      claimedBy: qrCode.claimedBy,
+      claimedAt: qrCode.claimedAt
+    });
+  } catch (error) {
+    console.error('❌ Failed to check QR code:', error);
+    res.status(500).json({ 
+      error: error instanceof Error ? error.message : 'Failed to check QR code' 
+    });
+  }
+});
+
 // Apple Sign-In Route - AUTO-GENERATES Solana wallet
 router.post('/auth/apple', async (req, res) => {
   try {
