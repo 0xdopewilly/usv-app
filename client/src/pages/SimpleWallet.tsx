@@ -332,11 +332,19 @@ export default function SimpleWallet() {
               )}
               
               {tokens.map((token) => {
-                const getTokenColor = (symbol: string) => {
-                  if (symbol === 'SOL') return 'bg-gradient-to-r from-purple-500 to-blue-500';
-                  if (symbol === 'USV') return 'bg-purple-500';
-                  return 'bg-gradient-to-r from-blue-500 to-green-500';
+                const getTokenLogo = (symbol: string) => {
+                  if (symbol === 'SOL') return 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png';
+                  if (symbol === 'USV') return '/usv-logo.png';
+                  return null;
                 };
+
+                const getTokenValue = (token: TokenAccount) => {
+                  if (token.symbol === 'SOL') return token.balance * 230; // SOL price
+                  if (token.symbol === 'USV') return token.balance * 0.20; // USV price at $0.20
+                  return 0;
+                };
+
+                const tokenLogo = getTokenLogo(token.symbol);
 
                 return (
                   <div 
@@ -345,9 +353,13 @@ export default function SimpleWallet() {
                     className="flex items-center justify-between bg-gray-900/50 rounded-xl p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
                   >
                     <div className="flex items-center space-x-3">
-                      <div className={`w-10 h-10 ${getTokenColor(token.symbol)} rounded-lg flex items-center justify-center`}>
-                        <span className="text-white font-bold text-sm">{token.symbol}</span>
-                      </div>
+                      {tokenLogo ? (
+                        <img src={tokenLogo} alt={token.symbol} className="w-10 h-10 rounded-lg object-contain" />
+                      ) : (
+                        <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">{token.symbol}</span>
+                        </div>
+                      )}
                       <div>
                         <p className="text-white font-medium">{token.name}</p>
                         <p className="text-gray-400 text-sm">{token.symbol} • {token.balance.toFixed(4)}</p>
@@ -355,7 +367,7 @@ export default function SimpleWallet() {
                     </div>
                     <div className="text-right">
                       <p className="text-white font-bold">
-                        ${token.isNative ? (token.balance * 230).toFixed(2) : '0.00'}
+                        ${getTokenValue(token).toFixed(2)}
                       </p>
                       <button 
                         onClick={(e) => {
