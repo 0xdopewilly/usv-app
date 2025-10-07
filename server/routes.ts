@@ -1702,8 +1702,16 @@ router.post('/wallet/send-tokens', authenticateToken, async (req: any, res) => {
         );
         
         // Check sender's USV balance
-        const senderAccount = await getAccount(connection, senderTokenAccount);
-        const usvBalance = Number(senderAccount.amount) / Math.pow(10, USV_DECIMALS);
+        let usvBalance = 0;
+        try {
+          const senderAccount = await getAccount(connection, senderTokenAccount);
+          usvBalance = Number(senderAccount.amount) / Math.pow(10, USV_DECIMALS);
+        } catch (accountError: any) {
+          console.error('❌ Sender USV token account not found:', accountError);
+          return res.status(400).json({ 
+            error: `You don't have a USV token account yet. Please claim a QR code first to initialize your account, then you can send tokens.` 
+          });
+        }
         
         if (amount > usvBalance) {
           return res.status(400).json({ 

@@ -1,0 +1,69 @@
+🔍 Send validation debug: Object
+/api/wallet/send-tokens:1  Failed to load resource: the server responded with a status of 400 ()Understand this error
+index-B5XA421n.js:378 ❌ Transfer error: Error: USV token transfer failed: 
+    at R (index-B5XA421n.js:378:54326)
+R @ index-B5XA421n.js:378Understand this error
+index-B5XA421n.js:378 🔍 Send validation debug: Object
+index-B5XA421n.js:378 🔍 Send validation debug: Object
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 11000, isValidAmount: false, isValidAddress: false, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '', amountNum: 0, maxBalance: 11000, isValidAmount: false, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.999995', amountNum: 10999.999995, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.99999', amountNum: 10999.99999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.9999', amountNum: 10999.9999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.999', amountNum: 10999.999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.99', amountNum: 10999.99, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.9', amountNum: 10999.9, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '1099', amountNum: 1099, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '1099', amountNum: 1099, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '109', amountNum: 109, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.999995', amountNum: 10999.999995, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.99999', amountNum: 10999.99999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.9999', amountNum: 10999.9999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.999', amountNum: 10999.999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.99', amountNum: 10999.99, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999.9', amountNum: 10999.9, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔄 Sending USV via custodial wallet: {recipientAddress: 'CVseiY7VpyobyxgdSVaoU8sKuJ79NsXQ7LbQTm5YqsJ5', amount: 10999}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+requests.js:1  POST https://usv-app.replit.app/api/wallet/send-tokens 400 (Bad Request)
+(anonymous) @ requests.js:1
+(anonymous) @ traffic.js:1
+fetch @ traffic.js:1
+value @ injected.js:1
+R @ index-B5XA421n.js:378
+l4 @ index-B5XA421n.js:37
+u4 @ index-B5XA421n.js:37
+f4 @ index-B5XA421n.js:37
+jS @ index-B5XA421n.js:37
+Q2 @ index-B5XA421n.js:37
+(anonymous) @ index-B5XA421n.js:37
+Pb @ index-B5XA421n.js:40
+w2 @ index-B5XA421n.js:37
+og @ index-B5XA421n.js:37
+Qx @ index-B5XA421n.js:37
+E4 @ index-B5XA421n.js:37Understand this error
+index-B5XA421n.js:378 ❌ Transfer error: Error: USV token transfer failed: 
+    at R (index-B5XA421n.js:378:54326)
+R @ index-B5XA421n.js:378
+await in R
+l4 @ index-B5XA421n.js:37
+u4 @ index-B5XA421n.js:37
+f4 @ index-B5XA421n.js:37
+jS @ index-B5XA421n.js:37
+Q2 @ index-B5XA421n.js:37
+(anonymous) @ index-B5XA421n.js:37
+Pb @ index-B5XA421n.js:40
+w2 @ index-B5XA421n.js:37
+og @ index-B5XA421n.js:37
+Qx @ index-B5XA421n.js:37
+E4 @ index-B5XA421n.js:37Understand this error
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
+index-B5XA421n.js:378 🔍 Send validation debug: {amount: '10999', amountNum: 10999, maxBalance: 11000, isValidAmount: true, isValidAddress: true, …}
