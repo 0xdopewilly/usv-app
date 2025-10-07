@@ -1,4 +1,15 @@
-import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import { QueryClient, QueryFunction, QueryCache, MutationCache } from "@tanstack/react-query";
+
+// Custom error class that includes HTTP status
+class ApiError extends Error {
+  status: number;
+  
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+    this.name = 'ApiError';
+  }
+}
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
@@ -30,7 +41,7 @@ async function throwIfResNotOk(res: Response) {
     }
     
     console.error(`❌ API Error ${res.status}:`, errorMessage);
-    throw new Error(`${errorMessage}`);
+    throw new ApiError(errorMessage, res.status);
   }
 }
 
@@ -93,7 +104,32 @@ export const getQueryFn: <T>(options: {
     return await res.json();
   };
 
+// Shared auth error handler
+function handleAuthError(error: Error) {
+  // Check if this is an ApiError with HTTP status
+  const isAuthError = (error instanceof ApiError && (error.status === 401 || error.status === 403)) ||
+                      error.message.toLowerCase().includes('invalid token') || 
+                      error.message.toLowerCase().includes('access token required') ||
+                      error.message.toLowerCase().includes('session expired') ||
+                      error.message.toLowerCase().includes('jwt malformed') ||
+                      error.message.toLowerCase().includes('unauthorized');
+  
+  if (isAuthError) {
+    console.error('🔒 Auth error detected, clearing session:', error.message);
+    setTimeout(() => {
+      localStorage.clear();
+      window.location.href = '/';
+    }, 500);
+  }
+}
+
 export const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: handleAuthError,
+  }),
+  mutationCache: new MutationCache({
+    onError: handleAuthError,
+  }),
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),

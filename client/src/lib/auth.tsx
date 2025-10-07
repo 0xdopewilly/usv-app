@@ -51,33 +51,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log('🔍 Auth Debug:', { storedToken, currentToken: token });
   }, [token]);
 
-  const { data: user, isLoading, error } = useQuery({
+  const { data: user, isLoading, error } = useQuery<User>({
     queryKey: ['/api/user/profile'],
     enabled: !!token,
     retry: false,
-    queryFn: async () => {
-      if (!token) throw new Error('No token available');
-      
-      const res = await fetch('/api/user/profile', {
-        credentials: "include",
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      console.log('🔍 Profile API Response:', res.status, res.statusText);
-      
-      if (!res.ok) {
-        const text = (await res.text()) || res.statusText;
-        console.error('🔍 Profile API Error:', text);
-        throw new Error(`${res.status}: ${text}`);
-      }
-      
-      const data = await res.json();
-      console.log('🔍 Profile API Data:', data);
-      return data;
-    }
   });
 
   // Debug logging for user query
