@@ -77,7 +77,9 @@ export default function Wallet() {
   // Calculate balances from real-time API data
   const currentSolBalance = walletBalance?.balanceSOL || 0;
   const usvTokens = walletBalance?.balanceUSV || 0; // Real USV balance from blockchain
-  const totalBalance = (currentSolBalance * (prices?.SOL?.price || 23.45)) + (usvTokens * (prices?.USV?.price || 0.20));
+  const usvValue = usvTokens * (prices?.USV?.price || 0.20);
+  const solValue = currentSolBalance * (prices?.SOL?.price || 23.45);
+  const totalBalance = solValue + usvValue;
   
   const checkPhantomConnection = async () => {
     if (phantomWallet.isConnected && phantomWallet.publicKey) {
@@ -427,7 +429,7 @@ export default function Wallet() {
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-white font-bold">${totalBalance.toFixed(2)}</p>
+                <p className="text-white font-bold">${usvValue.toFixed(2)}</p>
                 <motion.div
                   whileHover={{ 
                     scale: 1.05,
@@ -484,7 +486,7 @@ export default function Wallet() {
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-white font-bold">${(currentSolBalance * (prices?.SOL?.price || 215)).toFixed(2)}</p>
+                <p className="text-white font-bold">${solValue.toFixed(2)}</p>
                 <motion.div
                   whileHover={{ 
                     scale: 1.05,
