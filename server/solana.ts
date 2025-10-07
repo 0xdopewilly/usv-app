@@ -35,12 +35,37 @@ const connection = new Connection(SOLANA_RPC_URL, 'confirmed');
 // Initialize company wallet keypair from private key
 let companyWallet: Keypair;
 try {
-  const privateKeyBytes = bs58.decode(COMPANY_WALLET_PRIVATE_KEY);
+  let privateKeyBytes: Uint8Array;
+  
+  // Try to parse the private key in different formats
+  try {
+    // Format 1: Try base58 decode first
+    privateKeyBytes = bs58.decode(COMPANY_WALLET_PRIVATE_KEY);
+  } catch (base58Error) {
+    try {
+      // Format 2: Try JSON array format [1,2,3,...]
+      const parsed = JSON.parse(COMPANY_WALLET_PRIVATE_KEY);
+      if (Array.isArray(parsed)) {
+        privateKeyBytes = new Uint8Array(parsed);
+      } else {
+        throw new Error('Not an array');
+      }
+    } catch (jsonError) {
+      // Format 3: Try comma-separated values
+      if (COMPANY_WALLET_PRIVATE_KEY.includes(',')) {
+        const numbers = COMPANY_WALLET_PRIVATE_KEY.split(',').map(n => parseInt(n.trim()));
+        privateKeyBytes = new Uint8Array(numbers);
+      } else {
+        throw new Error('Could not parse private key format');
+      }
+    }
+  }
+  
   companyWallet = Keypair.fromSecretKey(privateKeyBytes);
   console.log('✅ Company wallet initialized:', companyWallet.publicKey.toBase58());
 } catch (error) {
   console.error('❌ Failed to initialize company wallet:', error);
-  throw new Error('Invalid COMPANY_WALLET_PRIVATE_KEY format');
+  throw new Error('Invalid COMPANY_WALLET_PRIVATE_KEY format. Please provide as base58 string or JSON array');
 }
 
 // USV Token mint public key
