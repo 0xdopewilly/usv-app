@@ -110,26 +110,17 @@ export async function transferUsvTokens(
     // Get or create token accounts for both company and recipient
     console.log('📦 Getting/creating token accounts...');
     
-    // Import getAccount to manually check token accounts
-    const { getAssociatedTokenAddress, getAccount } = await import('@solana/spl-token');
-    
-    // Get the company's associated token address
-    const companyATA = await getAssociatedTokenAddress(
+    // Use getOrCreateAssociatedTokenAccount which handles everything automatically
+    const companyTokenAccount = await getOrCreateAssociatedTokenAccount(
+      connection,
+      companyWallet,
       usvTokenMint,
-      companyWallet.publicKey
+      companyWallet.publicKey,
+      false, // Don't allow owner off curve
+      'confirmed' // Use confirmed commitment for better reliability
     );
     
-    console.log('🔍 Company ATA:', companyATA.toBase58());
-    
-    // Try to get the company token account directly (bypassing create)
-    let companyTokenAccount;
-    try {
-      companyTokenAccount = await getAccount(connection, companyATA);
-      console.log('✅ Company token account found:', companyTokenAccount.address.toBase58());
-    } catch (error) {
-      console.error('❌ Failed to get company token account:', error);
-      throw new Error('Company wallet does not have a token account for USV. Please send some USV tokens to the company wallet first.');
-    }
+    console.log('✅ Company token account:', companyTokenAccount.address.toBase58());
 
     const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
@@ -139,7 +130,7 @@ export async function transferUsvTokens(
     );
 
     console.log('💰 Token accounts ready:', {
-      companyAccount: companyATA.toBase58(),
+      companyAccount: companyTokenAccount.address.toBase58(),
       recipientAccount: recipientTokenAccount.address.toBase58()
     });
 
@@ -158,7 +149,7 @@ export async function transferUsvTokens(
     const signature = await transfer(
       connection,
       companyWallet,
-      companyATA,
+      companyTokenAccount.address,
       recipientTokenAccount.address,
       companyWallet.publicKey,
       transferAmount
