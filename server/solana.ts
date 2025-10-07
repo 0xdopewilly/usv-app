@@ -110,17 +110,18 @@ export async function transferUsvTokens(
     // Get or create token accounts for both company and recipient
     console.log('📦 Getting/creating token accounts...');
     
-    // Use getOrCreateAssociatedTokenAccount which handles everything automatically
-    const companyTokenAccount = await getOrCreateAssociatedTokenAccount(
-      connection,
-      companyWallet,
-      usvTokenMint,
+    // Query for the company's token account (may be off-curve/PDA)
+    const companyTokenAccounts = await connection.getTokenAccountsByOwner(
       companyWallet.publicKey,
-      false, // Don't allow owner off curve
-      'confirmed' // Use confirmed commitment for better reliability
+      { mint: usvTokenMint }
     );
     
-    console.log('✅ Company token account:', companyTokenAccount.address.toBase58());
+    if (companyTokenAccounts.value.length === 0) {
+      throw new Error('Company wallet has no token account for this mint. Please create one first.');
+    }
+    
+    const companyTokenAccountAddress = companyTokenAccounts.value[0].pubkey;
+    console.log('✅ Found company token account:', companyTokenAccountAddress.toBase58());
 
     const recipientTokenAccount = await getOrCreateAssociatedTokenAccount(
       connection,
@@ -130,7 +131,7 @@ export async function transferUsvTokens(
     );
 
     console.log('💰 Token accounts ready:', {
-      companyAccount: companyTokenAccount.address.toBase58(),
+      companyAccount: companyTokenAccountAddress.toBase58(),
       recipientAccount: recipientTokenAccount.address.toBase58()
     });
 
@@ -149,7 +150,7 @@ export async function transferUsvTokens(
     const signature = await transfer(
       connection,
       companyWallet,
-      companyTokenAccount.address,
+      companyTokenAccountAddress,
       recipientTokenAccount.address,
       companyWallet.publicKey,
       transferAmount
