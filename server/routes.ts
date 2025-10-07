@@ -330,6 +330,49 @@ router.get('/admin/qr/:code', async (req, res) => {
   }
 });
 
+// Admin endpoint to add QR codes to database
+router.post('/admin/qr/add', async (req, res) => {
+  try {
+    const { codes, tokenReward = 1000, productId = 'USV_VAPE' } = req.body;
+    
+    if (!codes || !Array.isArray(codes)) {
+      return res.status(400).json({ error: 'codes array is required' });
+    }
+    
+    const results = [];
+    
+    for (const code of codes) {
+      const existing = await storage.getQRCodeByCode(code);
+      
+      if (existing) {
+        results.push({ code, status: 'already_exists' });
+      } else {
+        await storage.createQRCode({
+          code,
+          productId,
+          tokenReward,
+          isActive: true,
+          claimed: false,
+        });
+        results.push({ code, status: 'created' });
+      }
+    }
+    
+    res.json({ 
+      success: true, 
+      results,
+      total: codes.length,
+      created: results.filter(r => r.status === 'created').length,
+      alreadyExisted: results.filter(r => r.status === 'already_exists').length
+    });
+  } catch (error) {
+    console.error('❌ Failed to add QR codes:', error);
+    res.status(500).json({ 
+      error: error instanceof Error ? error.message : 'Failed to add QR codes' 
+    });
+  }
+});
+
 // Apple Sign-In Route - AUTO-GENERATES Solana wallet
 router.post('/auth/apple', async (req, res) => {
   try {
