@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Route, Switch, Router, useLocation } from "wouter";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/lib/auth";
+import { queryClient } from "@/lib/queryClient";
 import SimpleLoadingScreen from "@/components/SimpleLoadingScreen";
 import AuthPage from "@/pages/AuthPage";
 import Home from "@/pages/Home";
@@ -17,15 +18,6 @@ import TransactionHistory from "./pages/TransactionHistory";
 import TransactionDetail from "./pages/TransactionDetail";
 import QRScan from "./pages/QRScan";
 import NotFound from "./pages/NotFound";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5,
-      retry: 1,
-    },
-  },
-});
 
 // Animation variants for smooth page transitions
 const pageVariants = {
