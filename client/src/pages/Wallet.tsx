@@ -38,7 +38,7 @@ export default function Wallet() {
   const [isLoading, setIsLoading] = useState(false);
   const [realSolBalance, setRealSolBalance] = useState(0);
   
-  // Real-time SOL balance fetching
+  // Real-time SOL and USV balance fetching
   const { data: walletBalance, refetch: refetchBalance, isLoading: balanceLoading } = useQuery({
     queryKey: ['wallet-balance', user?.walletAddress],
     queryFn: async () => {
@@ -52,19 +52,6 @@ export default function Wallet() {
     },
     enabled: !!user?.walletAddress,
     refetchInterval: 10000, // Refresh every 10 seconds for real-time updates
-  });
-  
-  // Real-time token balances
-  const { data: tokenBalances } = useQuery({
-    queryKey: ['wallet-tokens', user?.walletAddress],
-    queryFn: async () => {
-      if (!user?.walletAddress) return null;
-      const response = await fetch(`/api/wallet/tokens/${user.walletAddress}`);
-      if (!response.ok) throw new Error('Failed to fetch tokens');
-      return response.json();
-    },
-    enabled: !!user?.walletAddress,
-    refetchInterval: 15000, // Refresh every 15 seconds
   });
 
   const timeframes = ['1d', '7d', '1m', '1y'];
@@ -89,7 +76,7 @@ export default function Wallet() {
 
   // Calculate balances from real-time API data
   const currentSolBalance = walletBalance?.balanceSOL || 0;
-  const usvTokens = tokenBalances?.tokens?.find((token: any) => token.symbol === 'USV')?.amount || 2847.39; // Fallback to mock for demo
+  const usvTokens = walletBalance?.balanceUSV || 0; // Real USV balance from blockchain
   const totalBalance = (currentSolBalance * (prices?.SOL?.price || 23.45)) + (usvTokens * (prices?.USV?.price || 0.20));
   
   const checkPhantomConnection = async () => {
