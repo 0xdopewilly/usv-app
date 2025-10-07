@@ -38,121 +38,40 @@ export default function QRScan() {
   const handleQRDetected = async (qrData: string) => {
     console.log('🎯 QR Code detected:', qrData);
     
-    // Check if this is a URL
-    const isURL = qrData.startsWith('http://') || qrData.startsWith('https://');
-    
-    // Extract code from URL if it's a full URL with claim code
-    let code = qrData;
-    if (isURL) {
-      try {
-        const url = new URL(qrData);
-        
-        // Check for 'code' parameter (e.g., /claim?code=USV-XXX)
-        const codeParam = url.searchParams.get('code');
-        if (codeParam) {
-          code = codeParam;
-          console.log('📦 Extracted code from URL:', code);
-        }
-        // Check for 'claim' parameter (e.g., /scanner?claim=USV-XXX)
-        else {
-          const claimParam = url.searchParams.get('claim');
-          if (claimParam) {
-            code = claimParam;
-            console.log('📦 Extracted claim from URL:', code);
-          }
-          // If no code/claim parameter, it's just a regular URL - open it
-          else {
-            console.log('🌐 Regular URL detected, opening:', qrData);
-            window.open(qrData, '_blank');
-            
-            toast({
-              title: "🔗 Opening Link",
-              description: "Opening the scanned URL in a new tab",
-            });
-            
-            // Resume scanning after 2 seconds
-            setTimeout(() => {
-              setQrDetected(null);
-              setScanning(true);
-              if (qrScannerRef.current) {
-                qrScannerRef.current.start();
-              }
-            }, 2000);
-            return;
-          }
-        }
-      } catch (error) {
-        console.error('Failed to parse URL:', error);
-        // If URL parsing fails, use the original data
-      }
-    }
-    
-    setQrDetected(code);
+    setQrDetected(qrData);
     setScanning(false);
-    setProcessing(true);
     
-    // Stop scanning
+    // Stop scanning temporarily
     if (qrScannerRef.current) {
       qrScannerRef.current.stop();
     }
     
-    // Claim tokens via QR code
-    try {
-      const response = await fetch('/api/qr/claim', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ code })
-      });
+    // Check if this is a URL
+    const isURL = qrData.startsWith('http://') || qrData.startsWith('https://');
+    
+    if (isURL) {
+      // Open the URL in the same window (redirects user to claim site)
+      console.log('🌐 Opening claim URL:', qrData);
       
-      const result = await response.json();
-      
-      if (result.success) {
-        setClaimResult({ tokens: result.tokens, productId: result.productId });
-        setProcessing(false);
-        
-        toast({
-          title: "🎉 Tokens Claimed Successfully!",
-          description: `You received ${result.tokens} USV tokens for ${result.productId}!`,
-        });
-        
-        // Redirect to home after 3 seconds
-        setTimeout(() => {
-          setLocation('/');
-        }, 3000);
-      } else {
-        setProcessing(false);
-        toast({
-          title: "Claim Failed",
-          description: result.error || "This QR code is invalid or already claimed",
-          variant: "destructive",
-        });
-        
-        // Resume scanning after 3 seconds
-        setTimeout(() => {
-          setQrDetected(null);
-          setClaimResult(null);
-          setScanning(true);
-          if (qrScannerRef.current) {
-            qrScannerRef.current.start();
-          }
-        }, 3000);
-      }
-    } catch (error) {
-      console.error('QR claim error:', error);
-      setProcessing(false);
       toast({
-        title: "Network Error",
-        description: "Unable to claim tokens. Please check your connection.",
-        variant: "destructive",
+        title: "🔗 Opening Claim Site",
+        description: "Redirecting you to claim your tokens...",
       });
       
-      // Resume scanning after error
+      // Redirect to the external claim site
+      setTimeout(() => {
+        window.location.href = qrData;
+      }, 1000);
+    } else {
+      // For non-URL codes, show the detected code
+      toast({
+        title: "QR Code Detected",
+        description: `Code: ${qrData}`,
+      });
+      
+      // Resume scanning after 3 seconds
       setTimeout(() => {
         setQrDetected(null);
-        setClaimResult(null);
         setScanning(true);
         if (qrScannerRef.current) {
           qrScannerRef.current.start();
