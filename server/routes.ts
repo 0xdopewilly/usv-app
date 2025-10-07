@@ -772,19 +772,9 @@ router.get('/wallet/balance/:walletAddress', async (req, res) => {
     const balanceInLamports = await connection.getBalance(publicKey);
     const balanceInSOL = balanceInLamports / LAMPORTS_PER_SOL;
     
-    // Get USV token balance
-    let balanceUSV = 0;
-    try {
-      const usvMint = new PublicKey(process.env.USV_TOKEN_MINT_ADDRESS!);
-      const tokenAccounts = await connection.getTokenAccountsByOwner(publicKey, { mint: usvMint });
-      
-      if (tokenAccounts.value.length > 0) {
-        const balance = await connection.getTokenAccountBalance(tokenAccounts.value[0].pubkey);
-        balanceUSV = Number(balance.value.amount) / Math.pow(10, balance.value.decimals);
-      }
-    } catch (usvError) {
-      console.log('No USV tokens found for wallet:', walletAddress);
-    }
+    // Get USV token balance using reliable solana service
+    const { getUsvBalance } = await import('./solana');
+    const balanceUSV = await getUsvBalance(walletAddress);
     
     res.json({
       walletAddress,

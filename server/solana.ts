@@ -211,6 +211,34 @@ export async function getCompanyWalletBalance(): Promise<number> {
 }
 
 /**
+ * Get USV token balance for any wallet address
+ */
+export async function getUsvBalance(walletAddress: string): Promise<number> {
+  try {
+    const publicKey = new PublicKey(walletAddress);
+    
+    // Query for token accounts owned by this wallet for the USV mint
+    const tokenAccounts = await connection.getTokenAccountsByOwner(
+      publicKey,
+      { mint: usvTokenMint }
+    );
+    
+    if (tokenAccounts.value.length === 0) {
+      return 0; // No token account found, balance is 0
+    }
+    
+    // Get balance from the first token account
+    const balance = await connection.getTokenAccountBalance(tokenAccounts.value[0].pubkey);
+    
+    // Convert from base units to token units using decimals
+    return Number(balance.value.amount) / Math.pow(10, balance.value.decimals);
+  } catch (error) {
+    console.error('Failed to get USV balance for wallet:', walletAddress, error);
+    return 0;
+  }
+}
+
+/**
  * Get network info
  */
 export function getSolanaNetworkInfo() {
