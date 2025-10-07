@@ -61,6 +61,11 @@ export async function apiRequest(
   }
   
   console.log(`🌐 API Request: ${method} ${url}`, data ? data : 'no data');
+  console.log(`🔑 Token Debug:`, { 
+    hasToken: !!token, 
+    tokenLength: token?.length || 0,
+    tokenPreview: token ? token.substring(0, 20) + '...' : 'none'
+  });
   
   const res = await fetch(url, {
     method,
