@@ -1145,8 +1145,8 @@ router.get('/prices/all', async (req, res) => {
       lastUpdated: new Date().toISOString()
     };
 
-    // Current realistic SOL fallback values (as of Sept 2025)
-    const fallbackSolPrice = 238.05 + (Math.random() - 0.5) * 4; // $236-240 range
+    // Current realistic SOL fallback values (as of Oct 2025)
+    const fallbackSolPrice = 223.00 + (Math.random() - 0.5) * 4; // $221-225 range
     const fallbackChange = (Math.random() - 0.5) * 8; // ±4% realistic daily change
 
     res.json({
@@ -1168,11 +1168,11 @@ router.get('/prices/all', async (req, res) => {
     res.json({
       SOL: {
         symbol: 'SOL',
-        price: 238.05 + (Math.random() - 0.5) * 4,
+        price: 223.00 + (Math.random() - 0.5) * 4,
         change24h: (Math.random() - 0.5) * 8,
         changePercent24h: (Math.random() - 0.5) * 8,
         volume24h: 8500000000,
-        marketCap: 129500000000,
+        marketCap: 119000000000,
         lastUpdated: new Date().toISOString()
       },
       USV: {

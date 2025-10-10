@@ -50,7 +50,7 @@ export default function Home() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
   const [chartData, setChartData] = useState(generateRealtimeData(0.20));
-  const [solanaChartData, setSolanaChartData] = useState(generateSolanaData(238.05));
+  const [solanaChartData, setSolanaChartData] = useState(generateSolanaData(223.00));
   const [prices, setPrices] = useState<AllPricesResponse | null>(null);
   const [isLoadingPrices, setIsLoadingPrices] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
@@ -375,7 +375,7 @@ export default function Home() {
                   <div className="skeleton w-20 h-5 rounded-[8px]" />
                 ) : (
                   <p className="text-white font-bold text-base flex items-center">
-                    ${prices?.SOL?.price?.toFixed(2) || '238.05'}
+                    ${prices?.SOL?.price?.toFixed(2) || '223.00'}
                   </p>
                 )}
               </div>
@@ -469,7 +469,7 @@ export default function Home() {
             </div>
             <div className="text-right">
               <p className="text-white font-bold text-sm">
-                ${prices?.SOL?.price?.toFixed(2) || '238.05'}
+                ${prices?.SOL?.price?.toFixed(2) || '223.00'}
                 {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1 animate-spin">⟳</span>}
               </p>
               <p className={`text-xs ${
