@@ -277,6 +277,8 @@ export default function Home() {
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
+                    animationDuration={0}
+                    animationEasing="linear"
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -352,6 +354,8 @@ export default function Home() {
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
+                    animationDuration={0}
+                    animationEasing="linear"
                   />
                 </LineChart>
               </ResponsiveContainer>
