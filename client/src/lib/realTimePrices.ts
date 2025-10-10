@@ -36,11 +36,11 @@ class RealTimePriceService {
       return {
         SOL: {
           symbol: 'SOL',
-          price: 23.45 + (Math.random() - 0.5) * 2,
-          change24h: (Math.random() - 0.5) * 10,
-          changePercent24h: (Math.random() - 0.5) * 10,
-          volume24h: 1250000000,
-          marketCap: 11200000000,
+          price: 238.05 + (Math.random() - 0.5) * 4, // Realistic SOL price range $236-240
+          change24h: (Math.random() - 0.5) * 8,
+          changePercent24h: (Math.random() - 0.5) * 8,
+          volume24h: 8500000000,
+          marketCap: 129500000000,
           lastUpdated: new Date().toISOString()
         },
         USV: {

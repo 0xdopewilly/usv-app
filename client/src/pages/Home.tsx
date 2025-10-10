@@ -12,26 +12,45 @@ const solanaLogoSrc = '/solana-logo.png';
 // New USV Logo
 import usvLogoSrc from '@assets/image_1757431326277.png';
 
-// Real-time chart data that updates based on actual prices
+// Real-time chart data with realistic price patterns
 const generateRealtimeData = (currentPrice: number) => {
-  return Array.from({ length: 20 }, (_, i) => ({
-    time: i,
-    value: currentPrice + Math.sin(i * 0.3) * (currentPrice * 0.02) + Math.random() * (currentPrice * 0.01) - (currentPrice * 0.005)
-  }));
+  const dataPoints = [];
+  let price = currentPrice;
+  
+  for (let i = 0; i < 24; i++) {
+    // Simulate realistic price movement with trend and volatility
+    const trend = Math.sin(i * 0.15) * (currentPrice * 0.008);
+    const volatility = (Math.random() - 0.5) * (currentPrice * 0.012);
+    const momentum = (i > 0 ? dataPoints[i-1].value - currentPrice : 0) * 0.3;
+    
+    price = currentPrice + trend + volatility + momentum;
+    dataPoints.push({ time: i, value: Math.max(0, price) });
+  }
+  return dataPoints;
 };
 
 const generateSolanaData = (currentPrice: number) => {
-  return Array.from({ length: 20 }, (_, i) => ({
-    time: i,
-    value: currentPrice + Math.cos(i * 0.4) * (currentPrice * 0.02) + Math.random() * (currentPrice * 0.01) - (currentPrice * 0.005)
-  }));
+  const dataPoints = [];
+  let price = currentPrice;
+  
+  for (let i = 0; i < 24; i++) {
+    // Different pattern for SOL - more volatile with occasional spikes
+    const trend = Math.cos(i * 0.18) * (currentPrice * 0.015);
+    const volatility = (Math.random() - 0.5) * (currentPrice * 0.018);
+    const spike = i % 7 === 0 ? (Math.random() - 0.3) * (currentPrice * 0.025) : 0;
+    const momentum = (i > 0 ? dataPoints[i-1].value - currentPrice : 0) * 0.4;
+    
+    price = currentPrice + trend + volatility + spike + momentum;
+    dataPoints.push({ time: i, value: Math.max(0, price) });
+  }
+  return dataPoints;
 };
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
   const [chartData, setChartData] = useState(generateRealtimeData(0.20));
-  const [solanaChartData, setSolanaChartData] = useState(generateSolanaData(200));
+  const [solanaChartData, setSolanaChartData] = useState(generateSolanaData(238.05));
   const [prices, setPrices] = useState<AllPricesResponse | null>(null);
   const [isLoadingPrices, setIsLoadingPrices] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
@@ -136,13 +155,9 @@ export default function Home() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
-              <motion.p 
-                className="text-white/90 text-sm"
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              >
+              <p className="text-white/90 text-sm">
                 Welcome back,
-              </motion.p>
+              </p>
               <p className="text-white font-semibold text-base">{user?.fullName?.split(' ')[0] || 'Amanda'}</p>
             </motion.div>
           </div>
@@ -182,21 +197,13 @@ export default function Home() {
           {isLoadingPrices || balanceLoading ? (
             <div className="skeleton w-48 h-14 mx-auto rounded-[16px] mb-3" />
           ) : (
-            <motion.h1 
-              className="text-white text-5xl font-bold mb-3 relative"
-              animate={{ scale: [1, 1.02, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
+            <h1 className="text-white text-5xl font-bold mb-3 relative">
               <span className="relative z-10">${totalPortfolioValue.toFixed(2)}</span>
               {/* Glow Effect */}
-              <motion.div 
-                className="absolute inset-0 text-transparent bg-gradient-electric bg-clip-text blur-sm opacity-50"
-                animate={{ opacity: [0.3, 0.7, 0.3] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
+              <div className="absolute inset-0 text-transparent bg-gradient-electric bg-clip-text blur-sm opacity-50">
                 ${totalPortfolioValue.toFixed(2)}
-              </motion.div>
-            </motion.h1>
+              </div>
+            </h1>
           )}
           
           <motion.div 
@@ -209,36 +216,24 @@ export default function Home() {
               <div className="skeleton w-20 h-6 rounded-[8px]" />
             ) : (
               prices?.USV && (
-                <motion.div 
-                  className="flex items-center space-x-1"
-                  animate={{ y: [0, -2, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <motion.div 
-                    className={`text-sm ${prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'}`}
-                  >
+                <div className="flex items-center space-x-1">
+                  <div className={`text-sm ${prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                     {prices.USV.changePercent24h >= 0 ? '↗' : '↘'}
-                  </motion.div>
+                  </div>
                   <span className={`text-sm font-medium ${prices.USV.changePercent24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                     {prices.USV.changePercent24h >= 0 ? '+' : ''}{prices.USV.changePercent24h.toFixed(1)}%
                   </span>
-                </motion.div>
+                </div>
               )
             )}
-            <motion.div 
-              className="flex items-center space-x-1"
-              animate={{ x: [0, 2, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <motion.div 
-                className="w-4 h-4 bg-gradient-purple rounded-[8px] flex items-center justify-center animate-shimmer"
-              >
+            <div className="flex items-center space-x-1">
+              <div className="w-4 h-4 bg-gradient-purple rounded-[8px] flex items-center justify-center animate-shimmer">
                 <div className="w-2 h-2 bg-white rounded-[4px]"></div>
-              </motion.div>
+              </div>
               <span className="text-white/80 text-sm font-medium">
                 {walletBalance?.balanceUSV ? walletBalance.balanceUSV.toFixed(2) : '0.00'} USV
               </span>
-            </motion.div>
+            </div>
           </motion.div>
         </motion.div>
       </motion.div>
@@ -272,20 +267,12 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-purple opacity-5 animate-gradient-slow rounded-[32px]" />
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <motion.div
-                className="w-10 h-10 rounded-[16px] p-1 bg-gradient-purple relative overflow-hidden"
-              >
+              <div className="w-10 h-10 rounded-[16px] p-1 bg-gradient-purple relative overflow-hidden">
                 <img src="/usv-logo.png" alt="USV" className="w-full h-full object-contain relative z-10" />
                 <div className="absolute inset-0 animate-shimmer" />
-              </motion.div>
+              </div>
               <div className="flex-1">
-                <motion.p 
-                  className="text-white text-sm font-semibold"
-                  animate={{ x: [0, 1, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  Ultra Smooth Vape
-                </motion.p>
+                <p className="text-white text-sm font-semibold">Ultra Smooth Vape</p>
                 <p className="text-white/70 text-xs font-medium">USV</p>
               </div>
             </div>
@@ -307,36 +294,24 @@ export default function Home() {
             
             <div className="flex justify-between items-end">
               <div>
-                <motion.p 
-                  className="text-white/60 text-xs mb-1"
-                  animate={{ opacity: [0.6, 1, 0.6] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                >
+                <p className="text-white/60 text-xs mb-1">
                   Price • {lastUpdated}
-                </motion.p>
+                </p>
                 {isLoadingPrices ? (
                   <div className="skeleton w-16 h-5 rounded-[8px]" />
                 ) : (
-                  <motion.p 
-                    className="text-white font-bold text-base flex items-center"
-                    animate={{ scale: [1, 1.02, 1] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                  >
+                  <p className="text-white font-bold text-base flex items-center">
                     ${prices?.USV?.price?.toFixed(3) || '0.200'}
-                  </motion.p>
+                  </p>
                 )}
               </div>
-              <motion.span 
-                className={`text-sm font-bold px-2 py-1 rounded-[12px] ${
-                  (prices?.USV?.changePercent24h || 0) >= 0 
-                    ? 'text-green-400 bg-green-400/10' 
-                    : 'text-red-400 bg-red-400/10'
-                }`}
-                animate={{ y: [0, -2, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              >
+              <span className={`text-sm font-bold px-2 py-1 rounded-[12px] ${
+                (prices?.USV?.changePercent24h || 0) >= 0 
+                  ? 'text-green-400 bg-green-400/10' 
+                  : 'text-red-400 bg-red-400/10'
+              }`}>
                 {(prices?.USV?.changePercent24h || 0) >= 0 ? '+' : ''}{(prices?.USV?.changePercent24h || 0).toFixed(1)}%
-              </motion.span>
+              </span>
             </div>
             </div>
           </motion.div>
@@ -361,9 +336,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-electric opacity-5 animate-gradient-slow rounded-[32px]" />
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <motion.div 
-                className="w-10 h-10 rounded-[16px] overflow-hidden bg-gradient-electric p-1 relative"
-              >
+              <div className="w-10 h-10 rounded-[16px] overflow-hidden bg-gradient-electric p-1 relative">
                 <img 
                   src={solanaLogoSrc} 
                   alt="Solana" 
@@ -371,15 +344,9 @@ export default function Home() {
                   onError={(e) => console.error('Logo failed to load:', e)}
                 />
                 <div className="absolute inset-0 animate-shimmer" />
-              </motion.div>
+              </div>
               <div className="flex-1">
-                <motion.p 
-                  className="text-white text-sm font-semibold"
-                  animate={{ x: [0, -1, 0] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  Solana
-                </motion.p>
+                <p className="text-white text-sm font-semibold">Solana</p>
                 <p className="text-white/70 text-xs font-medium">SOL</p>
               </div>
             </div>
@@ -401,36 +368,24 @@ export default function Home() {
             
             <div className="flex justify-between items-end">
               <div>
-                <motion.p 
-                  className="text-white/60 text-xs mb-1"
-                  animate={{ opacity: [0.6, 1, 0.6] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                >
+                <p className="text-white/60 text-xs mb-1">
                   Price • {lastUpdated}
-                </motion.p>
+                </p>
                 {isLoadingPrices ? (
                   <div className="skeleton w-20 h-5 rounded-[8px]" />
                 ) : (
-                  <motion.p 
-                    className="text-white font-bold text-base flex items-center"
-                    animate={{ scale: [1, 1.02, 1] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-                  >
-                    ${prices?.SOL?.price?.toFixed(2) || '161.25'}
-                  </motion.p>
+                  <p className="text-white font-bold text-base flex items-center">
+                    ${prices?.SOL?.price?.toFixed(2) || '238.05'}
+                  </p>
                 )}
               </div>
-              <motion.span 
-                className={`text-sm font-bold px-2 py-1 rounded-[12px] ${
-                  (prices?.SOL?.changePercent24h || 0) >= 0 
-                    ? 'text-green-400 bg-green-400/10' 
-                    : 'text-red-400 bg-red-400/10'
-                }`}
-                animate={{ y: [0, -2, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-              >
+              <span className={`text-sm font-bold px-2 py-1 rounded-[12px] ${
+                (prices?.SOL?.changePercent24h || 0) >= 0 
+                  ? 'text-green-400 bg-green-400/10' 
+                  : 'text-red-400 bg-red-400/10'
+              }`}>
                 {(prices?.SOL?.changePercent24h || 0) >= 0 ? '+' : ''}{(prices?.SOL?.changePercent24h || 0).toFixed(1)}%
-              </motion.span>
+              </span>
             </div>
             </div>
           </motion.div>
@@ -488,9 +443,15 @@ export default function Home() {
             initial={{ scale: 0.95, opacity: 0, x: -10 }}
             animate={{ scale: 1, opacity: 1, x: 0 }}
             transition={{ delay: 1.0, duration: 0.5, type: "spring" }}
-            whileHover={{ scale: 1.01, x: 2 }}
-            whileTap={{ scale: 0.98 }}
-            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30 hover:border-blue-400/50 transition-all duration-300"
+            whileHover={{ 
+              scale: 1.01, 
+              x: 3,
+              backgroundColor: "rgba(0, 0, 0, 0.4)",
+              borderColor: "rgba(79, 172, 254, 0.6)",
+              boxShadow: "0 8px 25px rgba(79, 172, 254, 0.2)"
+            }}
+            whileTap={{ scale: 0.98, x: 1 }}
+            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30 transition-all duration-200"
           >
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 rounded-[20px] overflow-hidden bg-black p-2">
@@ -508,7 +469,7 @@ export default function Home() {
             </div>
             <div className="text-right">
               <p className="text-white font-bold text-sm">
-                ${prices?.SOL?.price?.toFixed(2) || '161.25'}
+                ${prices?.SOL?.price?.toFixed(2) || '238.05'}
                 {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1 animate-spin">⟳</span>}
               </p>
               <p className={`text-xs ${
