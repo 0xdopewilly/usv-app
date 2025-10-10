@@ -1146,7 +1146,7 @@ router.get('/prices/all', async (req, res) => {
     };
 
     // Current realistic SOL fallback values (as of Oct 2025)
-    const fallbackSolPrice = 223.00 + (Math.random() - 0.5) * 4; // $221-225 range
+    const fallbackSolPrice = 211.00 + (Math.random() - 0.5) * 4; // $209-213 range
     const fallbackChange = (Math.random() - 0.5) * 8; // ±4% realistic daily change
 
     res.json({
@@ -1168,11 +1168,11 @@ router.get('/prices/all', async (req, res) => {
     res.json({
       SOL: {
         symbol: 'SOL',
-        price: 223.00 + (Math.random() - 0.5) * 4,
+        price: 211.00 + (Math.random() - 0.5) * 4,
         change24h: (Math.random() - 0.5) * 8,
         changePercent24h: (Math.random() - 0.5) * 8,
         volume24h: 8500000000,
-        marketCap: 119000000000,
+        marketCap: 115000000000,
         lastUpdated: new Date().toISOString()
       },
       USV: {
@@ -1213,7 +1213,7 @@ router.get('/prices/chart/:symbol', async (req, res) => {
       }
       
       // Fallback if CoinGecko fails
-      const fallbackData = generateFallbackChartData(223.00, 24);
+      const fallbackData = generateFallbackChartData(211.00, 24);
       return res.json({ data: fallbackData });
     } 
     
@@ -1228,7 +1228,7 @@ router.get('/prices/chart/:symbol', async (req, res) => {
     console.error(`Failed to fetch chart data for ${symbol}:`, error);
     
     // Return fallback data based on symbol
-    const basePrice = symbol.toUpperCase() === 'SOL' ? 223.00 : 0.20;
+    const basePrice = symbol.toUpperCase() === 'SOL' ? 211.00 : 0.20;
     const fallbackData = generateFallbackChartData(basePrice, 24);
     res.json({ data: fallbackData });
   }
