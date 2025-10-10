@@ -269,7 +269,7 @@ export default function Home() {
             <div className="h-16 mb-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
-                  <YAxis domain={['dataMin', 'dataMax']} hide={true} />
+                  <YAxis domain={[(dataMin: number) => dataMin * 0.95, (dataMax: number) => dataMax * 1.05]} hide={true} />
                   <Line 
                     type="natural" 
                     dataKey="value" 
@@ -343,7 +343,7 @@ export default function Home() {
             <div className="h-16 mb-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={solanaChartData}>
-                  <YAxis domain={['dataMin', 'dataMax']} hide={true} />
+                  <YAxis domain={[(dataMin: number) => dataMin * 0.95, (dataMax: number) => dataMax * 1.05]} hide={true} />
                   <Line 
                     type="natural" 
                     dataKey="value" 
