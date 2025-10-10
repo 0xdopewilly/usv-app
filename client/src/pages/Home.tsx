@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MoreHorizontal } from 'lucide-react';
-import { LineChart, Line, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, YAxis, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
@@ -270,6 +270,7 @@ export default function Home() {
             <div className="h-12 mb-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
+                  <YAxis domain={['dataMin', 'dataMax']} hide={true} />
                   <Line 
                     type="natural" 
                     dataKey="value" 
@@ -344,6 +345,7 @@ export default function Home() {
             <div className="h-12 mb-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={solanaChartData}>
+                  <YAxis domain={['dataMin', 'dataMax']} hide={true} />
                   <Line 
                     type="natural" 
                     dataKey="value" 
