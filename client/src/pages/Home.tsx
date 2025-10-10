@@ -269,12 +269,12 @@ export default function Home() {
             <div className="h-16 mb-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
-                  <YAxis domain={[(dataMin: number) => dataMin * 0.95, (dataMax: number) => dataMax * 1.05]} hide={true} />
+                  <YAxis domain={['auto', 'auto']} hide={true} />
                   <Line 
-                    type="natural" 
+                    type="monotone" 
                     dataKey="value" 
                     stroke="#fff" 
-                    strokeWidth={3}
+                    strokeWidth={2.5}
                     dot={false}
                   />
                 </LineChart>
@@ -343,12 +343,12 @@ export default function Home() {
             <div className="h-16 mb-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={solanaChartData}>
-                  <YAxis domain={[(dataMin: number) => dataMin * 0.95, (dataMax: number) => dataMax * 1.05]} hide={true} />
+                  <YAxis domain={['auto', 'auto']} hide={true} />
                   <Line 
-                    type="natural" 
+                    type="monotone" 
                     dataKey="value" 
                     stroke="#fff" 
-                    strokeWidth={3}
+                    strokeWidth={2.5}
                     dot={false}
                   />
                 </LineChart>
@@ -364,7 +364,7 @@ export default function Home() {
                   <div className="skeleton w-20 h-5 rounded-[8px]" />
                 ) : (
                   <p className="text-white font-bold text-base flex items-center">
-                    ${prices?.SOL?.price?.toFixed(2) || '223.00'}
+                    ${prices?.SOL?.price?.toFixed(2) || '210.00'}
                   </p>
                 )}
               </div>
@@ -458,7 +458,7 @@ export default function Home() {
             </div>
             <div className="text-right">
               <p className="text-white font-bold text-sm">
-                ${prices?.SOL?.price?.toFixed(2) || '223.00'}
+                ${prices?.SOL?.price?.toFixed(2) || '210.00'}
                 {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1 animate-spin">⟳</span>}
               </p>
               <p className={`text-xs ${
