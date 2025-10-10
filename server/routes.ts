@@ -1202,11 +1202,13 @@ router.get('/prices/chart/:symbol', async (req, res) => {
   // Check cache first
   const cached = chartCache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    console.log(`📊 Chart cache HIT for ${cacheKey}`);
     return res.json({ data: cached.data });
   }
   
   try {
     if (symbol.toUpperCase() === 'SOL') {
+      console.log(`📊 Fetching SOL chart from CoinGecko...`);
       // Fetch real Solana chart data from CoinGecko
       const chartResponse = await fetch(
         `https://api.coingecko.com/api/v3/coins/solana/market_chart?vs_currency=usd&days=${days}`
@@ -1220,14 +1222,23 @@ router.get('/prices/chart/:symbol', async (req, res) => {
           value: price
         }));
         
+        console.log(`✅ CoinGecko SUCCESS - Got ${chartData.length} data points`);
         // Cache the data
         chartCache.set(cacheKey, { data: chartData, timestamp: Date.now() });
         return res.json({ data: chartData });
       }
       
-      // Fallback if CoinGecko fails
+      console.log(`⚠️ CoinGecko FAILED with status ${chartResponse.status} - Using cached fallback if available`);
+      // If we have ANY cached data (even expired), use it instead of generating random data
+      if (cached) {
+        console.log(`📊 Using expired cache for ${cacheKey}`);
+        return res.json({ data: cached.data });
+      }
+      
+      // Only generate fallback if no cache exists at all
       const fallbackData = generateFallbackChartData(211.00, 24);
       chartCache.set(cacheKey, { data: fallbackData, timestamp: Date.now() });
+      console.log(`🔄 Generated new fallback data`);
       return res.json({ data: fallbackData });
     } 
     
