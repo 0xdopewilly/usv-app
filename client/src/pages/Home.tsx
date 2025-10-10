@@ -12,34 +12,17 @@ const solanaLogoSrc = '/solana-logo.png';
 // New USV Logo
 import usvLogoSrc from '@assets/image_1757431326277.png';
 
-// Chart data with DRAMATIC visible movements like stock charts (TSLA/NVDA style)
-const generateRealtimeData = (currentPrice: number) => {
-  // USV: SHARP peaks and valleys like real stock charts - 40% total range
-  const pattern = [0.80, 0.85, 0.92, 1.00, 1.08, 1.15, 1.20, 1.18, 1.12, 1.05, 0.98, 0.90, 
-                   0.85, 0.82, 0.85, 0.90, 0.96, 1.02, 1.08, 1.13, 1.15, 1.10, 1.03, 0.95];
-  
-  return pattern.map((multiplier, i) => ({
-    time: i,
-    value: currentPrice * multiplier
-  }));
-};
-
-const generateSolanaData = (currentPrice: number) => {
-  // Solana: DRAMATIC peaks and valleys - 45% total range like NVDA
-  const pattern = [0.78, 0.82, 0.88, 0.95, 1.03, 1.10, 1.16, 1.20, 1.23, 1.20, 1.14, 1.06,
-                   0.98, 0.90, 0.85, 0.88, 0.94, 1.00, 1.07, 1.13, 1.18, 1.15, 1.08, 1.00];
-  
-  return pattern.map((multiplier, i) => ({
-    time: i,
-    value: currentPrice * multiplier
-  }));
-};
+// Chart data structure
+interface ChartDataPoint {
+  time: number;
+  value: number;
+}
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
-  const [chartData, setChartData] = useState(generateRealtimeData(0.20));
-  const [solanaChartData, setSolanaChartData] = useState(generateSolanaData(223.00));
+  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+  const [solanaChartData, setSolanaChartData] = useState<ChartDataPoint[]>([]);
   const [prices, setPrices] = useState<AllPricesResponse | null>(null);
   const [isLoadingPrices, setIsLoadingPrices] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<string>('');
@@ -62,7 +45,20 @@ export default function Home() {
     (walletBalance?.balanceSOL && prices?.SOL?.price ? (walletBalance.balanceSOL * prices.SOL.price) : 0) +
     (walletBalance?.balanceUSV && prices?.USV?.price ? (walletBalance.balanceUSV * prices.USV.price) : 0);
 
-  // Setup real-time price updates
+  // Fetch chart data from API
+  const fetchChartData = async (symbol: string) => {
+    try {
+      const response = await fetch(`/api/prices/chart/${symbol}?days=1`);
+      if (!response.ok) throw new Error(`Failed to fetch ${symbol} chart`);
+      const data = await response.json();
+      return data.data; // Returns array of {time, value}
+    } catch (error) {
+      console.error(`Error fetching ${symbol} chart:`, error);
+      return [];
+    }
+  };
+
+  // Setup real-time price updates and chart data
   useEffect(() => {
     // Subscribe to real-time price updates
     const unsubscribe = realTimePriceService.subscribe((newPrices) => {
@@ -75,20 +71,24 @@ export default function Home() {
     // Start the real-time price service
     realTimePriceService.startRealTimeUpdates(8000); // Update every 8 seconds
 
-    // Update charts when prices change
-    const chartInterval = setInterval(() => {
-      if (prices?.USV?.price) {
-        setChartData(generateRealtimeData(prices.USV.price));
-      }
-      if (prices?.SOL?.price) {
-        setSolanaChartData(generateSolanaData(prices.SOL.price));
-      }
-    }, 5000);
+    // Fetch initial chart data
+    const loadChartData = async () => {
+      const [usvData, solData] = await Promise.all([
+        fetchChartData('USV'),
+        fetchChartData('SOL')
+      ]);
+      setChartData(usvData);
+      setSolanaChartData(solData);
+    };
+    loadChartData();
+
+    // Refresh chart data every 2 minutes
+    const chartRefreshInterval = setInterval(loadChartData, 120000);
 
     return () => {
       unsubscribe();
       realTimePriceService.stopRealTimeUpdates();
-      clearInterval(chartInterval);
+      clearInterval(chartRefreshInterval);
     };
   }, []);
 
