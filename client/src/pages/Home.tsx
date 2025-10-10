@@ -271,11 +271,12 @@ export default function Home() {
                 <LineChart data={chartData}>
                   <YAxis domain={['auto', 'auto']} hide={true} />
                   <Line 
-                    type="monotone" 
+                    type="linear" 
                     dataKey="value" 
                     stroke="#fff" 
-                    strokeWidth={2.5}
+                    strokeWidth={2}
                     dot={false}
+                    isAnimationActive={false}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -345,11 +346,12 @@ export default function Home() {
                 <LineChart data={solanaChartData}>
                   <YAxis domain={['auto', 'auto']} hide={true} />
                   <Line 
-                    type="monotone" 
+                    type="linear" 
                     dataKey="value" 
                     stroke="#fff" 
-                    strokeWidth={2.5}
+                    strokeWidth={2}
                     dot={false}
+                    isAnimationActive={false}
                   />
                 </LineChart>
               </ResponsiveContainer>
