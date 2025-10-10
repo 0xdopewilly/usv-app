@@ -82,8 +82,8 @@ export default function Home() {
     };
     loadChartData();
 
-    // Refresh chart data every 2 minutes
-    const chartRefreshInterval = setInterval(loadChartData, 120000);
+    // Refresh chart data every 30 seconds
+    const chartRefreshInterval = setInterval(loadChartData, 30000);
 
     return () => {
       unsubscribe();
@@ -256,9 +256,8 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-purple opacity-5 animate-gradient-slow rounded-[32px]" />
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-[16px] p-1 bg-gradient-purple relative overflow-hidden">
+              <div className="w-10 h-10 rounded-[16px] p-1 bg-black/40 relative overflow-hidden">
                 <img src="/usv-logo.png" alt="USV" className="w-full h-full object-contain relative z-10" />
-                <div className="absolute inset-0 animate-shimmer" />
               </div>
               <div className="flex-1">
                 <p className="text-white text-sm font-semibold">Ultra Smooth Vape</p>
@@ -326,14 +325,13 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-electric opacity-5 animate-gradient-slow rounded-[32px]" />
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-[16px] overflow-hidden bg-gradient-electric p-1 relative">
+              <div className="w-10 h-10 rounded-[16px] overflow-hidden bg-black/40 p-1 relative">
                 <img 
                   src={solanaLogoSrc} 
                   alt="Solana" 
                   className="w-full h-full object-contain relative z-10"
                   onError={(e) => console.error('Logo failed to load:', e)}
                 />
-                <div className="absolute inset-0 animate-shimmer" />
               </div>
               <div className="flex-1">
                 <p className="text-white text-sm font-semibold">Solana</p>
