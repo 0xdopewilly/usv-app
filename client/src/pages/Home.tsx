@@ -12,11 +12,11 @@ const solanaLogoSrc = '/solana-logo.png';
 // New USV Logo
 import usvLogoSrc from '@assets/image_1757431326277.png';
 
-// Chart data with DRAMATIC visible movements like stock charts
+// Chart data with DRAMATIC visible movements like stock charts (TSLA/NVDA style)
 const generateRealtimeData = (currentPrice: number) => {
-  // USV: Clear peak and valley pattern - rises then falls
-  const pattern = [0.88, 0.90, 0.93, 0.97, 1.01, 1.05, 1.08, 1.10, 1.09, 1.06, 1.02, 0.98, 
-                   0.95, 0.92, 0.90, 0.91, 0.94, 0.97, 1.00, 1.03, 1.05, 1.04, 1.01, 0.98];
+  // USV: SHARP peaks and valleys like real stock charts - 40% total range
+  const pattern = [0.80, 0.85, 0.92, 1.00, 1.08, 1.15, 1.20, 1.18, 1.12, 1.05, 0.98, 0.90, 
+                   0.85, 0.82, 0.85, 0.90, 0.96, 1.02, 1.08, 1.13, 1.15, 1.10, 1.03, 0.95];
   
   return pattern.map((multiplier, i) => ({
     time: i,
@@ -25,9 +25,9 @@ const generateRealtimeData = (currentPrice: number) => {
 };
 
 const generateSolanaData = (currentPrice: number) => {
-  // Solana: More dramatic peaks and valleys 
-  const pattern = [0.85, 0.88, 0.92, 0.96, 1.00, 1.04, 1.07, 1.10, 1.12, 1.10, 1.06, 1.01,
-                   0.96, 0.92, 0.88, 0.90, 0.94, 0.98, 1.02, 1.06, 1.09, 1.08, 1.04, 0.99];
+  // Solana: DRAMATIC peaks and valleys - 45% total range like NVDA
+  const pattern = [0.78, 0.82, 0.88, 0.95, 1.03, 1.10, 1.16, 1.20, 1.23, 1.20, 1.14, 1.06,
+                   0.98, 0.90, 0.85, 0.88, 0.94, 1.00, 1.07, 1.13, 1.18, 1.15, 1.08, 1.00];
   
   return pattern.map((multiplier, i) => ({
     time: i,
@@ -267,7 +267,7 @@ export default function Home() {
             </div>
             
             {/* Real-time Chart */}
-            <div className="h-12 mb-3">
+            <div className="h-16 mb-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
                   <YAxis domain={['dataMin', 'dataMax']} hide={true} />
@@ -342,7 +342,7 @@ export default function Home() {
             </div>
             
             {/* Real-time Chart */}
-            <div className="h-12 mb-3">
+            <div className="h-16 mb-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={solanaChartData}>
                   <YAxis domain={['dataMin', 'dataMax']} hide={true} />
