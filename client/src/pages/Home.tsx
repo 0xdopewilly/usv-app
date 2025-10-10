@@ -268,8 +268,8 @@ export default function Home() {
             {/* Real-time Chart */}
             <div className="h-16 mb-3">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
-                  <YAxis domain={['auto', 'auto']} hide={true} />
+                <LineChart data={chartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                  <YAxis domain={['dataMin', 'dataMax']} hide={true} />
                   <Line 
                     type="linear" 
                     dataKey="value" 
@@ -277,8 +277,9 @@ export default function Home() {
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
-                    animationDuration={0}
-                    animationEasing="linear"
+                    strokeLinejoin="miter"
+                    strokeLinecap="square"
+                    connectNulls={false}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -345,8 +346,8 @@ export default function Home() {
             {/* Real-time Chart */}
             <div className="h-16 mb-3">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={solanaChartData}>
-                  <YAxis domain={['auto', 'auto']} hide={true} />
+                <LineChart data={solanaChartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                  <YAxis domain={['dataMin', 'dataMax']} hide={true} />
                   <Line 
                     type="linear" 
                     dataKey="value" 
@@ -354,8 +355,9 @@ export default function Home() {
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
-                    animationDuration={0}
-                    animationEasing="linear"
+                    strokeLinejoin="miter"
+                    strokeLinecap="square"
+                    connectNulls={false}
                   />
                 </LineChart>
               </ResponsiveContainer>

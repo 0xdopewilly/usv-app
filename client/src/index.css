@@ -349,3 +349,10 @@ html {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* Disable transitions for chart SVG paths to prevent wavy transformations */
+.recharts-line path,
+.recharts-line-curve {
+  transition: none !important;
+  animation: none !important;
+}
