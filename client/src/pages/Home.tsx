@@ -12,26 +12,26 @@ const solanaLogoSrc = '/solana-logo.png';
 // New USV Logo
 import usvLogoSrc from '@assets/image_1757431326277.png';
 
-// Real-time chart data with VISIBLE price movements
+// Chart data with DRAMATIC visible movements like stock charts
 const generateRealtimeData = (currentPrice: number) => {
-  // Create clear ups and downs - start at 95%, peak at 105%
-  const pattern = [0.95, 0.96, 0.98, 1.00, 1.02, 1.04, 1.05, 1.04, 1.02, 1.01, 0.99, 0.97, 
-                   0.96, 0.95, 0.96, 0.98, 1.00, 1.01, 1.03, 1.04, 1.03, 1.02, 1.00, 0.98];
+  // USV: Clear peak and valley pattern - rises then falls
+  const pattern = [0.88, 0.90, 0.93, 0.97, 1.01, 1.05, 1.08, 1.10, 1.09, 1.06, 1.02, 0.98, 
+                   0.95, 0.92, 0.90, 0.91, 0.94, 0.97, 1.00, 1.03, 1.05, 1.04, 1.01, 0.98];
   
   return pattern.map((multiplier, i) => ({
     time: i,
-    value: currentPrice * multiplier + (Math.random() - 0.5) * currentPrice * 0.005 // tiny random noise
+    value: currentPrice * multiplier
   }));
 };
 
 const generateSolanaData = (currentPrice: number) => {
-  // More volatile pattern for Solana - bigger swings
-  const pattern = [0.94, 0.95, 0.93, 0.96, 0.99, 1.02, 1.04, 1.06, 1.05, 1.03, 1.01, 0.98,
-                   0.96, 0.94, 0.95, 0.97, 1.00, 1.02, 1.05, 1.06, 1.04, 1.02, 0.99, 0.97];
+  // Solana: More dramatic peaks and valleys 
+  const pattern = [0.85, 0.88, 0.92, 0.96, 1.00, 1.04, 1.07, 1.10, 1.12, 1.10, 1.06, 1.01,
+                   0.96, 0.92, 0.88, 0.90, 0.94, 0.98, 1.02, 1.06, 1.09, 1.08, 1.04, 0.99];
   
   return pattern.map((multiplier, i) => ({
     time: i,
-    value: currentPrice * multiplier + (Math.random() - 0.5) * currentPrice * 0.008 // small random noise
+    value: currentPrice * multiplier
   }));
 };
 
@@ -271,10 +271,10 @@ export default function Home() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
                   <Line 
-                    type="monotone" 
+                    type="natural" 
                     dataKey="value" 
                     stroke="#fff" 
-                    strokeWidth={2}
+                    strokeWidth={3}
                     dot={false}
                   />
                 </LineChart>
@@ -345,10 +345,10 @@ export default function Home() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={solanaChartData}>
                   <Line 
-                    type="monotone" 
+                    type="natural" 
                     dataKey="value" 
                     stroke="#fff" 
-                    strokeWidth={2}
+                    strokeWidth={3}
                     dot={false}
                   />
                 </LineChart>
