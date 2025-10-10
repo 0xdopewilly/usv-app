@@ -1189,10 +1189,21 @@ router.get('/prices/all', async (req, res) => {
   }
 });
 
+// Cache for chart data to prevent regenerating on every request
+const chartCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 // Chart data endpoints
 router.get('/prices/chart/:symbol', async (req, res) => {
   const { symbol } = req.params;
   const days = req.query.days || '1'; // Default to 1 day
+  const cacheKey = `${symbol.toUpperCase()}-${days}`;
+  
+  // Check cache first
+  const cached = chartCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return res.json({ data: cached.data });
+  }
   
   try {
     if (symbol.toUpperCase() === 'SOL') {
@@ -1209,17 +1220,21 @@ router.get('/prices/chart/:symbol', async (req, res) => {
           value: price
         }));
         
+        // Cache the data
+        chartCache.set(cacheKey, { data: chartData, timestamp: Date.now() });
         return res.json({ data: chartData });
       }
       
       // Fallback if CoinGecko fails
       const fallbackData = generateFallbackChartData(211.00, 24);
+      chartCache.set(cacheKey, { data: fallbackData, timestamp: Date.now() });
       return res.json({ data: fallbackData });
     } 
     
     if (symbol.toUpperCase() === 'USV') {
       // Generate realistic USV chart data based on current price
       const chartData = generateFallbackChartData(0.20, 24);
+      chartCache.set(cacheKey, { data: chartData, timestamp: Date.now() });
       return res.json({ data: chartData });
     }
     
@@ -1230,20 +1245,28 @@ router.get('/prices/chart/:symbol', async (req, res) => {
     // Return fallback data based on symbol
     const basePrice = symbol.toUpperCase() === 'SOL' ? 211.00 : 0.20;
     const fallbackData = generateFallbackChartData(basePrice, 24);
+    chartCache.set(cacheKey, { data: fallbackData, timestamp: Date.now() });
     res.json({ data: fallbackData });
   }
 });
 
-// Helper function to generate fallback chart data
+// Helper function to generate fallback chart data with realistic trending
 function generateFallbackChartData(basePrice: number, points: number) {
   const now = Date.now();
   const interval = (24 * 60 * 60 * 1000) / points; // Spread over 24 hours
   
+  let currentValue = basePrice;
   return Array.from({ length: points }, (_, i) => {
-    const variation = (Math.random() - 0.5) * 0.1; // ±10% variation
+    // Small random walk: ±0.5% per point for realistic gradual changes
+    const change = (Math.random() - 0.5) * 0.01;
+    currentValue = currentValue * (1 + change);
+    
+    // Keep within ±3% of base price for realistic bounds
+    currentValue = Math.max(basePrice * 0.97, Math.min(basePrice * 1.03, currentValue));
+    
     return {
       time: now - (points - i) * interval,
-      value: basePrice * (1 + variation)
+      value: currentValue
     };
   });
 }
