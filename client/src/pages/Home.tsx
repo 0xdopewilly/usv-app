@@ -18,13 +18,13 @@ const generateRealtimeData = (currentPrice: number) => {
   let price = currentPrice;
   
   for (let i = 0; i < 24; i++) {
-    // Simulate realistic price movement with trend and volatility
-    const trend = Math.sin(i * 0.15) * (currentPrice * 0.008);
-    const volatility = (Math.random() - 0.5) * (currentPrice * 0.012);
-    const momentum = (i > 0 ? dataPoints[i-1].value - currentPrice : 0) * 0.3;
+    // Each point evolves from the previous with mean reversion
+    const randomChange = (Math.random() - 0.5) * (currentPrice * 0.04);
+    const meanReversion = (currentPrice - price) * 0.15; // Pull back to center
+    const waveNoise = Math.cos(i * 0.35) * (currentPrice * 0.008);
     
-    price = currentPrice + trend + volatility + momentum;
-    dataPoints.push({ time: i, value: Math.max(0, price) });
+    price = price + randomChange + meanReversion + waveNoise;
+    dataPoints.push({ time: i, value: price });
   }
   return dataPoints;
 };
@@ -34,14 +34,13 @@ const generateSolanaData = (currentPrice: number) => {
   let price = currentPrice;
   
   for (let i = 0; i < 24; i++) {
-    // Different pattern for SOL - more volatile with occasional spikes
-    const trend = Math.cos(i * 0.18) * (currentPrice * 0.015);
-    const volatility = (Math.random() - 0.5) * (currentPrice * 0.018);
-    const spike = i % 7 === 0 ? (Math.random() - 0.3) * (currentPrice * 0.025) : 0;
-    const momentum = (i > 0 ? dataPoints[i-1].value - currentPrice : 0) * 0.4;
+    // Each point evolves from previous with mean reversion - more volatile than USV
+    const randomChange = (Math.random() - 0.5) * (currentPrice * 0.05); // Higher volatility
+    const meanReversion = (currentPrice - price) * 0.12; // Pull back to center
+    const wavePattern = Math.sin(i * 0.4) * (currentPrice * 0.012); // Visible wave pattern
     
-    price = currentPrice + trend + volatility + spike + momentum;
-    dataPoints.push({ time: i, value: Math.max(0, price) });
+    price = price + randomChange + meanReversion + wavePattern;
+    dataPoints.push({ time: i, value: price });
   }
   return dataPoints;
 };
