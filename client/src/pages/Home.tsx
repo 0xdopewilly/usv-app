@@ -12,37 +12,27 @@ const solanaLogoSrc = '/solana-logo.png';
 // New USV Logo
 import usvLogoSrc from '@assets/image_1757431326277.png';
 
-// Real-time chart data with realistic price patterns
+// Real-time chart data with VISIBLE price movements
 const generateRealtimeData = (currentPrice: number) => {
-  const dataPoints = [];
-  let price = currentPrice;
+  // Create clear ups and downs - start at 95%, peak at 105%
+  const pattern = [0.95, 0.96, 0.98, 1.00, 1.02, 1.04, 1.05, 1.04, 1.02, 1.01, 0.99, 0.97, 
+                   0.96, 0.95, 0.96, 0.98, 1.00, 1.01, 1.03, 1.04, 1.03, 1.02, 1.00, 0.98];
   
-  for (let i = 0; i < 24; i++) {
-    // Each point evolves from the previous with mean reversion
-    const randomChange = (Math.random() - 0.5) * (currentPrice * 0.04);
-    const meanReversion = (currentPrice - price) * 0.15; // Pull back to center
-    const waveNoise = Math.cos(i * 0.35) * (currentPrice * 0.008);
-    
-    price = price + randomChange + meanReversion + waveNoise;
-    dataPoints.push({ time: i, value: price });
-  }
-  return dataPoints;
+  return pattern.map((multiplier, i) => ({
+    time: i,
+    value: currentPrice * multiplier + (Math.random() - 0.5) * currentPrice * 0.005 // tiny random noise
+  }));
 };
 
 const generateSolanaData = (currentPrice: number) => {
-  const dataPoints = [];
-  let price = currentPrice;
+  // More volatile pattern for Solana - bigger swings
+  const pattern = [0.94, 0.95, 0.93, 0.96, 0.99, 1.02, 1.04, 1.06, 1.05, 1.03, 1.01, 0.98,
+                   0.96, 0.94, 0.95, 0.97, 1.00, 1.02, 1.05, 1.06, 1.04, 1.02, 0.99, 0.97];
   
-  for (let i = 0; i < 24; i++) {
-    // Each point evolves from previous with mean reversion - more volatile than USV
-    const randomChange = (Math.random() - 0.5) * (currentPrice * 0.05); // Higher volatility
-    const meanReversion = (currentPrice - price) * 0.12; // Pull back to center
-    const wavePattern = Math.sin(i * 0.4) * (currentPrice * 0.012); // Visible wave pattern
-    
-    price = price + randomChange + meanReversion + wavePattern;
-    dataPoints.push({ time: i, value: price });
-  }
-  return dataPoints;
+  return pattern.map((multiplier, i) => ({
+    time: i,
+    value: currentPrice * multiplier + (Math.random() - 0.5) * currentPrice * 0.008 // small random noise
+  }));
 };
 
 export default function Home() {
