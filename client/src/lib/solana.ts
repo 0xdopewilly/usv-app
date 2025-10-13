@@ -2,7 +2,7 @@ import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, cl
 import { createTransferInstruction, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction } from '@solana/spl-token';
 
 // USV Token Configuration
-export const USV_TOKEN_MINT = new PublicKey('8zGuJQqwhZafTah7Uc7Z4tXRnguqkn5KLFAP8oV6PHe2'); // Example mint address
+export const USV_TOKEN_MINT = new PublicKey('8bLH2ZzpUxvYtssoXSKk5zJPm2Gj1rjMZuGmnMfkoRPh'); // Official USV Token Contract
 export const USV_DECIMALS = 6;
 export const SOLANA_NETWORK = 'mainnet-beta'; // Production mainnet
 

@@ -127,7 +127,7 @@ export class SolanaService {
   }
 
   // USV Token specific functions
-  static readonly USV_MINT = 'USV_TOKEN_MINT_ADDRESS'; // Replace with actual mint address
+  static readonly USV_MINT = '8bLH2ZzpUxvYtssoXSKk5zJPm2Gj1rjMZuGmnMfkoRPh'; // Official USV Token Contract
   
   async getUSVBalance(publicKey: PublicKey): Promise<number> {
     return this.getTokenBalance(publicKey, SolanaService.USV_MINT);
