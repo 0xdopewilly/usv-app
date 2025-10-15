@@ -110,15 +110,14 @@ export default function Home() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <motion.div 
-              className="w-12 h-12 rounded-[24px] overflow-hidden border-2 border-cyan-400/30 cursor-pointer interactive hover-lift hover-glow relative"
+              className="w-12 h-12 rounded-[24px] overflow-hidden border-2 border-cyan-400/30 cursor-pointer relative"
               whileHover={{ 
-                scale: 1.08, 
-                rotate: 5,
-                borderColor: "rgba(34, 211, 238, 0.8)"
+                scale: 1.05,
+                transition: { duration: 0.2 }
               }}
-              whileTap={{ scale: 0.92 }}
-              transition={{ type: "spring", stiffness: 500, damping: 20 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setLocation('/settings')}
+              style={{ willChange: 'transform' }}
             >
               {user?.profilePicture ? (
                 <img 
@@ -151,15 +150,15 @@ export default function Home() {
             </motion.div>
           </div>
           <motion.div 
-            className="w-10 h-10 glass-card rounded-[20px] flex items-center justify-center cursor-pointer interactive hover-lift"
+            className="w-10 h-10 glass-card rounded-[20px] flex items-center justify-center cursor-pointer"
             onClick={() => setLocation('/settings')}
             whileHover={{ 
-              scale: 1.12, 
-              rotate: 180,
-              boxShadow: "0 8px 25px rgba(255, 255, 255, 0.2)"
+              scale: 1.1, 
+              rotate: 90,
+              transition: { duration: 0.3 }
             }}
-            whileTap={{ scale: 0.85, rotate: 90 }}
-            transition={{ type: "spring", stiffness: 500, damping: 20 }}
+            whileTap={{ scale: 0.95 }}
+            style={{ willChange: 'transform' }}
           >
             <motion.div>
               <MoreHorizontal className="w-5 h-5 text-white" />
@@ -241,19 +240,16 @@ export default function Home() {
             animate={{ scale: 1, opacity: 1, x: 0 }}
             transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
             whileHover={{ 
-              scale: 1.03, 
-              y: -8,
-              boxShadow: "0 20px 40px rgba(168, 85, 247, 0.3), 0 10px 20px rgba(168, 85, 247, 0.2)",
-              borderColor: "rgba(168, 85, 247, 0.8)",
-              rotate: 1
+              scale: 1.02, 
+              y: -4,
+              transition: { duration: 0.2 }
             }}
-            whileTap={{ scale: 0.97, y: -4, rotate: -1 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setLocation('/wallet')}
-            className="glass-dark rounded-[32px] p-5 cursor-pointer border border-purple-500/30 shadow-xl hover-lift hover-glow interactive relative overflow-hidden"
+            className="glass-dark rounded-[32px] p-5 cursor-pointer border border-purple-500/30 shadow-xl relative overflow-hidden"
+            style={{ willChange: 'transform' }}
             data-testid="card-usv-token"
           >
-            {/* Animated gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-purple opacity-5 animate-gradient-slow rounded-[32px]" />
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 rounded-[16px] p-1 bg-black/40 relative overflow-hidden">
@@ -315,18 +311,15 @@ export default function Home() {
             animate={{ scale: 1, opacity: 1, x: 0 }}
             transition={{ delay: 0.7, duration: 0.6, type: "spring" }}
             whileHover={{ 
-              scale: 1.03, 
-              y: -8,
-              boxShadow: "0 20px 40px rgba(79, 172, 254, 0.3), 0 10px 20px rgba(79, 172, 254, 0.2)",
-              borderColor: "rgba(79, 172, 254, 0.8)",
-              rotate: -1
+              scale: 1.02, 
+              y: -4,
+              transition: { duration: 0.2 }
             }}
-            whileTap={{ scale: 0.97, y: -4, rotate: 1 }}
-            className="glass-dark rounded-[32px] p-5 cursor-pointer border border-blue-500/30 shadow-xl hover-lift hover-glow interactive relative overflow-hidden"
+            whileTap={{ scale: 0.98 }}
+            className="glass-dark rounded-[32px] p-5 cursor-pointer border border-blue-500/30 shadow-xl relative overflow-hidden"
+            style={{ willChange: 'transform' }}
             data-testid="card-solana-token"
           >
-            {/* Animated gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-electric opacity-5 animate-gradient-slow rounded-[32px]" />
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 rounded-[16px] overflow-hidden bg-black/40 p-1 relative">
@@ -405,15 +398,13 @@ export default function Home() {
             animate={{ scale: 1, opacity: 1, x: 0 }}
             transition={{ delay: 0.9, duration: 0.5, type: "spring" }}
             whileHover={{ 
-              scale: 1.01, 
               x: 3,
-              backgroundColor: "rgba(0, 0, 0, 0.4)",
-              borderColor: "rgba(168, 85, 247, 0.6)",
-              boxShadow: "0 8px 25px rgba(168, 85, 247, 0.2)"
+              transition: { duration: 0.2 }
             }}
-            whileTap={{ scale: 0.98, x: 1 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setLocation('/wallet')}
-            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30 transition-all duration-200"
+            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30"
+            style={{ willChange: 'transform' }}
           >
             <div className="flex items-center space-x-3">
               <img src="/usv-logo.png" alt="USV" className="w-12 h-12 object-contain rounded-[20px]" />
@@ -441,14 +432,12 @@ export default function Home() {
             animate={{ scale: 1, opacity: 1, x: 0 }}
             transition={{ delay: 1.0, duration: 0.5, type: "spring" }}
             whileHover={{ 
-              scale: 1.01, 
               x: 3,
-              backgroundColor: "rgba(0, 0, 0, 0.4)",
-              borderColor: "rgba(79, 172, 254, 0.6)",
-              boxShadow: "0 8px 25px rgba(79, 172, 254, 0.2)"
+              transition: { duration: 0.2 }
             }}
-            whileTap={{ scale: 0.98, x: 1 }}
-            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30 transition-all duration-200"
+            whileTap={{ scale: 0.98 }}
+            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30"
+            style={{ willChange: 'transform' }}
           >
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 rounded-[20px] overflow-hidden bg-black p-2">

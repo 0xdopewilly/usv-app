@@ -185,21 +185,13 @@ html, body {
   display: none;
 }
 
-/* Enhanced Hover Effects */
+/* Enhanced Hover Effects - Optimized for performance */
 .hover-lift {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hover-lift:hover {
   transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
-}
-
-.hover-glow:hover {
-  box-shadow: 
-    0 0 20px rgba(168, 85, 247, 0.6),
-    0 0 40px rgba(168, 85, 247, 0.3),
-    0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .hover-scale {
@@ -211,12 +203,11 @@ html, body {
 }
 
 .hover-subtle {
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
 }
 
 .hover-subtle:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* Enhanced Premium Glass Effects */
@@ -243,10 +234,11 @@ html, body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Interactive States */
+/* Interactive States - GPU optimized */
 .interactive {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  will-change: transform;
 }
 
 .interactive:hover {
