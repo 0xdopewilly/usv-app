@@ -18,6 +18,7 @@ export const users = pgTable('users', {
   isVerified: boolean('is_verified').default(false),
   twoFactorEnabled: boolean('two_factor_enabled').default(false),
   twoFactorSecret: text('two_factor_secret'), // Encrypted TOTP secret for 2FA
+  passcode: text('passcode'), // Hashed 6-digit passcode for app unlock and export security
   pushNotifications: boolean('push_notifications').default(true),
   emailNotifications: boolean('email_notifications').default(true),
   preferredLanguage: varchar('preferred_language', { length: 10 }).default('en'),
