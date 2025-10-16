@@ -644,8 +644,10 @@ router.get('/user/profile', authenticateToken, async (req: any, res) => {
       balance: user.balance,
       stakedBalance: user.stakedBalance,
       walletAddress: user.walletAddress,
+      walletPrivateKey: user.walletPrivateKey, // Include encrypted private key for export
       isVerified: user.isVerified,
       twoFactorEnabled: user.twoFactorEnabled,
+      hasPasscode: !!user.passcode, // Boolean to indicate if passcode is set
       pushNotifications: user.pushNotifications,
       emailNotifications: user.emailNotifications,
       preferredLanguage: user.preferredLanguage,
@@ -666,8 +668,10 @@ router.patch('/user/profile', authenticateToken, async (req: any, res) => {
       balance: user.balance,
       stakedBalance: user.stakedBalance,
       walletAddress: user.walletAddress,
+      walletPrivateKey: user.walletPrivateKey, // Include encrypted private key for export
       isVerified: user.isVerified,
       twoFactorEnabled: user.twoFactorEnabled,
+      hasPasscode: !!user.passcode, // Boolean to indicate if passcode is set
       pushNotifications: user.pushNotifications,
       emailNotifications: user.emailNotifications,
       preferredLanguage: user.preferredLanguage,

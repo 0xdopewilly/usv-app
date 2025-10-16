@@ -305,7 +305,7 @@ export default function Settings() {
   };
 
   const handleExportData = () => {
-    if (!(user as any)?.passcode) {
+    if (!(user as any)?.hasPasscode) {
       // No passcode set, prompt to setup
       setPasscodeAction('export');
       setShowPasscodeSetup(true);
@@ -319,12 +319,56 @@ export default function Settings() {
   const handlePasscodeVerified = async () => {
     setShowPasscodeEntry(false);
     
-    // Show wallet address instead of exporting private key (more secure)
-    toast({
-      title: 'Passcode Verified',
-      description: `Wallet Address: ${user?.walletAddress || 'Not available'}`,
-      duration: 10000,
-    });
+    // Export private key as text file
+    const userWithKey = user as any;
+    if (userWithKey?.walletPrivateKey) {
+      try {
+        // The private key is stored as a JSON array string
+        const privateKeyArray = JSON.parse(userWithKey.walletPrivateKey);
+        const uint8Array = new Uint8Array(privateKeyArray);
+        const privateKeyBase58 = btoa(String.fromCharCode(...Array.from(uint8Array)));
+        
+        // Create export data with wallet info
+        const exportData = `USV Token Wallet Export
+=========================
+
+Wallet Address: ${user?.walletAddress || 'N/A'}
+Private Key (Base58): ${privateKeyBase58}
+
+⚠️ SECURITY WARNING ⚠️
+Keep this private key secure and never share it with anyone.
+Anyone with access to this key can control your wallet.
+
+Export Date: ${new Date().toLocaleString()}
+`;
+        
+        // Create downloadable file
+        const blob = new Blob([exportData], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `usv-wallet-${user?.walletAddress?.slice(0, 8)}.txt`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        
+        toast({
+          title: 'Private Key Exported',
+          description: 'Your wallet has been exported securely. Keep the file safe!',
+        });
+      } catch (error) {
+        toast({
+          title: 'Export Failed',
+          description: 'Unable to export private key',
+          variant: 'destructive',
+        });
+      }
+    } else {
+      toast({
+        title: 'Export Failed',
+        description: 'No private key available for export',
+        variant: 'destructive',
+      });
+    }
   };
 
 
@@ -584,7 +628,7 @@ export default function Settings() {
                 </Button>
               </motion.div>
               
-              {!(user as any)?.passcode && (
+              {!(user as any)?.hasPasscode && (
                 <motion.div
                   whileHover={{ 
                     scale: 1.01,
