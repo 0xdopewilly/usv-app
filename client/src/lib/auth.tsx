@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
+import { clearPasscodeUnlock } from '@/components/PasscodeLock';
 
 interface User {
   id: string;
@@ -101,6 +102,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    // Clear passcode unlock state for this user
+    if (user?.id) {
+      clearPasscodeUnlock(user.id);
+    }
+    
     // Clear token and storage first
     setToken(null);
     localStorage.removeItem('token');

@@ -8,6 +8,7 @@ import { queryClient } from "@/lib/queryClient";
 import SimpleLoadingScreen from "@/components/SimpleLoadingScreen";
 import BottomNavigation from "@/components/BottomNavigation";
 import AuthPage from "@/pages/AuthPage";
+import { PasscodeLock } from "@/components/PasscodeLock";
 import Home from "@/pages/Home";
 import SimpleWallet from "@/pages/SimpleWallet";
 import SimpleSend from "./pages/SimpleSend";
@@ -82,14 +83,15 @@ function AppRouter() {
   }
 
   return (
-    <Router>
-      <AnimatePresence mode="wait" initial={false}>
-        <Switch location={location}>
-          <Route path="/">
-            <PageTransition pageKey="home">
-              <Home />
-            </PageTransition>
-          </Route>
+    <PasscodeLock>
+      <Router>
+        <AnimatePresence mode="wait" initial={false}>
+          <Switch location={location}>
+            <Route path="/">
+              <PageTransition pageKey="home">
+                <Home />
+              </PageTransition>
+            </Route>
           <Route path="/wallet">
             <PageTransition pageKey="wallet">
               <SimpleWallet />
@@ -138,6 +140,7 @@ function AppRouter() {
         </Switch>
       </AnimatePresence>
     </Router>
+    </PasscodeLock>
   );
 }
 
