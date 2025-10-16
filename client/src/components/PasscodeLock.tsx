@@ -52,7 +52,7 @@ export function PasscodeLock({ children }: PasscodeLockProps) {
     }
   };
 
-  const handlePasscodeSuccess = () => {
+  const handlePasscodeSuccess = (passcode: string) => {
     // Set user-specific session flag to remember unlock state
     if (user?.id) {
       const userUnlockKey = `passcode_unlocked_${user.id}`;

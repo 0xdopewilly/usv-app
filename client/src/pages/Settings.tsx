@@ -316,28 +316,24 @@ export default function Settings() {
     }
   };
 
-  const handlePasscodeVerified = async () => {
+  const handlePasscodeVerified = async (passcode: string) => {
     setShowPasscodeEntry(false);
     
     try {
-      // Refetch user profile to ensure we have the latest data including walletPrivateKey
-      await queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
-      await queryClient.refetchQueries({ queryKey: ['/api/user/profile'] });
+      // Call backend endpoint to get decrypted private key
+      const response = await apiRequest('POST', '/api/passcode/export', { passcode });
+      const data = await response.json();
       
-      // Get fresh user data
-      const freshUser = queryClient.getQueryData(['/api/user/profile']) as any;
-      
-      if (freshUser?.walletPrivateKey) {
-        // The private key is stored as a JSON array string
-        const privateKeyArray = JSON.parse(freshUser.walletPrivateKey);
-        const uint8Array = new Uint8Array(privateKeyArray);
+      if (data.privateKey && data.walletAddress) {
+        // Convert private key array to Base58
+        const uint8Array = new Uint8Array(data.privateKey);
         const privateKeyBase58 = btoa(String.fromCharCode(...Array.from(uint8Array)));
         
         // Create export data with wallet info
         const exportData = `USV Token Wallet Export
 =========================
 
-Wallet Address: ${freshUser?.walletAddress || 'N/A'}
+Wallet Address: ${data.walletAddress}
 Private Key (Base58): ${privateKeyBase58}
 
 ⚠️ SECURITY WARNING ⚠️
@@ -352,7 +348,7 @@ Export Date: ${new Date().toLocaleString()}
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `usv-wallet-${freshUser?.walletAddress?.slice(0, 8)}.txt`;
+        a.download = `usv-wallet-${data.walletAddress.slice(0, 8)}.txt`;
         a.click();
         window.URL.revokeObjectURL(url);
         
@@ -361,10 +357,10 @@ Export Date: ${new Date().toLocaleString()}
           description: 'Your wallet has been exported securely. Keep the file safe!',
         });
       } else {
-        console.error('Export error: walletPrivateKey not found in user data', freshUser);
+        console.error('Export error: Invalid response from server', data);
         toast({
           title: 'Export Failed',
-          description: 'No private key available for export. Please try again.',
+          description: 'Unable to retrieve private key from server.',
           variant: 'destructive',
         });
       }

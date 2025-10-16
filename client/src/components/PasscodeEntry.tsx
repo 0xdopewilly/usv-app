@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Lock, X } from 'lucide-react';
 
 interface PasscodeEntryProps {
-  onSuccess: () => void;
+  onSuccess: (passcode: string) => void;
   onCancel?: () => void;
   title?: string;
   subtitle?: string;
@@ -32,7 +32,7 @@ export function PasscodeEntry({
         try {
           const isValid = await onVerify(newPasscode);
           if (isValid) {
-            onSuccess();
+            onSuccess(newPasscode);
           } else {
             setError('Incorrect passcode');
             setTimeout(() => {

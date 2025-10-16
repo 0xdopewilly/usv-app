@@ -1491,6 +1491,45 @@ router.post('/passcode/verify', authenticateToken, async (req: any, res) => {
   }
 });
 
+// Export Private Key endpoint (requires passcode verification)
+router.post('/passcode/export', authenticateToken, async (req: any, res) => {
+  try {
+    const { passcode } = req.body;
+    
+    if (!passcode || passcode.length !== 6) {
+      return res.status(400).json({ error: 'Invalid passcode format' });
+    }
+    
+    const user = await storage.getUserById(req.user.userId);
+    
+    if (!user || !user.passcode) {
+      return res.status(400).json({ error: 'No passcode set' });
+    }
+    
+    // Verify passcode with bcrypt
+    const isValid = await bcrypt.compare(passcode, user.passcode);
+    
+    if (!isValid) {
+      return res.status(401).json({ error: 'Invalid passcode' });
+    }
+    
+    // Decrypt private key
+    if (!user.walletPrivateKey) {
+      return res.status(404).json({ error: 'No private key found' });
+    }
+    
+    const privateKeyArray = decryptPrivateKey(user.walletPrivateKey);
+    
+    res.json({ 
+      privateKey: privateKeyArray,
+      walletAddress: user.walletAddress 
+    });
+  } catch (error) {
+    console.error('Private key export error:', error);
+    res.status(500).json({ error: 'Failed to export private key' });
+  }
+});
+
 export function registerRoutes(app: any) {
   app.use('/api', router);
   return app;
