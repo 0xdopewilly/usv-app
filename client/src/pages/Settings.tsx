@@ -319,12 +319,17 @@ export default function Settings() {
   const handlePasscodeVerified = async () => {
     setShowPasscodeEntry(false);
     
-    // Export private key as text file
-    const userWithKey = user as any;
-    if (userWithKey?.walletPrivateKey) {
-      try {
+    try {
+      // Refetch user profile to ensure we have the latest data including walletPrivateKey
+      await queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
+      await queryClient.refetchQueries({ queryKey: ['/api/user/profile'] });
+      
+      // Get fresh user data
+      const freshUser = queryClient.getQueryData(['/api/user/profile']) as any;
+      
+      if (freshUser?.walletPrivateKey) {
         // The private key is stored as a JSON array string
-        const privateKeyArray = JSON.parse(userWithKey.walletPrivateKey);
+        const privateKeyArray = JSON.parse(freshUser.walletPrivateKey);
         const uint8Array = new Uint8Array(privateKeyArray);
         const privateKeyBase58 = btoa(String.fromCharCode(...Array.from(uint8Array)));
         
@@ -332,7 +337,7 @@ export default function Settings() {
         const exportData = `USV Token Wallet Export
 =========================
 
-Wallet Address: ${user?.walletAddress || 'N/A'}
+Wallet Address: ${freshUser?.walletAddress || 'N/A'}
 Private Key (Base58): ${privateKeyBase58}
 
 ⚠️ SECURITY WARNING ⚠️
@@ -347,7 +352,7 @@ Export Date: ${new Date().toLocaleString()}
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `usv-wallet-${user?.walletAddress?.slice(0, 8)}.txt`;
+        a.download = `usv-wallet-${freshUser?.walletAddress?.slice(0, 8)}.txt`;
         a.click();
         window.URL.revokeObjectURL(url);
         
@@ -355,17 +360,19 @@ Export Date: ${new Date().toLocaleString()}
           title: 'Private Key Exported',
           description: 'Your wallet has been exported securely. Keep the file safe!',
         });
-      } catch (error) {
+      } else {
+        console.error('Export error: walletPrivateKey not found in user data', freshUser);
         toast({
           title: 'Export Failed',
-          description: 'Unable to export private key',
+          description: 'No private key available for export. Please try again.',
           variant: 'destructive',
         });
       }
-    } else {
+    } catch (error) {
+      console.error('Export error:', error);
       toast({
         title: 'Export Failed',
-        description: 'No private key available for export',
+        description: 'Unable to export private key. Please try again.',
         variant: 'destructive',
       });
     }
@@ -628,32 +635,34 @@ Export Date: ${new Date().toLocaleString()}
                 </Button>
               </motion.div>
               
-              {!(user as any)?.hasPasscode && (
-                <motion.div
-                  whileHover={{ 
-                    scale: 1.01,
-                    backgroundColor: "rgba(255, 255, 255, 0.05)",
-                    boxShadow: "0 4px 15px rgba(168, 85, 247, 0.15)"
-                  }}
-                  whileTap={{ scale: 0.99 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              <motion.div
+                whileHover={{ 
+                  scale: 1.01,
+                  backgroundColor: "rgba(255, 255, 255, 0.05)",
+                  boxShadow: "0 4px 15px rgba(168, 85, 247, 0.15)"
+                }}
+                whileTap={{ scale: 0.99 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <Button
+                  variant="ghost"
+                  onClick={handlePasscodeSetup}
+                  className="w-full text-left py-2 text-gray-300 flex items-center justify-between hover:bg-transparent"
+                  data-testid="button-setup-passcode"
                 >
-                  <Button
-                    variant="ghost"
-                    onClick={handlePasscodeSetup}
-                    className="w-full text-left py-2 text-gray-300 flex items-center justify-between hover:bg-transparent"
-                    data-testid="button-setup-passcode"
-                  >
-                    <div className="flex items-center justify-between w-full">
-                      <span>Setup Passcode</span>
-                      <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between w-full">
+                    <span>{(user as any)?.hasPasscode ? 'Change Passcode' : 'Setup Passcode'}</span>
+                    <div className="flex items-center gap-2">
+                      {(user as any)?.hasPasscode ? (
+                        <span className="text-xs text-green-400">Enabled</span>
+                      ) : (
                         <span className="text-xs text-purple-400">Recommended</span>
-                        <ChevronRight className="w-5 h-5 text-gray-400" />
-                      </div>
+                      )}
+                      <ChevronRight className="w-5 h-5 text-gray-400" />
                     </div>
-                  </Button>
-                </motion.div>
-              )}
+                  </div>
+                </Button>
+              </motion.div>
             </div>
           </Card>
         </motion.div>
