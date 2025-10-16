@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import ConnectWallet from '@/components/ConnectWallet';
+import { PasscodeSetup } from '@/components/PasscodeSetup';
+import { apiRequest } from '@/lib/queryClient';
 
 // Apple Sign-In & Google Sign-In Configuration
 declare global {
@@ -39,6 +41,7 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [showPasscodeSetup, setShowPasscodeSetup] = useState(false);
   
   const { login, signup, setAuthState } = useAuth();
   const { toast } = useToast();
@@ -113,6 +116,8 @@ export default function AuthPage() {
           title: "Account created!",
           description: "Welcome to the USV Token ecosystem",
         });
+        // Show passcode setup after successful signup
+        setShowPasscodeSetup(true);
       }
     } catch (error) {
       console.error('❌ Auth error:', error);
@@ -124,6 +129,31 @@ export default function AuthPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handlePasscodeSetup = async (passcode: string) => {
+    try {
+      await apiRequest('POST', '/api/passcode/setup', { passcode });
+      setShowPasscodeSetup(false);
+      toast({
+        title: 'Passcode Set',
+        description: 'Your account is now protected with a passcode',
+      });
+    } catch (error) {
+      toast({
+        title: 'Setup Failed',
+        description: 'Unable to setup passcode. You can set it up later in Settings',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handlePasscodeSkip = () => {
+    setShowPasscodeSetup(false);
+    toast({
+      title: 'Passcode Skipped',
+      description: 'You can setup a passcode later in Settings',
+    });
   };
 
   // REAL Apple Sign-In Implementation
@@ -532,6 +562,16 @@ export default function AuthPage() {
           </p>
         </motion.div>
       </motion.div>
+      
+      {/* Passcode Setup Dialog - After Signup */}
+      {showPasscodeSetup && (
+        <PasscodeSetup
+          onComplete={handlePasscodeSetup}
+          onSkip={handlePasscodeSkip}
+          title="Secure Your Account"
+          showSkip={true}
+        />
+      )}
     </div>
   );
 }
