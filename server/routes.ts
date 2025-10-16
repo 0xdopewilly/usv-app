@@ -1438,6 +1438,55 @@ router.get('/user/profile', authenticateToken, async (req: any, res) => {
   }
 });
 
+// Passcode Setup endpoint
+router.post('/passcode/setup', authenticateToken, async (req: any, res) => {
+  try {
+    const { passcode } = req.body;
+    
+    if (!passcode || passcode.length !== 6 || !/^\d{6}$/.test(passcode)) {
+      return res.status(400).json({ error: 'Passcode must be exactly 6 digits' });
+    }
+    
+    // Hash the passcode with bcrypt
+    const hashedPasscode = await bcrypt.hash(passcode, 10);
+    
+    // Update user with hashed passcode
+    await storage.updateUser(req.user.userId, {
+      passcode: hashedPasscode
+    });
+    
+    res.json({ success: true, message: 'Passcode set successfully' });
+  } catch (error) {
+    console.error('Passcode setup error:', error);
+    res.status(500).json({ error: 'Failed to setup passcode' });
+  }
+});
+
+// Passcode Verification endpoint
+router.post('/passcode/verify', authenticateToken, async (req: any, res) => {
+  try {
+    const { passcode } = req.body;
+    
+    if (!passcode || passcode.length !== 6) {
+      return res.status(400).json({ error: 'Invalid passcode format' });
+    }
+    
+    const user = await storage.getUserById(req.user.userId);
+    
+    if (!user || !user.passcode) {
+      return res.status(400).json({ error: 'No passcode set' });
+    }
+    
+    // Verify passcode with bcrypt
+    const isValid = await bcrypt.compare(passcode, user.passcode);
+    
+    res.json({ valid: isValid });
+  } catch (error) {
+    console.error('Passcode verification error:', error);
+    res.status(500).json({ error: 'Failed to verify passcode' });
+  }
+});
+
 export function registerRoutes(app: any) {
   app.use('/api', router);
   return app;
