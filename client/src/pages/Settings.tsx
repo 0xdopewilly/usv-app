@@ -17,7 +17,6 @@ import { useTranslation } from 'react-i18next';
 import NotificationService from '@/lib/notifications';
 import { PasscodeSetup } from '@/components/PasscodeSetup';
 import { PasscodeEntry } from '@/components/PasscodeEntry';
-import { decryptPrivateKey } from '@/lib/crypto';
 
 export default function Settings() {
   const { user, logout } = useAuth();
@@ -320,34 +319,12 @@ export default function Settings() {
   const handlePasscodeVerified = async () => {
     setShowPasscodeEntry(false);
     
-    // Export private key
-    const userWithKey = user as any;
-    if (userWithKey?.walletPrivateKey) {
-      try {
-        const decryptedKey = decryptPrivateKey(userWithKey.walletPrivateKey);
-        const privateKeyBase58 = Buffer.from(decryptedKey).toString('base64');
-        
-        // Create downloadable file
-        const blob = new Blob([privateKeyBase58], { type: 'text/plain' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'usv-wallet-private-key.txt';
-        a.click();
-        window.URL.revokeObjectURL(url);
-        
-        toast({
-          title: 'Private Key Exported',
-          description: 'Your private key has been downloaded securely',
-        });
-      } catch (error) {
-        toast({
-          title: 'Export Failed',
-          description: 'Unable to decrypt and export private key',
-          variant: 'destructive',
-        });
-      }
-    }
+    // Show wallet address instead of exporting private key (more secure)
+    toast({
+      title: 'Passcode Verified',
+      description: `Wallet Address: ${user?.walletAddress || 'Not available'}`,
+      duration: 10000,
+    });
   };
 
 

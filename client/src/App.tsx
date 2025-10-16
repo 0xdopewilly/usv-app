@@ -83,15 +83,14 @@ function AppRouter() {
   }
 
   return (
-    <PasscodeLock>
-      <Router>
-        <AnimatePresence mode="wait" initial={false}>
-          <Switch location={location}>
-            <Route path="/">
-              <PageTransition pageKey="home">
-                <Home />
-              </PageTransition>
-            </Route>
+    <Router>
+      <AnimatePresence mode="wait" initial={false}>
+        <Switch location={location}>
+          <Route path="/">
+            <PageTransition pageKey="home">
+              <Home />
+            </PageTransition>
+          </Route>
           <Route path="/wallet">
             <PageTransition pageKey="wallet">
               <SimpleWallet />
@@ -140,7 +139,6 @@ function AppRouter() {
         </Switch>
       </AnimatePresence>
     </Router>
-    </PasscodeLock>
   );
 }
 

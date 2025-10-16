@@ -1,6 +1,5 @@
 import { Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { TOKEN_PROGRAM_ID, createTransferInstruction, getAssociatedTokenAddress } from '@solana/spl-token';
-import CryptoJS from 'crypto-js';
 
 export interface TokenInfo {
   mint: string;
@@ -178,17 +177,3 @@ export class PriceService {
 }
 
 export const solanaService = new SolanaService();
-
-// Private key encryption/decryption utilities
-export function decryptPrivateKey(encryptedPrivateKey: string): number[] {
-  const encryptionKey = import.meta.env.VITE_ENCRYPTION_KEY || 'usv-token-encryption-key';
-  const bytes = CryptoJS.AES.decrypt(encryptedPrivateKey, encryptionKey);
-  const decryptedString = bytes.toString(CryptoJS.enc.Utf8);
-  return JSON.parse(decryptedString);
-}
-
-export function encryptPrivateKey(privateKeyArray: number[]): string {
-  const privateKeyString = JSON.stringify(privateKeyArray);
-  const encryptionKey = import.meta.env.VITE_ENCRYPTION_KEY || 'usv-token-encryption-key';
-  return CryptoJS.AES.encrypt(privateKeyString, encryptionKey).toString();
-}

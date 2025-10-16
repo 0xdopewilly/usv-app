@@ -7,16 +7,6 @@ interface PasscodeLockProps {
   children: React.ReactNode;
 }
 
-// Utility function to clear passcode unlock state for a user (used on logout)
-export function clearPasscodeUnlock(userId?: string) {
-  if (userId) {
-    const userUnlockKey = `passcode_unlocked_${userId}`;
-    sessionStorage.removeItem(userUnlockKey);
-  }
-  // Also clear old non-user-specific key if it exists
-  sessionStorage.removeItem('passcode_unlocked');
-}
-
 export function PasscodeLock({ children }: PasscodeLockProps) {
   const { user } = useAuth();
   const [isLocked, setIsLocked] = useState(true);
@@ -71,8 +61,9 @@ export function PasscodeLock({ children }: PasscodeLockProps) {
     setIsLocked(false);
   };
 
-  if (isChecking) {
-    return null; // Or a loading spinner
+  // Show content while checking or if user is not loaded (let auth handle it)
+  if (isChecking || !user) {
+    return <>{children}</>;
   }
 
   if (isLocked) {
