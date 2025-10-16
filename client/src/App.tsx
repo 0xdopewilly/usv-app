@@ -146,11 +146,11 @@ function AuthenticatedLayout() {
   const { isAuthenticated } = useAuth();
   
   return (
-    <>
+    <PasscodeLock>
       <AppRouter />
       {isAuthenticated && <BottomNavigation />}
       <Toaster />
-    </>
+    </PasscodeLock>
   );
 }
 

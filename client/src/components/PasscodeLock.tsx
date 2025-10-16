@@ -15,7 +15,7 @@ export function PasscodeLock({ children }: PasscodeLockProps) {
   useEffect(() => {
     // Check if user has passcode and if session is unlocked
     const checkPasscodeLock = () => {
-      const hasPasscode = (user as any)?.passcode;
+      const hasPasscode = (user as any)?.hasPasscode;
       
       if (!hasPasscode) {
         // No passcode set, unlock immediately
