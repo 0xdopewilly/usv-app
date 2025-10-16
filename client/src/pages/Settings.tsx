@@ -15,6 +15,9 @@ import { useState, useRef } from 'react';
 import { useLocation } from 'wouter';
 import { useTranslation } from 'react-i18next';
 import NotificationService from '@/lib/notifications';
+import { PasscodeSetup } from '@/components/PasscodeSetup';
+import { PasscodeEntry } from '@/components/PasscodeEntry';
+import { decryptPrivateKey } from '@/lib/crypto';
 
 export default function Settings() {
   const { user, logout } = useAuth();
@@ -38,6 +41,11 @@ export default function Settings() {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
   const [twoFASecret, setTwoFASecret] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
+  
+  // Passcode state
+  const [showPasscodeSetup, setShowPasscodeSetup] = useState(false);
+  const [showPasscodeEntry, setShowPasscodeEntry] = useState(false);
+  const [passcodeAction, setPasscodeAction] = useState<'export' | 'setup'>('setup');
 
   const updateProfileMutation = useMutation({
     mutationFn: async (updates: Partial<typeof localSettings>) => {
@@ -249,6 +257,96 @@ export default function Settings() {
       verify2FAMutation.mutate(verificationCode);
     } else if (twoFAStep === 'disable') {
       disable2FAMutation.mutate(verificationCode);
+    }
+  };
+
+  // Passcode mutations
+  const passcodeSetupMutation = useMutation({
+    mutationFn: async (passcode: string) => {
+      const response = await apiRequest('POST', '/api/passcode/setup', { passcode });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/user/profile'] });
+      toast({
+        title: 'Passcode Set',
+        description: 'Your passcode has been successfully configured',
+      });
+      setShowPasscodeSetup(false);
+      
+      // If setting up for export, now show entry dialog
+      if (passcodeAction === 'export') {
+        setTimeout(() => {
+          setShowPasscodeEntry(true);
+        }, 300);
+      }
+    },
+    onError: () => {
+      toast({
+        title: 'Setup Failed',
+        description: 'Unable to setup passcode',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const verifyPasscodeMutation = async (passcode: string): Promise<boolean> => {
+    try {
+      const response = await apiRequest('POST', '/api/passcode/verify', { passcode });
+      const data = await response.json();
+      return data.valid;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const handlePasscodeSetup = () => {
+    setPasscodeAction('setup');
+    setShowPasscodeSetup(true);
+  };
+
+  const handleExportData = () => {
+    if (!(user as any)?.passcode) {
+      // No passcode set, prompt to setup
+      setPasscodeAction('export');
+      setShowPasscodeSetup(true);
+    } else {
+      // Passcode exists, show entry dialog
+      setPasscodeAction('export');
+      setShowPasscodeEntry(true);
+    }
+  };
+
+  const handlePasscodeVerified = async () => {
+    setShowPasscodeEntry(false);
+    
+    // Export private key
+    const userWithKey = user as any;
+    if (userWithKey?.walletPrivateKey) {
+      try {
+        const decryptedKey = decryptPrivateKey(userWithKey.walletPrivateKey);
+        const privateKeyBase58 = Buffer.from(decryptedKey).toString('base64');
+        
+        // Create downloadable file
+        const blob = new Blob([privateKeyBase58], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'usv-wallet-private-key.txt';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        
+        toast({
+          title: 'Private Key Exported',
+          description: 'Your private key has been downloaded securely',
+        });
+      } catch (error) {
+        toast({
+          title: 'Export Failed',
+          description: 'Unable to decrypt and export private key',
+          variant: 'destructive',
+        });
+      }
     }
   };
 
@@ -508,6 +606,33 @@ export default function Settings() {
                   </div>
                 </Button>
               </motion.div>
+              
+              {!(user as any)?.passcode && (
+                <motion.div
+                  whileHover={{ 
+                    scale: 1.01,
+                    backgroundColor: "rgba(255, 255, 255, 0.05)",
+                    boxShadow: "0 4px 15px rgba(168, 85, 247, 0.15)"
+                  }}
+                  whileTap={{ scale: 0.99 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <Button
+                    variant="ghost"
+                    onClick={handlePasscodeSetup}
+                    className="w-full text-left py-2 text-gray-300 flex items-center justify-between hover:bg-transparent"
+                    data-testid="button-setup-passcode"
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span>Setup Passcode</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-purple-400">Recommended</span>
+                        <ChevronRight className="w-5 h-5 text-gray-400" />
+                      </div>
+                    </div>
+                  </Button>
+                </motion.div>
+              )}
             </div>
           </Card>
         </motion.div>
@@ -520,6 +645,7 @@ export default function Settings() {
           <div className="p-4 space-y-2">
             <Button
               variant="ghost"
+              onClick={handleExportData}
               className="w-full text-left py-2 text-gray-300 hover:bg-dark-accent"
               data-testid="button-export-data"
             >
@@ -654,6 +780,27 @@ export default function Settings() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
+      {/* Passcode Setup Dialog */}
+      {showPasscodeSetup && (
+        <PasscodeSetup
+          onComplete={(passcode) => passcodeSetupMutation.mutate(passcode)}
+          onCancel={() => setShowPasscodeSetup(false)}
+          title={passcodeAction === 'export' ? 'Setup Passcode for Export' : 'Setup Passcode'}
+          showSkip={false}
+        />
+      )}
+      
+      {/* Passcode Entry Dialog */}
+      {showPasscodeEntry && (
+        <PasscodeEntry
+          onSuccess={handlePasscodeVerified}
+          onCancel={() => setShowPasscodeEntry(false)}
+          title="Verify Passcode"
+          subtitle="Enter passcode to export private key"
+          onVerify={verifyPasscodeMutation}
+        />
+      )}
     </div>
   );
 }
