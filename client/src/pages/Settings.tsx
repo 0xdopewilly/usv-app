@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { ChevronRight, Camera, Upload, Loader2 } from 'lucide-react';
+import { ChevronRight, Camera, Upload, Loader2, Copy, Key, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
@@ -45,6 +45,11 @@ export default function Settings() {
   const [showPasscodeSetup, setShowPasscodeSetup] = useState(false);
   const [showPasscodeEntry, setShowPasscodeEntry] = useState(false);
   const [passcodeAction, setPasscodeAction] = useState<'export' | 'setup'>('setup');
+  
+  // Export state
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [exportedPrivateKey, setExportedPrivateKey] = useState('');
+  const [exportedWalletAddress, setExportedWalletAddress] = useState('');
 
   const updateProfileMutation = useMutation({
     mutationFn: async (updates: Partial<typeof localSettings>) => {
@@ -329,33 +334,10 @@ export default function Settings() {
         const uint8Array = new Uint8Array(data.privateKey);
         const privateKeyBase58 = btoa(String.fromCharCode(...Array.from(uint8Array)));
         
-        // Create export data with wallet info
-        const exportData = `USV Token Wallet Export
-=========================
-
-Wallet Address: ${data.walletAddress}
-Private Key (Base58): ${privateKeyBase58}
-
-⚠️ SECURITY WARNING ⚠️
-Keep this private key secure and never share it with anyone.
-Anyone with access to this key can control your wallet.
-
-Export Date: ${new Date().toLocaleString()}
-`;
-        
-        // Create downloadable file
-        const blob = new Blob([exportData], { type: 'text/plain' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `usv-wallet-${data.walletAddress.slice(0, 8)}.txt`;
-        a.click();
-        window.URL.revokeObjectURL(url);
-        
-        toast({
-          title: 'Private Key Exported',
-          description: 'Your wallet has been exported securely. Keep the file safe!',
-        });
+        // Show in dialog instead of downloading
+        setExportedPrivateKey(privateKeyBase58);
+        setExportedWalletAddress(data.walletAddress);
+        setShowExportDialog(true);
       } else {
         console.error('Export error: Invalid response from server', data);
         toast({
@@ -372,6 +354,22 @@ Export Date: ${new Date().toLocaleString()}
         variant: 'destructive',
       });
     }
+  };
+  
+  const handleCopyPrivateKey = () => {
+    navigator.clipboard.writeText(exportedPrivateKey);
+    toast({
+      title: 'Copied!',
+      description: 'Private key copied to clipboard',
+    });
+  };
+  
+  const handleCopyWalletAddress = () => {
+    navigator.clipboard.writeText(exportedWalletAddress);
+    toast({
+      title: 'Copied!',
+      description: 'Wallet address copied to clipboard',
+    });
   };
 
 
@@ -827,6 +825,74 @@ Export Date: ${new Date().toLocaleString()}
           onVerify={verifyPasscodeMutation}
         />
       )}
+      
+      {/* Private Key Export Dialog */}
+      <Dialog open={showExportDialog} onOpenChange={setShowExportDialog}>
+        <DialogContent className="bg-gradient-to-br from-gray-900 to-black border-2 border-purple-500/30 max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
+              <Key className="w-6 h-6 text-purple-500" />
+              Your Private Key
+            </DialogTitle>
+            <DialogDescription className="text-gray-400">
+              ⚠️ Never share this with anyone. Store it securely offline.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            {/* Wallet Address */}
+            <div>
+              <Label className="text-gray-400 text-xs mb-2 block">Wallet Address</Label>
+              <div className="relative bg-gray-800/50 rounded-[20px] p-4 border border-gray-700">
+                <p className="text-white font-mono text-sm break-all pr-10">{exportedWalletAddress}</p>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleCopyWalletAddress}
+                  className="absolute top-3 right-3 h-8 w-8 p-0 hover:bg-purple-500/20"
+                  data-testid="button-copy-address"
+                >
+                  <Copy className="w-4 h-4 text-purple-400" />
+                </Button>
+              </div>
+            </div>
+            
+            {/* Private Key */}
+            <div>
+              <Label className="text-gray-400 text-xs mb-2 block">Private Key (Base58)</Label>
+              <div className="relative bg-gray-800/50 rounded-[20px] p-4 border border-gray-700">
+                <p className="text-white font-mono text-sm break-all pr-10">{exportedPrivateKey}</p>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleCopyPrivateKey}
+                  className="absolute top-3 right-3 h-8 w-8 p-0 hover:bg-purple-500/20"
+                  data-testid="button-copy-private-key"
+                >
+                  <Copy className="w-4 h-4 text-purple-400" />
+                </Button>
+              </div>
+            </div>
+            
+            <div className="bg-red-500/10 border border-red-500/30 rounded-[20px] p-4">
+              <p className="text-red-400 text-xs">
+                <strong>Security Warning:</strong> Anyone with this private key can access and control your wallet. 
+                Never store it digitally or share it with anyone.
+              </p>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button
+              onClick={() => setShowExportDialog(false)}
+              className="bg-gradient-to-r from-purple-600 to-cyan-500 w-full"
+              data-testid="button-close-export"
+            >
+              I've Saved It Securely
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
