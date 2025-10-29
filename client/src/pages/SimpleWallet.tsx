@@ -5,6 +5,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
 import { refreshRealWalletBalances, type TokenAccount } from '@/lib/realSolana';
 import { getTokenIcon } from '@/components/TokenIcon';
+import usvLogoSrc from '@assets/USV_1761712738308.png';
+import solanaLogoSrc from '@assets/image_1761712765451.png';
 
 export default function SimpleWallet() {
   const [, setLocation] = useLocation();
@@ -165,8 +167,12 @@ export default function SimpleWallet() {
 
         {/* Asset Info */}
         <div className="text-center mb-8">
-          <div className={`w-16 h-16 ${getTokenColor(token.symbol)} rounded-xl flex items-center justify-center mx-auto mb-4`}>
-            <span className="text-black dark:text-white font-bold text-lg">{token.symbol}</span>
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 p-3 shadow-lg">
+            <img 
+              src={token.symbol === 'USV' ? usvLogoSrc : solanaLogoSrc} 
+              alt={token.symbol} 
+              className="w-full h-full object-contain"
+            />
           </div>
           
           <h2 className="text-black dark:text-white text-4xl font-bold mb-2">{token.balance.toFixed(4)} {token.symbol}</h2>
