@@ -269,13 +269,14 @@ export default function Home() {
                   <Line 
                     type="linear" 
                     dataKey="value" 
-                    stroke="#fff" 
+                    stroke="currentColor" 
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
                     strokeLinejoin="miter"
                     strokeLinecap="square"
                     connectNulls={false}
+                    className="text-black dark:text-white"
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -344,13 +345,14 @@ export default function Home() {
                   <Line 
                     type="linear" 
                     dataKey="value" 
-                    stroke="#fff" 
+                    stroke="currentColor" 
                     strokeWidth={2}
                     dot={false}
                     isAnimationActive={false}
                     strokeLinejoin="miter"
                     strokeLinecap="square"
                     connectNulls={false}
+                    className="text-black dark:text-white"
                   />
                 </LineChart>
               </ResponsiveContainer>
