@@ -166,11 +166,11 @@ export default function SimpleWallet() {
 
         {/* Asset Info */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg overflow-hidden p-2">
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl mx-auto mb-4 shadow-lg overflow-hidden">
             <img 
               src={token.symbol === 'USV' ? usvLogoSrc : solanaLogoSrc} 
               alt={token.symbol} 
-              className="w-full h-full object-contain"
+              className="w-full h-full object-cover"
             />
           </div>
           
@@ -349,13 +349,13 @@ export default function SimpleWallet() {
                     className="flex items-center justify-between bg-gray-900/50 rounded-xl p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
                   >
                     <div className="flex items-center space-x-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden p-1 ${
+                      <div className={`w-10 h-10 rounded-xl overflow-hidden ${
                         token.symbol === 'USV' ? 'bg-purple-500' : 'bg-gradient-to-br from-cyan-500 to-blue-600'
                       }`}>
                         <img 
                           src={token.symbol === 'USV' ? usvLogoSrc : solanaLogoSrc} 
                           alt={token.symbol} 
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-cover"
                         />
                       </div>
                       <div>
