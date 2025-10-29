@@ -45,11 +45,11 @@ class RealTimePriceService {
         },
         USV: {
           symbol: 'USV',
-          price: 0.20 + (Math.random() - 0.5) * 0.01,
-          change24h: (Math.random() - 0.5) * 0.05,
-          changePercent24h: (Math.random() - 0.5) * 25,
-          volume24h: 125420,
-          marketCap: 2840000,
+          price: 0,
+          change24h: 0,
+          changePercent24h: 0,
+          volume24h: 0,
+          marketCap: 0,
           lastUpdated: new Date().toISOString()
         },
         lastUpdated: new Date().toISOString()

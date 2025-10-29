@@ -290,7 +290,7 @@ export default function Home() {
                   <div className="skeleton w-16 h-5 rounded-[8px]" />
                 ) : (
                   <p className="text-white font-bold text-base flex items-center">
-                    ${prices?.USV?.price?.toFixed(3) || '0.200'}
+                    ${prices?.USV?.price?.toFixed(3) || '0.000'}
                   </p>
                 )}
               </div>
@@ -415,7 +415,7 @@ export default function Home() {
             </div>
             <div className="text-right">
               <p className="text-white font-bold text-sm">
-                ${prices?.USV?.price?.toFixed(4) || '0.2000'}
+                ${prices?.USV?.price?.toFixed(4) || '0.0000'}
                 {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1 animate-spin">⟳</span>}
               </p>
               <p className={`text-xs ${

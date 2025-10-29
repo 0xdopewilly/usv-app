@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { queryClient } from "@/lib/queryClient";
 import SimpleLoadingScreen from "@/components/SimpleLoadingScreen";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import BottomNavigation from "@/components/BottomNavigation";
 import AuthPage from "@/pages/AuthPage";
 import { PasscodeLock } from "@/components/PasscodeLock";
@@ -21,29 +22,26 @@ import TransactionDetail from "./pages/TransactionDetail";
 import QRScan from "./pages/QRScan";
 import NotFound from "./pages/NotFound";
 
-// Animation variants for smooth page transitions
+// Optimized animation variants - GPU-accelerated properties only
 const pageVariants = {
   initial: {
     opacity: 0,
-    x: -20,
-    scale: 0.98
+    transform: "translateX(-10px)"
   },
   in: {
     opacity: 1,
-    x: 0,
-    scale: 1
+    transform: "translateX(0px)"
   },
   out: {
     opacity: 0,
-    x: 20,
-    scale: 0.98
+    transform: "translateX(10px)"
   }
 };
 
 const pageTransition = {
   type: "tween",
-  ease: "anticipate",
-  duration: 0.4
+  ease: [0.25, 0.1, 0.25, 1], // Optimized cubic-bezier
+  duration: 0.25 // Faster, snappier transitions
 };
 
 // PageTransition wrapper component
@@ -157,11 +155,13 @@ function AuthenticatedLayout() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <div className="min-h-screen bg-black text-white">
-          <AuthenticatedLayout />
-        </div>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
+            <AuthenticatedLayout />
+          </div>
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

@@ -4,8 +4,7 @@ import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
 import { refreshRealWalletBalances, type TokenAccount } from '@/lib/realSolana';
-
-// Remove interface - using TokenAccount from realSolana
+import { getTokenIcon } from '@/components/TokenIcon';
 
 export default function SimpleWallet() {
   const [, setLocation] = useLocation();
@@ -69,7 +68,7 @@ export default function SimpleWallet() {
       setTokens([usvToken, solToken]);
       
       console.log('🚀 Step 9: Calculating total value...');
-      const totalValue = (balanceData.balanceSOL * 230) + (balanceData.balanceUSV * 0.20);
+      const totalValue = (balanceData.balanceSOL * 230) + (balanceData.balanceUSV * 0); // USV has no price yet
       console.log('🚀 Step 10: Setting total value:', totalValue);
       setTotalValue(totalValue);
       
@@ -332,19 +331,11 @@ export default function SimpleWallet() {
               )}
               
               {tokens.map((token) => {
-                const getTokenLogo = (symbol: string) => {
-                  if (symbol === 'SOL') return 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png';
-                  if (symbol === 'USV') return '/usv-logo.png';
-                  return null;
-                };
-
                 const getTokenValue = (token: TokenAccount) => {
                   if (token.symbol === 'SOL') return token.balance * 230; // SOL price
-                  if (token.symbol === 'USV') return token.balance * 0.20; // USV price at $0.20
+                  if (token.symbol === 'USV') return token.balance * 0; // USV has no price yet
                   return 0;
                 };
-
-                const tokenLogo = getTokenLogo(token.symbol);
 
                 return (
                   <div 
@@ -353,13 +344,7 @@ export default function SimpleWallet() {
                     className="flex items-center justify-between bg-gray-900/50 rounded-xl p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
                   >
                     <div className="flex items-center space-x-3">
-                      {tokenLogo ? (
-                        <img src={tokenLogo} alt={token.symbol} className="w-10 h-10 rounded-lg object-contain" />
-                      ) : (
-                        <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
-                          <span className="text-white font-bold text-sm">{token.symbol}</span>
-                        </div>
-                      )}
+                      {getTokenIcon(token.symbol, "w-10 h-10")}
                       <div>
                         <p className="text-white font-medium">{token.name}</p>
                         <p className="text-gray-400 text-sm">{token.symbol} • {token.balance.toFixed(4)}</p>

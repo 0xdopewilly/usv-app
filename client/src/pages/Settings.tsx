@@ -6,8 +6,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { ChevronRight, Camera, Upload, Loader2, Copy, Key, Eye, EyeOff } from 'lucide-react';
+import { ChevronRight, Camera, Upload, Loader2, Copy, Key, Eye, EyeOff, Sun, Moon } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
+import { useTheme } from '@/components/ThemeProvider';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -24,6 +25,7 @@ export default function Settings() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
   const { t, i18n } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
 
   const [localSettings, setLocalSettings] = useState({
     pushNotifications: user?.pushNotifications ?? true,
@@ -518,6 +520,41 @@ export default function Settings() {
             </Select>
           </div>
         </Card>
+        </motion.div>
+        
+        {/* Theme Toggle */}
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
+        >
+          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
+            <div className="p-4 border-b border-dark-accent">
+              <h3 className="font-semibold text-white">Appearance</h3>
+            </div>
+            <div className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  {theme === 'dark' ? (
+                    <Moon className="w-5 h-5 text-purple-400" />
+                  ) : (
+                    <Sun className="w-5 h-5 text-yellow-400" />
+                  )}
+                  <div>
+                    <p className="font-medium text-white">Theme</p>
+                    <p className="text-sm text-gray-400">
+                      {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  checked={theme === 'light'}
+                  onCheckedChange={toggleTheme}
+                  className="data-[state=checked]:bg-yellow-400"
+                />
+              </div>
+            </div>
+          </Card>
         </motion.div>
         
         {/* Address Book */}

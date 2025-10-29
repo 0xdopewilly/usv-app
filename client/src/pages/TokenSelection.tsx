@@ -8,6 +8,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import { type TokenAccount } from '@/lib/realSolana';
+import { getTokenIcon } from '@/components/TokenIcon';
 
 export default function TokenSelection() {
   const [, setLocation] = useLocation();
@@ -78,15 +79,10 @@ export default function TokenSelection() {
     setLocation(`/send/${token.symbol.toLowerCase()}`);
   };
 
-  const getTokenLogo = (symbol: string) => {
-    if (symbol === 'SOL') return 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png';
-    if (symbol === 'USV') return '/usv-logo.png';
-    return null;
-  };
 
   const getTokenPrice = (symbol: string) => {
     if (symbol === 'SOL') return 230;
-    if (symbol === 'USV') return 0.20;
+    if (symbol === 'USV') return 0; // No liquidity yet
     return 0;
   };
 
@@ -152,17 +148,7 @@ export default function TokenSelection() {
                   <div className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        {getTokenLogo(token.symbol) ? (
-                          <img 
-                            src={getTokenLogo(token.symbol)!} 
-                            alt={token.symbol} 
-                            className="w-10 h-10 rounded-lg object-contain" 
-                          />
-                        ) : (
-                          <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-xs">{token.symbol}</span>
-                          </div>
-                        )}
+                        {getTokenIcon(token.symbol, "w-10 h-10")}
                         <div>
                           <h3 className="text-white font-medium text-base">{token.name}</h3>
                           <p className="text-gray-400 text-sm">

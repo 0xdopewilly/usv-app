@@ -28,7 +28,7 @@ export default function Wallet() {
   const { toast } = useToast();
   const [hideBalance, setHideBalance] = useState(false);
   const [prices, setPrices] = useState<AllPricesResponse | null>(null);
-  const [usvChartData, setUsvChartData] = useState(generatePriceChart(0.20));
+  const [usvChartData, setUsvChartData] = useState(generatePriceChart(0));
   const [selectedTimeframe, setSelectedTimeframe] = useState('1d');
   
   // Real Solana Integration States
@@ -86,7 +86,7 @@ export default function Wallet() {
     prices
   });
   
-  const usvValue = usvTokens * (prices?.USV?.price || 0.20);
+  const usvValue = usvTokens * (prices?.USV?.price || 0);
   const solValue = currentSolBalance * (prices?.SOL?.price || 23.45);
   const totalBalance = solValue + usvValue;
   

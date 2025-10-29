@@ -60,7 +60,7 @@ export default function SendTokens() {
     : ((balanceData as any)?.balanceUSV || 0);
   
   // Get token price
-  const tokenPrice = selectedToken === 'SOL' ? 230 : 0.20;
+  const tokenPrice = selectedToken === 'SOL' ? 230 : 0; // USV has no price yet
   const amountNum = parseFloat(amount) || 0;
   const feeBuffer = selectedToken === 'SOL' ? 0.000005 : 0; // Only SOL needs fee buffer
   
