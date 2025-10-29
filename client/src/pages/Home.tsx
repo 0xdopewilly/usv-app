@@ -93,9 +93,9 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-white dark:bg-black relative pb-20 overflow-hidden">
+    <div className="min-h-screen bg-gray-50 dark:bg-black relative pb-20 overflow-hidden">
       {/* Animated Background Gradient */}
-      <div className="absolute inset-0 animate-gradient-shift opacity-5 dark:opacity-5 opacity-10 pointer-events-none" />
+      <div className="absolute inset-0 animate-gradient-shift opacity-10 dark:opacity-5 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-radial from-purple-200/10 dark:from-purple-900/10 via-transparent to-transparent" />
       
       
@@ -146,7 +146,7 @@ export default function Home() {
               <p className="text-gray-600 dark:text-white/90 text-sm">
                 Welcome back,
               </p>
-              <p className="text-black dark:text-black dark:text-white font-semibold text-base">{user?.fullName?.split(' ')[0] || 'Amanda'}</p>
+              <p className="text-gray-900 dark:text-white font-semibold text-base">{user?.fullName?.split(' ')[0] || 'Amanda'}</p>
             </motion.div>
           </div>
           <motion.div 
@@ -161,7 +161,7 @@ export default function Home() {
             style={{ willChange: 'transform' }}
           >
             <motion.div>
-              <MoreHorizontal className="w-5 h-5 text-black dark:text-black dark:text-white" />
+              <MoreHorizontal className="w-5 h-5 text-gray-900 dark:text-white" />
             </motion.div>
           </motion.div>
         </div>
@@ -185,7 +185,7 @@ export default function Home() {
           {isLoadingPrices || balanceLoading ? (
             <div className="skeleton w-48 h-14 mx-auto rounded-[16px] mb-3" />
           ) : (
-            <h1 className="text-black dark:text-black dark:text-white text-5xl font-bold mb-3 relative">
+            <h1 className="text-gray-900 dark:text-white text-5xl font-bold mb-3 relative">
               <span className="relative z-10">${totalPortfolioValue.toFixed(2)}</span>
               {/* Glow Effect */}
               <div className="absolute inset-0 text-transparent bg-gradient-electric bg-clip-text blur-sm opacity-50">

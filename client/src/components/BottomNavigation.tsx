@@ -44,8 +44,8 @@ export default function BottomNavigation() {
             const isActive = location === item.path || location.startsWith(item.path + '/');
             
             // Define active styles that apply to ALL tabs
-            const activeStylesCenter = 'w-12 h-12 rounded-[16px] text-black dark:text-white bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-500 animate-gradient-shift ring-2 ring-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.45)] filter drop-shadow-[0_0_14px_rgba(168,85,247,0.55)]';
-            const activeStylesRegular = 'rounded-[12px] p-2 h-auto text-black dark:text-white bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-500 animate-gradient-shift ring-2 ring-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.45)] filter drop-shadow-[0_0_14px_rgba(168,85,247,0.55)]';
+            const activeStylesCenter = 'w-12 h-12 rounded-[16px] text-white bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-500 animate-gradient-shift ring-2 ring-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.45)] filter drop-shadow-[0_0_14px_rgba(168,85,247,0.55)]';
+            const activeStylesRegular = 'rounded-[12px] p-2 h-auto text-white bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-500 animate-gradient-shift ring-2 ring-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.45)] filter drop-shadow-[0_0_14px_rgba(168,85,247,0.55)]';
             
             return (
               <motion.div
@@ -71,7 +71,7 @@ export default function BottomNavigation() {
                       className={`shadow-md relative overflow-hidden transition-all duration-300 ${
                         isActive 
                           ? activeStylesCenter
-                          : 'w-12 h-12 rounded-[16px] bg-white/10 text-gray-400 hover:bg-white/20 hover:text-white'
+                          : 'w-12 h-12 rounded-[16px] bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-white/20 hover:text-gray-900 dark:hover:text-white'
                       }`}
                       data-testid={`nav-${item.path.replace('/', 'home') || 'qr-scan'}`}
                     >
@@ -87,7 +87,7 @@ export default function BottomNavigation() {
                     className={`transition-all duration-200 relative ${
                       isActive 
                         ? activeStylesRegular
-                        : 'rounded-[12px] p-2 h-auto text-gray-400 hover:text-black dark:text-white hover:bg-white/10'
+                        : 'rounded-[12px] p-2 h-auto text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200/60 dark:hover:bg-white/10'
                     }`}
                     data-testid={`nav-${item.path.replace('/', 'home') || item.label.toLowerCase()}`}
                   >
