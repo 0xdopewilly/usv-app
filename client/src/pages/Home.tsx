@@ -252,12 +252,12 @@ export default function Home() {
           >
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-[16px] p-1 bg-gray-100 dark:bg-black/40 relative overflow-hidden">
+              <div className="w-10 h-10 rounded-[16px] p-1 bg-gray-200 dark:bg-black/40 relative overflow-hidden">
                 <img src="/usv-logo.png" alt="USV" className="w-full h-full object-contain relative z-10" />
               </div>
               <div className="flex-1">
                 <p className="text-black dark:text-white text-sm font-semibold">Ultra Smooth Vape</p>
-                <p className="text-gray-500 dark:text-white/70 text-xs font-medium">USV</p>
+                <p className="text-gray-800 dark:text-white/70 text-xs font-medium">USV</p>
               </div>
             </div>
             
@@ -283,7 +283,7 @@ export default function Home() {
             
             <div className="flex justify-between items-end">
               <div>
-                <p className="text-gray-400 dark:text-white/60 text-xs mb-1">
+                <p className="text-gray-700 dark:text-white/60 text-xs mb-1">
                   Price • {lastUpdated}
                 </p>
                 {isLoadingPrices ? (
@@ -322,7 +322,7 @@ export default function Home() {
           >
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-[16px] overflow-hidden bg-gray-100 dark:bg-black/40 p-1 relative">
+              <div className="w-10 h-10 rounded-[16px] overflow-hidden bg-gray-200 dark:bg-black/40 p-1 relative">
                 <img 
                   src={solanaLogoSrc} 
                   alt="Solana" 
@@ -332,7 +332,7 @@ export default function Home() {
               </div>
               <div className="flex-1">
                 <p className="text-black dark:text-white text-sm font-semibold">Solana</p>
-                <p className="text-gray-500 dark:text-white/70 text-xs font-medium">SOL</p>
+                <p className="text-gray-800 dark:text-white/70 text-xs font-medium">SOL</p>
               </div>
             </div>
             
@@ -358,7 +358,7 @@ export default function Home() {
             
             <div className="flex justify-between items-end">
               <div>
-                <p className="text-gray-400 dark:text-white/60 text-xs mb-1">
+                <p className="text-gray-700 dark:text-white/60 text-xs mb-1">
                   Price • {lastUpdated}
                 </p>
                 {isLoadingPrices ? (
@@ -403,14 +403,14 @@ export default function Home() {
             }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setLocation('/wallet')}
-            className="flex items-center justify-between bg-gray-100 dark:bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30"
+            className="flex items-center justify-between bg-gray-200 dark:bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30"
             style={{ willChange: 'transform' }}
           >
             <div className="flex items-center space-x-3">
               <img src="/usv-logo.png" alt="USV" className="w-12 h-12 object-contain rounded-[20px]" />
               <div>
                 <p className="text-black dark:text-white font-medium text-sm">Ultra Smooth Token</p>
-                <p className="text-gray-400 dark:text-white/60 text-xs">USV</p>
+                <p className="text-gray-700 dark:text-white/60 text-xs">USV</p>
               </div>
             </div>
             <div className="text-right">
@@ -436,7 +436,7 @@ export default function Home() {
               transition: { duration: 0.2 }
             }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center justify-between bg-gray-100 dark:bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30"
+            className="flex items-center justify-between bg-gray-200 dark:bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30"
             style={{ willChange: 'transform' }}
           >
             <div className="flex items-center space-x-3">
@@ -450,7 +450,7 @@ export default function Home() {
               </div>
               <div>
                 <p className="text-black dark:text-white font-medium text-sm">Solana</p>
-                <p className="text-gray-400 dark:text-white/60 text-xs">SOL</p>
+                <p className="text-gray-700 dark:text-white/60 text-xs">SOL</p>
               </div>
             </div>
             <div className="text-right">

@@ -533,16 +533,19 @@ export default function Settings() {
               <h3 className="font-semibold text-black dark:text-white">Appearance</h3>
             </div>
             <div className="p-4">
-              <div className="flex items-center justify-between">
+              <button 
+                onClick={toggleTheme}
+                className="w-full flex items-center justify-between hover:bg-purple-500/10 rounded-lg p-2 transition-colors"
+              >
                 <div className="flex items-center space-x-3">
                   {theme === 'dark' ? (
                     <Moon className="w-5 h-5 text-purple-400" />
                   ) : (
                     <Sun className="w-5 h-5 text-yellow-400" />
                   )}
-                  <div>
+                  <div className="text-left">
                     <p className="font-medium text-black dark:text-white">Theme</p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
                     </p>
                   </div>
@@ -550,9 +553,10 @@ export default function Settings() {
                 <Switch
                   checked={theme === 'light'}
                   onCheckedChange={toggleTheme}
-                  className="data-[state=checked]:bg-yellow-400"
+                  onClick={(e) => e.stopPropagation()}
+                  className="data-[state=checked]:bg-yellow-400 pointer-events-none"
                 />
-              </div>
+              </button>
             </div>
           </Card>
         </motion.div>

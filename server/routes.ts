@@ -1102,17 +1102,14 @@ router.get('/prices/solana', async (req, res) => {
 
 router.get('/prices/usv', async (req, res) => {
   try {
-    // USV token with slight realistic fluctuations around $0.20
-    const basePrice = 0.20;
-    const fluctuation = (Math.random() - 0.5) * 0.01; // ±0.5 cent fluctuation
-    
+    // USV token - no liquidity yet, price is 0
     res.json({
       symbol: 'USV',
-      price: basePrice + fluctuation,
-      change24h: (Math.random() - 0.5) * 0.05,
-      changePercent24h: (Math.random() - 0.5) * 25,
-      volume24h: 125420,
-      marketCap: 2840000,
+      price: 0,
+      change24h: 0,
+      changePercent24h: 0,
+      volume24h: 0,
+      marketCap: 0,
       lastUpdated: new Date().toISOString()
     });
   } catch (error) {
@@ -1136,16 +1133,14 @@ router.get('/prices/all', async (req, res) => {
       console.log('❌ CoinGecko API failed with status:', solResponse.status);
     }
     
-    // USV data
-    const basePrice = 0.20;
-    const fluctuation = (Math.random() - 0.5) * 0.01;
+    // USV data - no liquidity yet, price is 0
     const usvData = {
       symbol: 'USV',
-      price: basePrice + fluctuation,
-      change24h: (Math.random() - 0.5) * 0.05,
-      changePercent24h: (Math.random() - 0.5) * 25,
-      volume24h: 125420,
-      marketCap: 2840000,
+      price: 0,
+      change24h: 0,
+      changePercent24h: 0,
+      volume24h: 0,
+      marketCap: 0,
       lastUpdated: new Date().toISOString()
     };
 
@@ -1181,11 +1176,11 @@ router.get('/prices/all', async (req, res) => {
       },
       USV: {
         symbol: 'USV',
-        price: 0.20 + (Math.random() - 0.5) * 0.01,
-        change24h: (Math.random() - 0.5) * 0.05,
-        changePercent24h: (Math.random() - 0.5) * 25,
-        volume24h: 125420,
-        marketCap: 2840000,
+        price: 0,
+        change24h: 0,
+        changePercent24h: 0,
+        volume24h: 0,
+        marketCap: 0,
         lastUpdated: new Date().toISOString()
       },
       lastUpdated: new Date().toISOString()
@@ -1248,7 +1243,7 @@ router.get('/prices/chart/:symbol', async (req, res) => {
     
     if (symbol.toUpperCase() === 'USV') {
       // Generate realistic USV chart data based on current price
-      const chartData = generateFallbackChartData(0.20, 24);
+      const chartData = generateFallbackChartData(0, 24);
       chartCache.set(cacheKey, { data: chartData, timestamp: Date.now() });
       return res.json({ data: chartData });
     }
@@ -1258,7 +1253,7 @@ router.get('/prices/chart/:symbol', async (req, res) => {
     console.error(`Failed to fetch chart data for ${symbol}:`, error);
     
     // Return fallback data based on symbol
-    const basePrice = symbol.toUpperCase() === 'SOL' ? 211.00 : 0.20;
+    const basePrice = symbol.toUpperCase() === 'SOL' ? 211.00 : 0;
     const fallbackData = generateFallbackChartData(basePrice, 24);
     chartCache.set(cacheKey, { data: fallbackData, timestamp: Date.now() });
     res.json({ data: fallbackData });
