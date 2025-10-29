@@ -5,8 +5,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
 import { refreshRealWalletBalances, type TokenAccount } from '@/lib/realSolana';
 import { getTokenIcon } from '@/components/TokenIcon';
-import usvLogoSrc from '@assets/USV_1761712738308.png';
-import solanaLogoSrc from '@assets/image_1761712765451.png';
+import usvLogoSrc from '@assets/USV_1761712989183.png';
+import solanaLogoSrc from '@assets/image_1761712970050.png';
 
 export default function SimpleWallet() {
   const [, setLocation] = useLocation();
