@@ -4,7 +4,6 @@ import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
 import { refreshRealWalletBalances, type TokenAccount } from '@/lib/realSolana';
-import { getTokenIcon } from '@/components/TokenIcon';
 import usvLogoSrc from '@assets/USV_1761712989183.png';
 import solanaLogoSrc from '@assets/image_1761712970050.png';
 
@@ -167,11 +166,11 @@ export default function SimpleWallet() {
 
         {/* Asset Info */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 p-3 shadow-lg">
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg overflow-hidden">
             <img 
               src={token.symbol === 'USV' ? usvLogoSrc : solanaLogoSrc} 
               alt={token.symbol} 
-              className="w-full h-full object-contain"
+              className="w-14 h-14 object-contain"
             />
           </div>
           
@@ -350,7 +349,15 @@ export default function SimpleWallet() {
                     className="flex items-center justify-between bg-gray-900/50 rounded-xl p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
                   >
                     <div className="flex items-center space-x-3">
-                      {getTokenIcon(token.symbol, "w-10 h-10")}
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden ${
+                        token.symbol === 'USV' ? 'bg-purple-500' : 'bg-gradient-to-br from-cyan-500 to-blue-600'
+                      }`}>
+                        <img 
+                          src={token.symbol === 'USV' ? usvLogoSrc : solanaLogoSrc} 
+                          alt={token.symbol} 
+                          className="w-7 h-7 object-contain"
+                        />
+                      </div>
                       <div>
                         <p className="text-black dark:text-white font-medium">{token.name}</p>
                         <p className="text-gray-400 text-sm">{token.symbol} • {token.balance.toFixed(4)}</p>
