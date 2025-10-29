@@ -93,7 +93,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black relative pb-20 overflow-hidden">
+    <div className="min-h-screen bg-gray-200 dark:bg-black relative pb-20 overflow-hidden">
       {/* Animated Background Gradient */}
       <div className="absolute inset-0 animate-gradient-shift opacity-10 dark:opacity-5 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-radial from-purple-200/10 dark:from-purple-900/10 via-transparent to-transparent" />
@@ -252,8 +252,8 @@ export default function Home() {
           >
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-[16px] p-1 bg-gray-200 dark:bg-black/40 relative overflow-hidden">
-                <img src="/usv-logo.png" alt="USV" className="w-full h-full object-contain relative z-10" />
+              <div className="w-10 h-10 rounded-[16px] bg-gray-200 dark:bg-black/40 relative overflow-hidden">
+                <img src="/usv-logo.png" alt="USV" className="w-full h-full object-cover relative z-10" />
               </div>
               <div className="flex-1">
                 <p className="text-black dark:text-white text-sm font-semibold">Ultra Smooth Vape</p>
@@ -322,11 +322,11 @@ export default function Home() {
           >
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-[16px] overflow-hidden bg-gray-200 dark:bg-black/40 p-1 relative">
+              <div className="w-10 h-10 rounded-[16px] overflow-hidden bg-gray-200 dark:bg-black/40 relative">
                 <img 
                   src={solanaLogoSrc} 
                   alt="Solana" 
-                  className="w-full h-full object-contain relative z-10"
+                  className="w-full h-full object-cover relative z-10"
                   onError={(e) => console.error('Logo failed to load:', e)}
                 />
               </div>
@@ -407,7 +407,9 @@ export default function Home() {
             style={{ willChange: 'transform' }}
           >
             <div className="flex items-center space-x-3">
-              <img src="/usv-logo.png" alt="USV" className="w-12 h-12 object-contain rounded-[20px]" />
+              <div className="w-12 h-12 rounded-[20px] overflow-hidden bg-purple-500">
+                <img src="/usv-logo.png" alt="USV" className="w-full h-full object-cover" />
+              </div>
               <div>
                 <p className="text-black dark:text-white font-medium text-sm">Ultra Smooth Token</p>
                 <p className="text-gray-700 dark:text-white/60 text-xs">USV</p>
@@ -440,11 +442,11 @@ export default function Home() {
             style={{ willChange: 'transform' }}
           >
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-[20px] overflow-hidden bg-white dark:bg-black p-2">
+              <div className="w-12 h-12 rounded-[20px] overflow-hidden bg-gradient-to-br from-cyan-500 to-blue-600">
                 <img 
                   src={solanaLogoSrc} 
                   alt="Solana" 
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover"
                   onError={(e) => console.error('Logo failed to load:', e)}
                 />
               </div>

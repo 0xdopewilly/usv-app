@@ -152,7 +152,7 @@ export default function SimpleWallet() {
     };
 
     return (
-      <div className="fixed inset-0 bg-white dark:bg-black z-50 p-6">
+      <div className="fixed inset-0 bg-gray-200 dark:bg-black z-50 p-6">
         {/* Header */}
         <div className="flex items-center mb-8 pt-6">
           <button
@@ -222,7 +222,7 @@ export default function SimpleWallet() {
 
   return (
     <>
-      <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white relative pb-20">
+      <div className="min-h-screen bg-gray-200 dark:bg-black text-black dark:text-white relative pb-20">
         {/* Header */}
         <div className="px-6 pt-12 pb-6">
           <div className="flex items-center justify-between mb-8">
@@ -241,7 +241,9 @@ export default function SimpleWallet() {
         <div className="px-6 pb-6">
           <div className="text-center mb-6">
             <div className="flex items-center justify-center space-x-3 mb-4">
-              <img src="/usv-logo.png" alt="USV" className="w-12 h-12 object-contain rounded-xl" />
+              <div className="w-12 h-12 rounded-xl overflow-hidden bg-purple-500">
+                <img src="/usv-logo.png" alt="USV" className="w-full h-full object-cover" />
+              </div>
               <h2 className="text-black dark:text-white text-4xl font-bold">
                 {hideBalance ? '••••••' : `$${totalValue.toFixed(2)}`}
               </h2>
