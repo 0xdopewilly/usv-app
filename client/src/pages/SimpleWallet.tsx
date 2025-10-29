@@ -151,7 +151,7 @@ export default function SimpleWallet() {
     };
 
     return (
-      <div className="fixed inset-0 bg-black z-50 p-6">
+      <div className="fixed inset-0 bg-white dark:bg-black z-50 p-6">
         {/* Header */}
         <div className="flex items-center mb-8 pt-6">
           <button
@@ -160,16 +160,16 @@ export default function SimpleWallet() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-white text-xl font-semibold">{token.name}</h1>
+          <h1 className="text-black dark:text-white text-xl font-semibold">{token.name}</h1>
         </div>
 
         {/* Asset Info */}
         <div className="text-center mb-8">
           <div className={`w-16 h-16 ${getTokenColor(token.symbol)} rounded-xl flex items-center justify-center mx-auto mb-4`}>
-            <span className="text-white font-bold text-lg">{token.symbol}</span>
+            <span className="text-black dark:text-white font-bold text-lg">{token.symbol}</span>
           </div>
           
-          <h2 className="text-white text-4xl font-bold mb-2">{token.balance.toFixed(4)} {token.symbol}</h2>
+          <h2 className="text-black dark:text-white text-4xl font-bold mb-2">{token.balance.toFixed(4)} {token.symbol}</h2>
           <p className="text-gray-400 mb-2">${token.isNative ? (token.balance * 230).toFixed(2) : '0.00'}</p>
           
           <div className="flex items-center justify-center space-x-2 mb-6">
@@ -197,7 +197,7 @@ export default function SimpleWallet() {
         <div className="flex space-x-4 mb-6">
           <button 
             onClick={() => copyToClipboard(user?.walletAddress || '')}
-            className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
+            className="flex-1 bg-pink-500 hover:bg-pink-600 text-black dark:text-white py-3 rounded-2xl font-semibold"
           >
             Receive {token.symbol}
           </button>
@@ -206,7 +206,7 @@ export default function SimpleWallet() {
               setSelectedAsset(null);
               setLocation('/send');
             }}
-            className="flex-1 border border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
+            className="flex-1 border border-gray-600 text-black dark:text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
           >
             Send {token.symbol}
           </button>
@@ -217,7 +217,7 @@ export default function SimpleWallet() {
 
   return (
     <>
-      <div className="min-h-screen bg-black text-white relative pb-20">
+      <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white relative pb-20">
         {/* Header */}
         <div className="px-6 pt-12 pb-6">
           <div className="flex items-center justify-between mb-8">
@@ -227,7 +227,7 @@ export default function SimpleWallet() {
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <h1 className="text-white text-lg font-semibold">Ultra Smooth Vape</h1>
+            <h1 className="text-black dark:text-white text-lg font-semibold">Ultra Smooth Vape</h1>
             <div className="text-gray-400 text-sm">USV</div>
           </div>
         </div>
@@ -237,12 +237,12 @@ export default function SimpleWallet() {
           <div className="text-center mb-6">
             <div className="flex items-center justify-center space-x-3 mb-4">
               <img src="/usv-logo.png" alt="USV" className="w-12 h-12 object-contain rounded-xl" />
-              <h2 className="text-white text-4xl font-bold">
+              <h2 className="text-black dark:text-white text-4xl font-bold">
                 {hideBalance ? '••••••' : `$${totalValue.toFixed(2)}`}
               </h2>
               <button
                 onClick={() => setHideBalance(!hideBalance)}
-                className="text-gray-400 hover:text-white p-1"
+                className="text-gray-400 hover:text-black dark:text-white p-1"
               >
                 {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -250,7 +250,7 @@ export default function SimpleWallet() {
               <button
                 onClick={() => refreshBalances()}
                 disabled={isRefreshing}
-                className="text-gray-400 hover:text-white p-1 hover:bg-gray-800 rounded-full"
+                className="text-gray-400 hover:text-black dark:text-white p-1 hover:bg-gray-800 rounded-full"
               >
                 <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
               </button>
@@ -266,13 +266,13 @@ export default function SimpleWallet() {
             <div className="flex space-x-4 mb-6">
               <button 
                 onClick={() => copyToClipboard(user?.walletAddress || '')}
-                className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
+                className="flex-1 bg-pink-500 hover:bg-pink-600 text-black dark:text-white py-3 rounded-2xl font-semibold"
               >
                 Receive
               </button>
               <button 
                 onClick={() => setLocation('/send')}
-                className="flex-1 border border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
+                className="flex-1 border border-gray-600 text-black dark:text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
               >
                 Send
               </button>
@@ -284,12 +284,12 @@ export default function SimpleWallet() {
             <div className="bg-gray-900/50 rounded-xl p-4 mb-6">
               <p className="text-gray-400 text-sm mb-2">Your USV wallet address</p>
               <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
-                <p className="text-white font-mono text-sm">
+                <p className="text-black dark:text-white font-mono text-sm">
                   {user.walletAddress.slice(0, 8)}...{user.walletAddress.slice(-8)}
                 </p>
                 <button 
                   onClick={() => copyToClipboard(user?.walletAddress || '')}
-                  className="text-gray-400 hover:text-white p-2 hover:bg-gray-700 rounded"
+                  className="text-gray-400 hover:text-black dark:text-white p-2 hover:bg-gray-700 rounded"
                 >
                   <Copy className="w-4 h-4" />
                 </button>
@@ -300,7 +300,7 @@ export default function SimpleWallet() {
           {/* Assets Section - REAL BLOCKCHAIN TOKENS */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white text-lg font-semibold">Assets</h3>
+              <h3 className="text-black dark:text-white text-lg font-semibold">Assets</h3>
               <button
                 onClick={() => refreshBalances()}
                 disabled={isRefreshing}
@@ -346,12 +346,12 @@ export default function SimpleWallet() {
                     <div className="flex items-center space-x-3">
                       {getTokenIcon(token.symbol, "w-10 h-10")}
                       <div>
-                        <p className="text-white font-medium">{token.name}</p>
+                        <p className="text-black dark:text-white font-medium">{token.name}</p>
                         <p className="text-gray-400 text-sm">{token.symbol} • {token.balance.toFixed(4)}</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-white font-bold">
+                      <p className="text-black dark:text-white font-bold">
                         ${getTokenValue(token).toFixed(2)}
                       </p>
                       <button 

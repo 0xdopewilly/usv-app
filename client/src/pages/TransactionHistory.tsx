@@ -233,7 +233,7 @@ export default function TransactionHistory() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20">
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white pb-20">
       {/* Header */}
       <motion.div
         initial={{ y: -50, opacity: 0 }}
@@ -242,11 +242,11 @@ export default function TransactionHistory() {
         className="px-6 pt-16 pb-6 flex items-center justify-between"
       >
         <ArrowLeft 
-          className="w-6 h-6 text-white cursor-pointer hover:text-purple-400 transition-colors" 
+          className="w-6 h-6 text-black dark:text-white cursor-pointer hover:text-purple-400 transition-colors" 
           onClick={() => setLocation('/')}
           data-testid="button-back"
         />
-        <h1 className="text-white text-xl font-semibold">Transaction History</h1>
+        <h1 className="text-black dark:text-white text-xl font-semibold">Transaction History</h1>
         <Button
           size="sm"
           variant="ghost"
@@ -273,7 +273,7 @@ export default function TransactionHistory() {
             placeholder="Search transactions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-gray-900 border-gray-700 text-white pl-10 focus:border-purple-500"
+            className="bg-gray-900 border-gray-700 text-black dark:text-white pl-10 focus:border-purple-500"
             data-testid="input-search-transactions"
           />
         </div>
@@ -327,7 +327,7 @@ export default function TransactionHistory() {
                 {/* Date Separator */}
                 <div className="flex items-center space-x-4">
                   <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
-                  <span className="text-sm font-medium text-gray-400 bg-black px-3" data-testid={`text-date-${dateGroup.toLowerCase().replace(/\s+/g, '-')}`}>
+                  <span className="text-sm font-medium text-gray-400 bg-white dark:bg-black px-3" data-testid={`text-date-${dateGroup.toLowerCase().replace(/\s+/g, '-')}`}>
                     {dateGroup}
                   </span>
                   <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent"></div>
@@ -354,11 +354,11 @@ export default function TransactionHistory() {
                           {/* Transaction Details */}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-1">
-                              <h3 className="text-white font-medium text-sm" data-testid={`text-transaction-title-${transaction.id}`}>
+                              <h3 className="text-black dark:text-white font-medium text-sm" data-testid={`text-transaction-title-${transaction.id}`}>
                                 {getTransactionTitle(transaction)}
                               </h3>
                               <div className="flex items-center space-x-2">
-                                <span className="text-white font-semibold text-sm" data-testid={`text-amount-${transaction.id}`}>
+                                <span className="text-black dark:text-white font-semibold text-sm" data-testid={`text-amount-${transaction.id}`}>
                                   {transaction.type === 'send' ? '-' : '+'}
                                   {transaction.amount} {transaction.token}
                                 </span>

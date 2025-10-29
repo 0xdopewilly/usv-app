@@ -93,10 +93,10 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black relative pb-20 overflow-hidden">
+    <div className="min-h-screen bg-white dark:bg-white dark:bg-black relative pb-20 overflow-hidden">
       {/* Animated Background Gradient */}
-      <div className="absolute inset-0 animate-gradient-shift opacity-5 pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-radial from-purple-900/10 via-transparent to-transparent" />
+      <div className="absolute inset-0 animate-gradient-shift opacity-5 dark:opacity-5 opacity-10 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-radial from-purple-200/10 dark:from-purple-900/10 via-transparent to-transparent" />
       
       
 
@@ -127,12 +127,12 @@ export default function Home() {
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-electric flex items-center justify-center rounded-[22px] animate-shimmer">
-                  <span className="text-white font-bold text-sm relative z-10">{user?.fullName?.charAt(0) || 'U'}</span>
+                  <span className="text-black dark:text-white font-bold text-sm relative z-10">{user?.fullName?.charAt(0) || 'U'}</span>
                 </div>
               )}
               {/* Online Status Indicator */}
               <motion.div 
-                className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-black animate-pulse"
+                className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-black animate-pulse"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.5, type: "spring" }}
@@ -143,10 +143,10 @@ export default function Home() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
             >
-              <p className="text-white/90 text-sm">
+              <p className="text-gray-600 dark:text-white/90 text-sm">
                 Welcome back,
               </p>
-              <p className="text-white font-semibold text-base">{user?.fullName?.split(' ')[0] || 'Amanda'}</p>
+              <p className="text-black dark:text-black dark:text-white font-semibold text-base">{user?.fullName?.split(' ')[0] || 'Amanda'}</p>
             </motion.div>
           </div>
           <motion.div 
@@ -161,7 +161,7 @@ export default function Home() {
             style={{ willChange: 'transform' }}
           >
             <motion.div>
-              <MoreHorizontal className="w-5 h-5 text-white" />
+              <MoreHorizontal className="w-5 h-5 text-black dark:text-black dark:text-white" />
             </motion.div>
           </motion.div>
         </div>
@@ -185,7 +185,7 @@ export default function Home() {
           {isLoadingPrices || balanceLoading ? (
             <div className="skeleton w-48 h-14 mx-auto rounded-[16px] mb-3" />
           ) : (
-            <h1 className="text-white text-5xl font-bold mb-3 relative">
+            <h1 className="text-black dark:text-black dark:text-white text-5xl font-bold mb-3 relative">
               <span className="relative z-10">${totalPortfolioValue.toFixed(2)}</span>
               {/* Glow Effect */}
               <div className="absolute inset-0 text-transparent bg-gradient-electric bg-clip-text blur-sm opacity-50">
@@ -218,7 +218,7 @@ export default function Home() {
               <div className="w-4 h-4 bg-gradient-purple rounded-[8px] flex items-center justify-center animate-shimmer">
                 <div className="w-2 h-2 bg-white rounded-[4px]"></div>
               </div>
-              <span className="text-white/80 text-sm font-medium">
+              <span className="text-gray-600 dark:text-white/80 text-sm font-medium">
                 {walletBalance?.balanceUSV ? walletBalance.balanceUSV.toFixed(2) : '0.00'} USV
               </span>
             </div>
@@ -252,12 +252,12 @@ export default function Home() {
           >
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-[16px] p-1 bg-black/40 relative overflow-hidden">
+              <div className="w-10 h-10 rounded-[16px] p-1 bg-gray-100 dark:bg-black/40 relative overflow-hidden">
                 <img src="/usv-logo.png" alt="USV" className="w-full h-full object-contain relative z-10" />
               </div>
               <div className="flex-1">
-                <p className="text-white text-sm font-semibold">Ultra Smooth Vape</p>
-                <p className="text-white/70 text-xs font-medium">USV</p>
+                <p className="text-black dark:text-white text-sm font-semibold">Ultra Smooth Vape</p>
+                <p className="text-gray-500 dark:text-white/70 text-xs font-medium">USV</p>
               </div>
             </div>
             
@@ -283,13 +283,13 @@ export default function Home() {
             
             <div className="flex justify-between items-end">
               <div>
-                <p className="text-white/60 text-xs mb-1">
+                <p className="text-gray-400 dark:text-white/60 text-xs mb-1">
                   Price • {lastUpdated}
                 </p>
                 {isLoadingPrices ? (
                   <div className="skeleton w-16 h-5 rounded-[8px]" />
                 ) : (
-                  <p className="text-white font-bold text-base flex items-center">
+                  <p className="text-black dark:text-white font-bold text-base flex items-center">
                     ${prices?.USV?.price?.toFixed(3) || '0.000'}
                   </p>
                 )}
@@ -322,7 +322,7 @@ export default function Home() {
           >
             <div className="relative z-10">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 rounded-[16px] overflow-hidden bg-black/40 p-1 relative">
+              <div className="w-10 h-10 rounded-[16px] overflow-hidden bg-gray-100 dark:bg-black/40 p-1 relative">
                 <img 
                   src={solanaLogoSrc} 
                   alt="Solana" 
@@ -331,8 +331,8 @@ export default function Home() {
                 />
               </div>
               <div className="flex-1">
-                <p className="text-white text-sm font-semibold">Solana</p>
-                <p className="text-white/70 text-xs font-medium">SOL</p>
+                <p className="text-black dark:text-white text-sm font-semibold">Solana</p>
+                <p className="text-gray-500 dark:text-white/70 text-xs font-medium">SOL</p>
               </div>
             </div>
             
@@ -358,13 +358,13 @@ export default function Home() {
             
             <div className="flex justify-between items-end">
               <div>
-                <p className="text-white/60 text-xs mb-1">
+                <p className="text-gray-400 dark:text-white/60 text-xs mb-1">
                   Price • {lastUpdated}
                 </p>
                 {isLoadingPrices ? (
                   <div className="skeleton w-20 h-5 rounded-[8px]" />
                 ) : (
-                  <p className="text-white font-bold text-base flex items-center">
+                  <p className="text-black dark:text-white font-bold text-base flex items-center">
                     ${prices?.SOL?.price?.toFixed(2) || '210.00'}
                   </p>
                 )}
@@ -389,7 +389,7 @@ export default function Home() {
         transition={{ delay: 0.8, duration: 0.6 }}
         className="px-6"
       >
-        <h2 className="text-white text-lg font-semibold mb-4">Your Asset</h2>
+        <h2 className="text-black dark:text-white text-lg font-semibold mb-4">Your Asset</h2>
         
         <div className="space-y-3">
           {/* USV Token Row */}
@@ -403,18 +403,18 @@ export default function Home() {
             }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setLocation('/wallet')}
-            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30"
+            className="flex items-center justify-between bg-gray-100 dark:bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30"
             style={{ willChange: 'transform' }}
           >
             <div className="flex items-center space-x-3">
               <img src="/usv-logo.png" alt="USV" className="w-12 h-12 object-contain rounded-[20px]" />
               <div>
-                <p className="text-white font-medium text-sm">Ultra Smooth Token</p>
-                <p className="text-white/60 text-xs">USV</p>
+                <p className="text-black dark:text-white font-medium text-sm">Ultra Smooth Token</p>
+                <p className="text-gray-400 dark:text-white/60 text-xs">USV</p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-white font-bold text-sm">
+              <p className="text-black dark:text-white font-bold text-sm">
                 ${prices?.USV?.price?.toFixed(4) || '0.0000'}
                 {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1 animate-spin">⟳</span>}
               </p>
@@ -436,11 +436,11 @@ export default function Home() {
               transition: { duration: 0.2 }
             }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center justify-between bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30"
+            className="flex items-center justify-between bg-gray-100 dark:bg-black/30 backdrop-blur-sm rounded-[24px] p-5 cursor-pointer border border-gray-600/30"
             style={{ willChange: 'transform' }}
           >
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-[20px] overflow-hidden bg-black p-2">
+              <div className="w-12 h-12 rounded-[20px] overflow-hidden bg-white dark:bg-black p-2">
                 <img 
                   src={solanaLogoSrc} 
                   alt="Solana" 
@@ -449,12 +449,12 @@ export default function Home() {
                 />
               </div>
               <div>
-                <p className="text-white font-medium text-sm">Solana</p>
-                <p className="text-white/60 text-xs">SOL</p>
+                <p className="text-black dark:text-white font-medium text-sm">Solana</p>
+                <p className="text-gray-400 dark:text-white/60 text-xs">SOL</p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-white font-bold text-sm">
+              <p className="text-black dark:text-white font-bold text-sm">
                 ${prices?.SOL?.price?.toFixed(2) || '210.00'}
                 {isLoadingPrices && <span className="text-xs text-yellow-400 ml-1 animate-spin">⟳</span>}
               </p>

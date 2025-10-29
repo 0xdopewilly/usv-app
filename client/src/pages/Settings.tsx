@@ -376,7 +376,7 @@ export default function Settings() {
 
 
   return (
-    <div className="min-h-screen bg-black relative pb-20">
+    <div className="min-h-screen bg-white dark:bg-black relative pb-20">
       {/* Header */}
       <motion.div
         initial={{ y: -60, opacity: 0, scale: 0.95 }}
@@ -384,7 +384,7 @@ export default function Settings() {
         transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
         className="flex items-center p-6 pt-12 safe-top"
       >
-        <h1 className="text-2xl font-bold text-white">{t('settings.title')}</h1>
+        <h1 className="text-2xl font-bold text-black dark:text-white">{t('settings.title')}</h1>
       </motion.div>
       
       {/* Settings Groups */}
@@ -400,9 +400,9 @@ export default function Settings() {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6, type: "spring" }}
         >
-          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
+          <Card className="bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
           <div className="p-4 border-b border-dark-accent">
-            <h3 className="font-semibold text-white">{t('settings.profile')}</h3>
+            <h3 className="font-semibold text-black dark:text-white">{t('settings.profile')}</h3>
           </div>
           <div className="p-6">
             <div className="flex items-center space-x-4 mb-6">
@@ -427,11 +427,11 @@ export default function Settings() {
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center rounded-[26px]">
-                      <span className="text-white font-bold text-xl">{user?.fullName?.charAt(0) || 'U'}</span>
+                      <span className="text-black dark:text-white font-bold text-xl">{user?.fullName?.charAt(0) || 'U'}</span>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                    <Camera className="h-6 w-6 text-white" />
+                  <div className="absolute inset-0 bg-gray-100 dark:bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                    <Camera className="h-6 w-6 text-black dark:text-white" />
                   </div>
                 </motion.div>
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 rounded-[12px] border-2 border-black flex items-center justify-center">
@@ -439,7 +439,7 @@ export default function Settings() {
                 </div>
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-white text-lg mb-1" data-testid="text-user-name">
+                <p className="font-semibold text-black dark:text-white text-lg mb-1" data-testid="text-user-name">
                   {user?.fullName || 'Amanda'}
                 </p>
                 <p className="text-purple-300 text-sm mb-2" data-testid="text-user-email">
@@ -447,11 +447,11 @@ export default function Settings() {
                 </p>
                 <div className="flex items-center space-x-4">
                   <div className="text-center">
-                    <p className="text-white font-bold text-sm">{user?.balance?.toFixed(0) || '4,216'}</p>
+                    <p className="text-black dark:text-white font-bold text-sm">{user?.balance?.toFixed(0) || '4,216'}</p>
                     <p className="text-gray-400 text-xs">USV Balance</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-white font-bold text-sm">{user?.stakedBalance?.toFixed(0) || '850'}</p>
+                    <p className="text-black dark:text-white font-bold text-sm">{user?.stakedBalance?.toFixed(0) || '850'}</p>
                     <p className="text-gray-400 text-xs">Staked</p>
                   </div>
                 </div>
@@ -471,7 +471,7 @@ export default function Settings() {
                 <Button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadProfilePictureMutation.isPending}
-                  className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
+                  className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-black dark:text-white"
                   data-testid="button-upload-picture"
                 >
                 <Upload className="h-4 w-4 mr-2" />
@@ -500,16 +500,16 @@ export default function Settings() {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6, type: "spring" }}
         >
-          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
+          <Card className="bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
           <div className="p-4 border-b border-dark-accent">
-            <h3 className="font-semibold text-white">{t('settings.language')}</h3>
+            <h3 className="font-semibold text-black dark:text-white">{t('settings.language')}</h3>
           </div>
           <div className="p-4">
             <Select
               value={localSettings.preferredLanguage}
               onValueChange={handleLanguageChange}
             >
-              <SelectTrigger className="w-full bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 text-white rounded-[20px] focus:ring-2 focus:ring-cyan-400 transition-all duration-200 focus:scale-[1.02]">
+              <SelectTrigger className="w-full bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 text-black dark:text-white rounded-[20px] focus:ring-2 focus:ring-cyan-400 transition-all duration-200 focus:scale-[1.02]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-dark-accent border-gray-600">
@@ -528,9 +528,9 @@ export default function Settings() {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
         >
-          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
+          <Card className="bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
             <div className="p-4 border-b border-dark-accent">
-              <h3 className="font-semibold text-white">Appearance</h3>
+              <h3 className="font-semibold text-black dark:text-white">Appearance</h3>
             </div>
             <div className="p-4">
               <div className="flex items-center justify-between">
@@ -541,7 +541,7 @@ export default function Settings() {
                     <Sun className="w-5 h-5 text-yellow-400" />
                   )}
                   <div>
-                    <p className="font-medium text-white">Theme</p>
+                    <p className="font-medium text-black dark:text-white">Theme</p>
                     <p className="text-sm text-gray-400">
                       {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
                     </p>
@@ -563,9 +563,9 @@ export default function Settings() {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
         >
-          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
+          <Card className="bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
           <div className="p-4 border-b border-dark-accent">
-            <h3 className="font-semibold text-white">{t('settings.savedAddresses')}</h3>
+            <h3 className="font-semibold text-black dark:text-white">{t('settings.savedAddresses')}</h3>
           </div>
           <motion.div
             whileHover={{ 
@@ -595,9 +595,9 @@ export default function Settings() {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.6, type: "spring" }}
         >
-          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
+          <Card className="bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
           <div className="p-4 border-b border-dark-accent">
-            <h3 className="font-semibold text-white">{t('settings.preferences')}</h3>
+            <h3 className="font-semibold text-black dark:text-white">{t('settings.preferences')}</h3>
           </div>
           <div className="p-4 space-y-4">
             <div className="flex items-center justify-between">
@@ -634,9 +634,9 @@ export default function Settings() {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.6, type: "spring" }}
         >
-          <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
+          <Card className="bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
             <div className="p-4 border-b border-dark-accent">
-              <h3 className="font-semibold text-white">Security</h3>
+              <h3 className="font-semibold text-black dark:text-white">Security</h3>
             </div>
             <div className="p-4 space-y-4">
               <motion.div
@@ -699,9 +699,9 @@ export default function Settings() {
         </motion.div>
 
         {/* Account Actions */}
-        <Card className="bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
+        <Card className="bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-3xl overflow-hidden">
           <div className="p-4 border-b border-dark-accent">
-            <h3 className="font-semibold text-white">Account</h3>
+            <h3 className="font-semibold text-black dark:text-white">Account</h3>
           </div>
           <div className="p-4 space-y-2">
             <Button
@@ -750,7 +750,7 @@ export default function Settings() {
       
       {/* 2FA Setup/Disable Dialog */}
       <Dialog open={show2FADialog} onOpenChange={setShow2FADialog}>
-        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-md">
+        <DialogContent className="bg-gray-900 border-gray-700 text-black dark:text-white max-w-md">
           <DialogHeader>
             <DialogTitle>
               {twoFAStep === 'disable' ? 'Disable Two-Factor Authentication' : 'Enable Two-Factor Authentication'}
@@ -775,7 +775,7 @@ export default function Settings() {
               </div>
               <div className="bg-gray-800 rounded-lg p-3">
                 <p className="text-xs text-gray-400 mb-1">Secret Key (Manual Entry)</p>
-                <p className="text-sm text-white font-mono break-all">{twoFASecret}</p>
+                <p className="text-sm text-black dark:text-white font-mono break-all">{twoFASecret}</p>
               </div>
               <div>
                 <Label htmlFor="verify-code" className="text-gray-300">Enter 6-Digit Code</Label>
@@ -784,7 +784,7 @@ export default function Settings() {
                   value={verificationCode}
                   onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                   placeholder="000000"
-                  className="mt-2 bg-gray-800 border-gray-700 text-white text-center text-lg tracking-widest"
+                  className="mt-2 bg-gray-800 border-gray-700 text-black dark:text-white text-center text-lg tracking-widest"
                   maxLength={6}
                   data-testid="input-2fa-code"
                 />
@@ -800,7 +800,7 @@ export default function Settings() {
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 placeholder="000000"
-                className="mt-2 bg-gray-800 border-gray-700 text-white text-center text-lg tracking-widest"
+                className="mt-2 bg-gray-800 border-gray-700 text-black dark:text-white text-center text-lg tracking-widest"
                 maxLength={6}
                 data-testid="input-2fa-disable-code"
               />
@@ -867,7 +867,7 @@ export default function Settings() {
       <Dialog open={showExportDialog} onOpenChange={setShowExportDialog}>
         <DialogContent className="bg-gradient-to-br from-gray-900 to-black border-2 border-purple-500/30 max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
+            <DialogTitle className="text-2xl font-bold text-black dark:text-white flex items-center gap-2">
               <Key className="w-6 h-6 text-purple-500" />
               Your Private Key
             </DialogTitle>
@@ -881,7 +881,7 @@ export default function Settings() {
             <div>
               <Label className="text-gray-400 text-xs mb-2 block">Wallet Address</Label>
               <div className="relative bg-gray-800/50 rounded-[20px] p-4 border border-gray-700">
-                <p className="text-white font-mono text-sm break-all pr-10">{exportedWalletAddress}</p>
+                <p className="text-black dark:text-white font-mono text-sm break-all pr-10">{exportedWalletAddress}</p>
                 <Button
                   size="sm"
                   variant="ghost"
@@ -898,7 +898,7 @@ export default function Settings() {
             <div>
               <Label className="text-gray-400 text-xs mb-2 block">Private Key (Base58)</Label>
               <div className="relative bg-gray-800/50 rounded-[20px] p-4 border border-gray-700">
-                <p className="text-white font-mono text-sm break-all pr-10">{exportedPrivateKey}</p>
+                <p className="text-black dark:text-white font-mono text-sm break-all pr-10">{exportedPrivateKey}</p>
                 <Button
                   size="sm"
                   variant="ghost"

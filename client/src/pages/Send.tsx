@@ -200,7 +200,7 @@ export default function SendTokens() {
 
   if (transactionStep === 'success') {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-6">
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-6">
         <BottomNavigation />
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
@@ -208,17 +208,17 @@ export default function SendTokens() {
           className="text-center"
         >
           <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-12 h-12 text-white" />
+            <CheckCircle className="w-12 h-12 text-black dark:text-white" />
           </div>
           
-          <h2 className="text-white text-2xl font-bold mb-2">Transfer Successful!</h2>
+          <h2 className="text-black dark:text-white text-2xl font-bold mb-2">Transfer Successful!</h2>
           <p className="text-gray-400 mb-6">
             {amountNum} {selectedToken} sent successfully
           </p>
           
           <div className="bg-gray-900 rounded-xl p-4 mb-6">
             <p className="text-xs text-gray-400 mb-2">Transaction Hash</p>
-            <p className="text-white font-mono text-sm break-all" data-testid="text-transaction-hash">
+            <p className="text-black dark:text-white font-mono text-sm break-all" data-testid="text-transaction-hash">
               {transactionHash}
             </p>
           </div>
@@ -226,7 +226,7 @@ export default function SendTokens() {
           <div className="space-y-3">
             <Button
               onClick={() => setLocation('/')}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-black dark:text-white"
               data-testid="button-back-home"
             >
               Back to Home
@@ -244,7 +244,7 @@ export default function SendTokens() {
         
         {/* Save Address Dialog */}
         <Dialog open={showSaveAddressDialog} onOpenChange={setShowSaveAddressDialog}>
-          <DialogContent className="bg-gray-900 border-gray-700 text-white">
+          <DialogContent className="bg-gray-900 border-gray-700 text-black dark:text-white">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <Bookmark className="h-5 w-5 text-cyan-400" />
@@ -257,7 +257,7 @@ export default function SendTokens() {
             <div className="space-y-4 py-4">
               <div className="bg-gray-800 rounded-lg p-3">
                 <p className="text-xs text-gray-400 mb-1">Recipient Address</p>
-                <p className="text-sm text-white font-mono break-all">{recipientAddress}</p>
+                <p className="text-sm text-black dark:text-white font-mono break-all">{recipientAddress}</p>
               </div>
               <div>
                 <Label htmlFor="address-label" className="text-gray-300">Label (Optional)</Label>
@@ -266,7 +266,7 @@ export default function SendTokens() {
                   value={addressLabel}
                   onChange={(e) => setAddressLabel(e.target.value)}
                   placeholder="e.g., Exchange, Friend's wallet"
-                  className="mt-2 bg-gray-800 border-gray-700 text-white"
+                  className="mt-2 bg-gray-800 border-gray-700 text-black dark:text-white"
                   data-testid="input-save-address-label"
                 />
               </div>
@@ -300,7 +300,7 @@ export default function SendTokens() {
 
   if (transactionStep === 'error') {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-6">
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-6">
         <BottomNavigation />
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
@@ -308,10 +308,10 @@ export default function SendTokens() {
           className="text-center"
         >
           <div className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
-            <AlertCircle className="w-12 h-12 text-white" />
+            <AlertCircle className="w-12 h-12 text-black dark:text-white" />
           </div>
           
-          <h2 className="text-white text-2xl font-bold mb-2">Transfer Failed</h2>
+          <h2 className="text-black dark:text-white text-2xl font-bold mb-2">Transfer Failed</h2>
           <p className="text-gray-400 mb-6">
             {errorMessage}
           </p>
@@ -319,7 +319,7 @@ export default function SendTokens() {
           <div className="space-y-3">
             <Button
               onClick={resetTransaction}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-black dark:text-white"
               data-testid="button-try-again"
             >
               Try Again
@@ -340,7 +340,7 @@ export default function SendTokens() {
 
   if (transactionStep === 'processing') {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-6">
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-6">
         <BottomNavigation />
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
@@ -349,7 +349,7 @@ export default function SendTokens() {
         >
           <div className="w-20 h-20 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
           
-          <h2 className="text-white text-2xl font-bold mb-2">Processing Transfer</h2>
+          <h2 className="text-black dark:text-white text-2xl font-bold mb-2">Processing Transfer</h2>
           <p className="text-gray-400 mb-6">
             Sending {amountNum} {selectedToken} to the recipient...
           </p>
@@ -364,7 +364,7 @@ export default function SendTokens() {
 
   if (transactionStep === 'confirm') {
     return (
-      <div className="min-h-screen bg-black relative pb-20">
+      <div className="min-h-screen bg-white dark:bg-black relative pb-20">
         <BottomNavigation />
         
         <div className="px-6 pt-12">
@@ -378,7 +378,7 @@ export default function SendTokens() {
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <h1 className="text-white text-lg font-semibold">Confirm Transfer</h1>
+            <h1 className="text-black dark:text-white text-lg font-semibold">Confirm Transfer</h1>
             <div></div>
           </div>
 
@@ -394,24 +394,24 @@ export default function SendTokens() {
                   alt={selectedToken} 
                   className="w-16 h-16 rounded-xl object-contain mx-auto mb-4" 
                 />
-                <h2 className="text-white text-3xl font-bold mb-2" data-testid="text-confirm-amount">
+                <h2 className="text-black dark:text-white text-3xl font-bold mb-2" data-testid="text-confirm-amount">
                   {amountNum} {selectedToken}
                 </h2>
                 <p className="text-gray-400">≈ ${(amountNum * tokenPrice).toFixed(2)} USD</p>
               </div>
 
               <div className="space-y-4">
-                <div className="bg-black/30 rounded-xl p-4">
+                <div className="bg-gray-100 dark:bg-black/30 rounded-xl p-4">
                   <p className="text-xs text-gray-400 mb-2">To</p>
-                  <p className="text-white font-mono text-sm break-all" data-testid="text-confirm-recipient">
+                  <p className="text-black dark:text-white font-mono text-sm break-all" data-testid="text-confirm-recipient">
                     {recipientAddress}
                   </p>
                 </div>
 
-                <div className="bg-black/30 rounded-xl p-4">
+                <div className="bg-gray-100 dark:bg-black/30 rounded-xl p-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-400 text-sm">Network Fee</span>
-                    <span className="text-white text-sm">~0.000005 SOL</span>
+                    <span className="text-black dark:text-white text-sm">~0.000005 SOL</span>
                   </div>
                 </div>
               </div>
@@ -421,7 +421,7 @@ export default function SendTokens() {
               <Button
                 onClick={confirmTransaction}
                 disabled={isLoading}
-                className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-4 text-lg font-semibold"
+                className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-black dark:text-white py-4 text-lg font-semibold"
                 data-testid="button-confirm-transfer"
               >
                 {isLoading ? (
@@ -450,7 +450,7 @@ export default function SendTokens() {
   }
 
   return (
-    <div className="min-h-screen bg-black relative pb-20">
+    <div className="min-h-screen bg-white dark:bg-black relative pb-20">
       <BottomNavigation />
       
       <div className="px-6 pt-12">
@@ -464,7 +464,7 @@ export default function SendTokens() {
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-white text-lg font-semibold">Send {selectedToken}</h1>
+          <h1 className="text-black dark:text-white text-lg font-semibold">Send {selectedToken}</h1>
           <Button
             variant="ghost"
             size="sm"
@@ -483,9 +483,9 @@ export default function SendTokens() {
         >
           {/* Token Selector */}
           <Card className="bg-gray-900/50 border-gray-700/50 p-6">
-            <Label className="text-white mb-3 block">Select Token to Send</Label>
+            <Label className="text-black dark:text-white mb-3 block">Select Token to Send</Label>
             <Select value={selectedToken} onValueChange={setSelectedToken}>
-              <SelectTrigger className="bg-black/50 border-gray-600 text-white" data-testid="select-token">
+              <SelectTrigger className="bg-gray-100 dark:bg-black/50 border-gray-600 text-black dark:text-white" data-testid="select-token">
                 <div className="flex items-center space-x-2">
                   <img 
                     src={selectedToken === 'SOL' ? 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png' : '/usv-logo.png'} 
@@ -496,10 +496,10 @@ export default function SendTokens() {
                 </div>
               </SelectTrigger>
               <SelectContent className="bg-gray-900 border-gray-700">
-                <SelectItem value="USV" className="text-white hover:bg-gray-800">
+                <SelectItem value="USV" className="text-black dark:text-white hover:bg-gray-800">
                   USV - Ultra Smooth Vape
                 </SelectItem>
-                <SelectItem value="SOL" className="text-white hover:bg-gray-800">
+                <SelectItem value="SOL" className="text-black dark:text-white hover:bg-gray-800">
                   SOL - Solana
                 </SelectItem>
               </SelectContent>
@@ -515,7 +515,7 @@ export default function SendTokens() {
                 className="w-10 h-10 rounded-xl object-contain" 
               />
               <div>
-                <h3 className="text-white font-semibold">Available Balance</h3>
+                <h3 className="text-black dark:text-white font-semibold">Available Balance</h3>
                 <p className="text-gray-400 text-sm">{selectedToken} ({selectedToken === 'SOL' ? 'Solana' : 'Ultra Smooth Vape'})</p>
               </div>
             </div>
@@ -528,7 +528,7 @@ export default function SendTokens() {
               <p className="text-red-400">Error loading balance</p>
             ) : (
               <>
-                <p className="text-white text-3xl font-bold" data-testid="text-available-balance">
+                <p className="text-black dark:text-white text-3xl font-bold" data-testid="text-available-balance">
                   {maxBalance.toFixed(selectedToken === 'SOL' ? 6 : 2)} {selectedToken}
                 </p>
                 <p className="text-gray-400 text-sm">≈ ${(maxBalance * tokenPrice).toFixed(2)} USD</p>
@@ -538,7 +538,7 @@ export default function SendTokens() {
 
           {/* Recipient Input */}
           <Card className="bg-gray-900/50 border-gray-700/50 p-6">
-            <Label htmlFor="recipient" className="text-white mb-3 block">
+            <Label htmlFor="recipient" className="text-black dark:text-white mb-3 block">
               Recipient Address
             </Label>
             <div className="relative">
@@ -547,7 +547,7 @@ export default function SendTokens() {
                 value={recipientAddress}
                 onChange={(e) => setRecipientAddress(e.target.value)}
                 placeholder="Enter Solana wallet address"
-                className="bg-black/50 border-gray-600 text-white placeholder-gray-400 pr-12"
+                className="bg-gray-100 dark:bg-black/50 border-gray-600 text-black dark:text-white placeholder-gray-400 pr-12"
                 data-testid="input-recipient-address"
               />
               <Button
@@ -576,7 +576,7 @@ export default function SendTokens() {
                     >
                       <User className="w-4 h-4 mr-3 text-gray-400" />
                       <div>
-                        <p className="text-white text-sm">{contact.name}</p>
+                        <p className="text-black dark:text-white text-sm">{contact.name}</p>
                         <p className="text-gray-400 text-xs font-mono">
                           {contact.address.slice(0, 8)}...{contact.address.slice(-8)}
                         </p>
@@ -590,7 +590,7 @@ export default function SendTokens() {
 
           {/* Amount Input */}
           <Card className="bg-gray-900/50 border-gray-700/50 p-6">
-            <Label htmlFor="amount" className="text-white mb-3 block">
+            <Label htmlFor="amount" className="text-black dark:text-white mb-3 block">
               Amount to Send
             </Label>
             <div className="relative">
@@ -600,7 +600,7 @@ export default function SendTokens() {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="bg-black/50 border-gray-600 text-white placeholder-gray-400 text-2xl font-bold py-4 pr-20"
+                className="bg-gray-100 dark:bg-black/50 border-gray-600 text-black dark:text-white placeholder-gray-400 text-2xl font-bold py-4 pr-20"
                 data-testid="input-amount"
               />
               <Button
@@ -650,7 +650,7 @@ export default function SendTokens() {
           <Button
             onClick={handleSendTokens}
             disabled={!isValidAddress || !isValidAmount || isLoading}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-4 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-black dark:text-white py-4 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             data-testid="button-send-tokens"
           >
             {isBalanceLoading ? (

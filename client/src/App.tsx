@@ -22,19 +22,19 @@ import TransactionDetail from "./pages/TransactionDetail";
 import QRScan from "./pages/QRScan";
 import NotFound from "./pages/NotFound";
 
-// Optimized animation variants - GPU-accelerated properties only
+// Optimized animation variants - GPU-accelerated properties
 const pageVariants = {
   initial: {
     opacity: 0,
-    transform: "translateX(-10px)"
+    x: -10
   },
   in: {
     opacity: 1,
-    transform: "translateX(0px)"
+    x: 0
   },
   out: {
     opacity: 0,
-    transform: "translateX(10px)"
+    x: 10
   }
 };
 

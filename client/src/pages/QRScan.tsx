@@ -414,8 +414,8 @@ export default function QRScan() {
 
   if (hasPermission === null) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center text-white max-w-sm mx-auto px-6">
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+        <div className="text-center text-black dark:text-white max-w-sm mx-auto px-6">
           <QrCode className="h-16 w-16 text-blue-400 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-4">Ready to Scan QR Codes</h2>
           <p className="text-gray-300 mb-6">Tap the button below to start your camera and begin scanning for USV tokens!</p>
@@ -423,7 +423,7 @@ export default function QRScan() {
           <motion.button
             onClick={startCamera}
             data-testid="button-start-camera"
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
+            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-black dark:text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
             whileHover={{ 
               scale: 1.02,
               boxShadow: "0 8px 25px rgba(59, 130, 246, 0.4), 0 4px 15px rgba(147, 51, 234, 0.4)"
@@ -441,8 +441,8 @@ export default function QRScan() {
 
   if (hasPermission === false) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-6">
-        <div className="text-white text-center mb-8">
+      <div className="min-h-screen bg-white dark:bg-black flex flex-col items-center justify-center p-6">
+        <div className="text-black dark:text-white text-center mb-8">
           <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <div className="text-red-500 text-3xl">!</div>
           </div>
@@ -460,7 +460,7 @@ export default function QRScan() {
           >
             <Button
               onClick={requestCameraPermission}
-              className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white rounded-2xl px-8 py-4 font-semibold"
+              className="bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-black dark:text-white rounded-2xl px-8 py-4 font-semibold"
             >
               Try Again
             </Button>
@@ -471,7 +471,7 @@ export default function QRScan() {
   }
 
   return (
-    <div className="min-h-screen bg-black relative">
+    <div className="min-h-screen bg-white dark:bg-black relative">
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-6 pt-12">
         <motion.div
@@ -488,12 +488,12 @@ export default function QRScan() {
             variant="ghost"
             size="sm"
             onClick={() => setLocation('/')}
-            className="text-white bg-black/50 backdrop-blur-sm rounded-full p-3"
+            className="text-black dark:text-white bg-gray-100 dark:bg-black/50 backdrop-blur-sm rounded-full p-3"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
         </motion.div>
-        <h1 className="text-white text-lg font-semibold">Scan QR Code</h1>
+        <h1 className="text-black dark:text-white text-lg font-semibold">Scan QR Code</h1>
         <motion.div
           whileHover={{ 
             scale: 1.1,
@@ -509,7 +509,7 @@ export default function QRScan() {
             variant="ghost"
             size="sm"
             onClick={toggleFlash}
-            className={`text-white bg-black/50 backdrop-blur-sm rounded-full p-3 ${flashOn ? 'bg-yellow-500/30' : ''}`}
+            className={`text-black dark:text-white bg-gray-100 dark:bg-black/50 backdrop-blur-sm rounded-full p-3 ${flashOn ? 'bg-yellow-500/30' : ''}`}
           >
             {flashOn ? <FlashlightOff className="w-5 h-5" /> : <Flashlight className="w-5 h-5" />}
           </Button>
@@ -564,7 +564,7 @@ export default function QRScan() {
             </div>
             
             {/* Instructions */}
-            <p className="text-white text-center mt-6 text-lg max-w-xs mx-auto">
+            <p className="text-black dark:text-white text-center mt-6 text-lg max-w-xs mx-auto">
               Point camera at QR code to earn USV tokens
             </p>
           </div>
@@ -576,9 +576,9 @@ export default function QRScan() {
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="absolute inset-0 flex items-center justify-center z-20 bg-black/90 backdrop-blur-md"
+          className="absolute inset-0 flex items-center justify-center z-20 bg-gray-100 dark:bg-black/90 backdrop-blur-md"
         >
-          <div className="text-center text-white max-w-sm mx-auto px-6">
+          <div className="text-center text-black dark:text-white max-w-sm mx-auto px-6">
             {processing ? (
               // Processing animation
               <div className="flex flex-col items-center justify-center space-y-4">
@@ -607,7 +607,7 @@ export default function QRScan() {
                   className="relative w-32 h-32 mx-auto mb-6"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-20 h-20 text-white" />
+                    <CheckCircle className="w-20 h-20 text-black dark:text-white" />
                   </div>
                   {/* Coin particles */}
                   {[...Array(8)].map((_, i) => (
@@ -644,7 +644,7 @@ export default function QRScan() {
                   <div className="bg-gradient-to-r from-pink-600/20 to-purple-600/20 rounded-2xl p-6 border border-pink-500/30">
                     <p className="text-gray-300 text-sm mb-2">You received</p>
                     <p className="text-5xl font-bold text-green-400">+{claimResult.tokens}</p>
-                    <p className="text-2xl font-semibold text-white mt-1">USV Tokens</p>
+                    <p className="text-2xl font-semibold text-black dark:text-white mt-1">USV Tokens</p>
                     {claimResult.product && claimResult.product !== 'USV Token' && (
                       <p className="text-sm text-gray-400 mt-3">From: {claimResult.product}</p>
                     )}

@@ -87,7 +87,7 @@ export default function TokenSelection() {
   };
 
   return (
-    <div className="min-h-screen bg-black relative pb-20">
+    <div className="min-h-screen bg-white dark:bg-black relative pb-20">
       <BottomNavigation />
       
       <div className="px-6 pt-12">
@@ -101,7 +101,7 @@ export default function TokenSelection() {
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h1 className="text-white text-lg font-semibold">Select Token to Send</h1>
+          <h1 className="text-black dark:text-white text-lg font-semibold">Select Token to Send</h1>
           <div></div>
         </div>
 
@@ -150,7 +150,7 @@ export default function TokenSelection() {
                       <div className="flex items-center space-x-3">
                         {getTokenIcon(token.symbol, "w-10 h-10")}
                         <div>
-                          <h3 className="text-white font-medium text-base">{token.name}</h3>
+                          <h3 className="text-black dark:text-white font-medium text-base">{token.name}</h3>
                           <p className="text-gray-400 text-sm">
                             Balance: {token.balance.toFixed(token.symbol === 'SOL' ? 6 : 2)} {token.symbol}
                           </p>
@@ -166,7 +166,7 @@ export default function TokenSelection() {
                           e.stopPropagation();
                           handleTokenSelect(token);
                         }}
-                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-black dark:text-white"
                         data-testid={`button-send-${token.symbol.toLowerCase()}`}
                       >
                         <Send className="w-3 h-3 mr-1" />
