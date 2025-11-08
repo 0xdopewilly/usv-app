@@ -20,6 +20,7 @@ import SavedAddresses from "./pages/SavedAddresses";
 import TransactionHistory from "./pages/TransactionHistory";
 import TransactionDetail from "./pages/TransactionDetail";
 import QRScan from "./pages/QRScan";
+import Chat from "./pages/Chat";
 import NotFound from "./pages/NotFound";
 
 // Optimized animation variants - GPU-accelerated properties
@@ -127,6 +128,11 @@ function AppRouter() {
           <Route path="/saved-addresses">
             <PageTransition pageKey="saved-addresses">
               <SavedAddresses />
+            </PageTransition>
+          </Route>
+          <Route path="/chat">
+            <PageTransition pageKey="chat">
+              <Chat />
             </PageTransition>
           </Route>
           <Route>

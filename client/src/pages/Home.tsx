@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, MessageCircle } from 'lucide-react';
 import { LineChart, Line, YAxis, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
@@ -471,6 +471,21 @@ export default function Home() {
           </motion.div>
         </div>
       </motion.div>
+
+      {/* Floating Chat Button */}
+      <motion.button
+        onClick={() => setLocation('/chat')}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: "spring", stiffness: 260, damping: 20 }}
+        className="fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg flex items-center justify-center"
+        style={{ filter: 'drop-shadow(0 4px 12px rgba(236, 72, 153, 0.5))' }}
+        data-testid="button-chat-floating"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </motion.button>
     </div>
   );
 }
