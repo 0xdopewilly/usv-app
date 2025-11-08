@@ -1,5 +1,5 @@
 import { useLocation } from 'wouter';
-import { Home, QrCode, Clock, Settings, TrendingUp, Wallet } from 'lucide-react';
+import { Home, QrCode, MapPin, Settings, TrendingUp, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ export default function BottomNavigation() {
     { path: '/', icon: Home, label: t('nav.home') },
     { path: '/wallet', icon: Wallet, label: t('nav.wallet') },
     { path: '/qr-scan', icon: QrCode, label: t('nav.scan'), isCenter: true },
-    { path: '/transaction-history', icon: Clock, label: t('nav.history') },
+    { path: '/stores', icon: MapPin, label: 'Stores' },
     { path: '/settings', icon: Settings, label: t('nav.settings') },
   ];
 

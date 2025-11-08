@@ -18,7 +18,7 @@ import TokenSelection from "./pages/TokenSelection";
 import SendTokens from "./pages/Send";
 import Settings from "./pages/Settings";
 import SavedAddresses from "./pages/SavedAddresses";
-import TransactionHistory from "./pages/TransactionHistory";
+import StoreLocator from "./pages/StoreLocator";
 import TransactionDetail from "./pages/TransactionDetail";
 import QRScan from "./pages/QRScan";
 import Chat from "./pages/Chat";
@@ -111,9 +111,9 @@ function AppRouter() {
               <QRScan />
             </PageTransition>
           </Route>
-          <Route path="/transaction-history">
-            <PageTransition pageKey="transaction-history">
-              <TransactionHistory />
+          <Route path="/stores">
+            <PageTransition pageKey="stores">
+              <StoreLocator />
             </PageTransition>
           </Route>
           <Route path="/transaction/:id">
