@@ -118,17 +118,24 @@ export default function Settings() {
       const hasPermission = await NotificationService.requestPermission();
       if (!hasPermission) {
         toast({
-          title: 'Permission Denied',
-          description: 'Please enable notifications in your browser settings',
+          title: '🔔 Permission Denied',
+          description: 'Please enable notifications in your browser settings to receive transaction alerts',
           variant: 'destructive',
         });
         return;
       }
       
+      // Show success toast first
+      toast({
+        title: '🔔 Notifications Enabled!',
+        description: 'You\'ll receive alerts for all transactions',
+      });
+      
       // Show test notification
-      await NotificationService.showNotification('Notifications Enabled', {
-        body: 'You will now receive transaction notifications',
+      await NotificationService.showNotification('🎉 Notifications Enabled', {
+        body: 'You\'ll receive push notifications for all your transactions!',
         tag: 'settings',
+        requireInteraction: false,
       });
     }
     
