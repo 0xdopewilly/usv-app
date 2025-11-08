@@ -541,11 +541,11 @@ export default function Settings() {
                   {theme === 'dark' ? (
                     <Moon className="w-5 h-5 text-purple-400" />
                   ) : (
-                    <Sun className="w-5 h-5 text-yellow-400" />
+                    <Sun className="w-5 h-5 text-yellow-500" />
                   )}
                   <div className="text-left">
-                    <p className="font-medium text-black dark:text-white">Theme</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="font-medium text-gray-800 dark:text-white">Theme</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
                     </p>
                   </div>
@@ -554,7 +554,7 @@ export default function Settings() {
                   checked={theme === 'light'}
                   onCheckedChange={toggleTheme}
                   onClick={(e) => e.stopPropagation()}
-                  className="data-[state=checked]:bg-yellow-400 pointer-events-none"
+                  className="data-[state=checked]:bg-yellow-500 data-[state=unchecked]:bg-purple-400"
                 />
               </button>
             </div>

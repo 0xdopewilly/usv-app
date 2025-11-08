@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Route, Switch, Router, useLocation } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
+import { MessageCircle } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { queryClient } from "@/lib/queryClient";
@@ -148,11 +149,27 @@ function AppRouter() {
 
 function AuthenticatedLayout() {
   const { isAuthenticated } = useAuth();
+  const [location, setLocation] = useLocation();
   
   return (
     <PasscodeLock>
       <AppRouter />
       {isAuthenticated && <BottomNavigation />}
+      {isAuthenticated && location !== '/chat' && (
+        <motion.button
+          onClick={() => setLocation('/chat')}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ type: "spring", stiffness: 260, damping: 20 }}
+          className="fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg flex items-center justify-center"
+          style={{ filter: 'drop-shadow(0 4px 12px rgba(236, 72, 153, 0.5))' }}
+          data-testid="button-chat-floating"
+        >
+          <MessageCircle className="w-6 h-6" />
+        </motion.button>
+      )}
       <Toaster />
     </PasscodeLock>
   );
