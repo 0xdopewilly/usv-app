@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { clearPasscodeUnlock } from '@/lib/passcode';
+import i18n from '@/lib/i18n';
 
 interface User {
   id: string;
@@ -62,6 +63,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     console.log('🔍 User Query Debug:', { user, isLoading, error, hasToken: !!token });
   }, [user, isLoading, error, token]);
+
+  // Sync language with user preference on login/load
+  useEffect(() => {
+    if (user?.preferredLanguage) {
+      const currentLang = i18n.language;
+      if (currentLang !== user.preferredLanguage) {
+        i18n.changeLanguage(user.preferredLanguage);
+        localStorage.setItem('i18nextLng', user.preferredLanguage);
+        console.log(`🌐 Language synced to user preference: ${user.preferredLanguage}`);
+      }
+    }
+  }, [user?.preferredLanguage]);
 
   const loginMutation = useMutation({
     mutationFn: async ({ email, password }: { email: string; password: string }) => {
