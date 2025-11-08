@@ -1,20 +1,40 @@
 export class NotificationService {
+  static isMobile(): boolean {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+
   static async requestPermission(): Promise<boolean> {
+    // Check if Notification API is supported
     if (!('Notification' in window)) {
-      console.warn('Notifications not supported');
+      console.warn('❌ Notifications not supported on this device');
+      return false;
+    }
+
+    // iOS Safari doesn't support Notifications API properly
+    const isIOSSafari = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.navigator.standalone;
+    if (isIOSSafari) {
+      console.warn('❌ iOS Safari does not support Web Push Notifications. Use as PWA (Add to Home Screen) for notifications.');
       return false;
     }
 
     if (Notification.permission === 'granted') {
+      console.log('✅ Notification permission already granted');
       return true;
     }
 
     if (Notification.permission === 'denied') {
+      console.warn('❌ Notification permission denied');
       return false;
     }
 
-    const permission = await Notification.requestPermission();
-    return permission === 'granted';
+    try {
+      const permission = await Notification.requestPermission();
+      console.log(`🔔 Notification permission: ${permission}`);
+      return permission === 'granted';
+    } catch (error) {
+      console.error('❌ Error requesting notification permission:', error);
+      return false;
+    }
   }
 
   static hasPermission(): boolean {

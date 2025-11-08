@@ -115,6 +115,27 @@ export default function Settings() {
   const handleToggle = async (key: keyof typeof localSettings, value: boolean) => {
     // Request notification permission if enabling push notifications
     if (key === 'pushNotifications' && value) {
+      // Check if it's iOS Safari
+      const isIOSSafari = /iPhone|iPad|iPod/.test(navigator.userAgent) && !(window.navigator as any).standalone;
+      
+      if (isIOSSafari) {
+        toast({
+          title: '📱 iOS Safari Limitation',
+          description: 'Push notifications require installing the app to your Home Screen first. Tap Share → Add to Home Screen.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      if (!('Notification' in window)) {
+        toast({
+          title: '❌ Not Supported',
+          description: 'Your browser doesn\'t support push notifications',
+          variant: 'destructive',
+        });
+        return;
+      }
+
       const hasPermission = await NotificationService.requestPermission();
       if (!hasPermission) {
         toast({
@@ -547,7 +568,7 @@ export default function Settings() {
         >
           <Card className="bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
             <div className="p-4 border-b border-dark-accent">
-              <h3 className="font-semibold text-black dark:text-white">Appearance</h3>
+              <h3 className="font-semibold text-black dark:text-white">{t('settings.appearance')}</h3>
             </div>
             <div className="p-4">
               <button 
@@ -561,9 +582,9 @@ export default function Settings() {
                     <Sun className="w-5 h-5 text-yellow-500" />
                   )}
                   <div className="text-left">
-                    <p className="font-medium text-gray-800 dark:text-white">Theme</p>
+                    <p className="font-medium text-gray-800 dark:text-white">{t('settings.theme')}</p>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                      {theme === 'dark' ? t('settings.darkMode') : t('settings.lightMode')}
                     </p>
                   </div>
                 </div>
@@ -651,7 +672,7 @@ export default function Settings() {
                   className="w-full text-xs bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30 hover:bg-purple-500/20"
                   data-testid="button-test-notification"
                 >
-                  Send Test Notification
+                  {t('settings.testNotification')}
                 </Button>
               )}
             </div>
@@ -679,7 +700,7 @@ export default function Settings() {
         >
           <Card className="bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 rounded-[32px] overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300">
             <div className="p-4 border-b border-dark-accent">
-              <h3 className="font-semibold text-black dark:text-white">Security</h3>
+              <h3 className="font-semibold text-black dark:text-white">{t('settings.security')}</h3>
             </div>
             <div className="p-4 space-y-4">
               <motion.div
@@ -698,7 +719,7 @@ export default function Settings() {
                   data-testid="button-2fa-setup"
                 >
                   <div className="flex items-center justify-between w-full">
-                    <span>Two-Factor Authentication</span>
+                    <span>{t('settings.twoFactor')}</span>
                     <div className="flex items-center gap-2">
                       {user?.twoFactorEnabled && (
                         <span className="text-xs text-green-400">Enabled</span>
@@ -725,7 +746,7 @@ export default function Settings() {
                   data-testid="button-setup-passcode"
                 >
                   <div className="flex items-center justify-between w-full">
-                    <span>{(user as any)?.hasPasscode ? 'Change Passcode' : 'Setup Passcode'}</span>
+                    <span>{(user as any)?.hasPasscode ? t('settings.changePasscode') : t('settings.setupPasscode')}</span>
                     <div className="flex items-center gap-2">
                       {(user as any)?.hasPasscode ? (
                         <span className="text-xs text-green-400">Enabled</span>
@@ -753,7 +774,7 @@ export default function Settings() {
               className="w-full text-left py-2 text-gray-700 dark:text-gray-300 hover:bg-dark-accent"
               data-testid="button-export-data"
             >
-              Export My Data
+              {t('settings.exportMyData')}
             </Button>
             <Button
               variant="ghost"
@@ -767,7 +788,7 @@ export default function Settings() {
               className="w-full text-left py-2 text-gray-700 dark:text-gray-300 hover:bg-dark-accent"
               data-testid="button-terms-of-service"
             >
-              Terms of Service
+              {t('settings.termsOfService')}
             </Button>
             <motion.div
               whileHover={{ 
@@ -784,7 +805,7 @@ export default function Settings() {
                 className="w-full text-left py-2 text-error-red hover:bg-transparent hover:text-error-red"
                 data-testid="button-logout"
               >
-                Log Out
+                {t('settings.logOut')}
               </Button>
             </motion.div>
           </div>
@@ -796,7 +817,7 @@ export default function Settings() {
         <DialogContent className="bg-gray-900 border-gray-700 text-black dark:text-white max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {twoFAStep === 'disable' ? 'Disable Two-Factor Authentication' : 'Enable Two-Factor Authentication'}
+              {twoFAStep === 'disable' ? t('settings.disable2FA') : t('settings.enable2FA')}
             </DialogTitle>
             <DialogDescription className="text-gray-600 dark:text-gray-400">
               {twoFAStep === 'setup' && 'Setting up 2FA...'}

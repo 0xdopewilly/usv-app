@@ -65,8 +65,20 @@ const resources = {
         savedAddresses: 'Saved Addresses',
         manageAddresses: 'Manage your saved addresses',
         logout: 'Logout',
+        logOut: 'Log Out',
         updateSuccess: 'Settings Updated',
-        updateFailed: 'Update Failed'
+        updateFailed: 'Update Failed',
+        appearance: 'Appearance',
+        theme: 'Theme',
+        lightMode: 'Light Mode',
+        darkMode: 'Dark Mode',
+        setupPasscode: 'Setup Passcode',
+        changePasscode: 'Change Passcode',
+        exportMyData: 'Export My Data',
+        termsOfService: 'Terms of Service',
+        testNotification: 'Send Test Notification',
+        enable2FA: 'Enable Two-Factor Authentication',
+        disable2FA: 'Disable Two-Factor Authentication'
       },
       // Saved Addresses
       savedAddresses: {
@@ -150,8 +162,20 @@ const resources = {
         savedAddresses: 'Direcciones Guardadas',
         manageAddresses: 'Administra tus direcciones guardadas',
         logout: 'Cerrar Sesión',
+        logOut: 'Cerrar Sesión',
         updateSuccess: 'Ajustes Actualizados',
-        updateFailed: 'Actualización Fallida'
+        updateFailed: 'Actualización Fallida',
+        appearance: 'Apariencia',
+        theme: 'Tema',
+        lightMode: 'Modo Claro',
+        darkMode: 'Modo Oscuro',
+        setupPasscode: 'Configurar Código',
+        changePasscode: 'Cambiar Código',
+        exportMyData: 'Exportar Mis Datos',
+        termsOfService: 'Términos de Servicio',
+        testNotification: 'Enviar Notificación de Prueba',
+        enable2FA: 'Habilitar Autenticación de Dos Factores',
+        disable2FA: 'Deshabilitar Autenticación de Dos Factores'
       },
       // Saved Addresses
       savedAddresses: {
@@ -235,8 +259,20 @@ const resources = {
         savedAddresses: 'Adresses Sauvegardées',
         manageAddresses: 'Gérer vos adresses sauvegardées',
         logout: 'Déconnexion',
+        logOut: 'Déconnexion',
         updateSuccess: 'Paramètres Mis à Jour',
-        updateFailed: 'Mise à Jour Échouée'
+        updateFailed: 'Mise à Jour Échouée',
+        appearance: 'Apparence',
+        theme: 'Thème',
+        lightMode: 'Mode Clair',
+        darkMode: 'Mode Sombre',
+        setupPasscode: 'Configurer le Code',
+        changePasscode: 'Changer le Code',
+        exportMyData: 'Exporter Mes Données',
+        termsOfService: 'Conditions d\'Utilisation',
+        testNotification: 'Envoyer Notification de Test',
+        enable2FA: 'Activer l\'Authentification à Deux Facteurs',
+        disable2FA: 'Désactiver l\'Authentification à Deux Facteurs'
       },
       // Saved Addresses
       savedAddresses: {
