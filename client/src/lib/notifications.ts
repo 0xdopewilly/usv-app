@@ -11,7 +11,7 @@ export class NotificationService {
     }
 
     // iOS Safari doesn't support Notifications API properly
-    const isIOSSafari = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.navigator.standalone;
+    const isIOSSafari = /iPhone|iPad|iPod/.test(navigator.userAgent) && !(window.navigator as any).standalone;
     if (isIOSSafari) {
       console.warn('❌ iOS Safari does not support Web Push Notifications. Use as PWA (Add to Home Screen) for notifications.');
       return false;
