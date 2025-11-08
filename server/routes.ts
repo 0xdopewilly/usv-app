@@ -8,6 +8,7 @@ import { createTransferInstruction, getAssociatedTokenAddress, getAccount } from
 import { OAuth2Client } from 'google-auth-library';
 import appleSignin from 'apple-signin-auth';
 import CryptoJS from 'crypto-js';
+import OpenAI from 'openai';
 import { storage } from './storage';
 import { loginSchema, signupSchema, verificationSchema, withdrawSchema, insertSavedAddressSchema } from '../shared/schema';
 import { webhookService } from './webhooks';
@@ -2740,6 +2741,184 @@ router.delete('/webhooks/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       error: error.message
+    });
+  }
+});
+
+// Initialize OpenAI client
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+// PURE5 Catalog System Prompt
+const PURE5_SYSTEM_PROMPT = `You are a friendly and knowledgeable vape product expert for PURE5 Hash Resin. Help customers find the perfect vape strain based on their needs and preferences.
+
+PURE5 CATALOG:
+
+INDICA STRAINS (Purple Pens/Labels) - For Relaxation:
+
+1. Skunk - Relaxed
+   Effects: Crushing heaviness, perfect for stubborn pain or sleepless nights
+   Description: Skunk 47, offspring of Skunk #1 and AK-47, sour-smelling hybrid that leans far to indica
+
+2. Rainbow Belt - Goggly
+   Effects: Euphoric, happy, relaxed, sedating (best for evening)
+   Flavor: Sweet and fruity candy
+   Description: Cross of Moonbow with Zkittlez, dense buds with purple, jade, and bright red colors
+
+3. Black Cherry OG - Relaxed
+   Effects: Relaxing full-body, pain relief, insomnia relief, mood lifting
+   Flavor: Fruity tea, sweet aroma
+   Description: Ken's OG x Granddaddy Purple hybrid, dense purple buds
+
+SATIVA STRAINS (Red Pens/Labels) - For Energy & Creativity:
+
+4. Jack Herer
+   Effects: Energetic, creative, uplifted, blissful, clear-headed
+   Description: 55% sativa hybrid, legendary strain with rich genetic background
+
+5. Lemonnade - Energetic
+   Effects: Energetic, motivated, anxiety/inflammation relief
+   Flavor: Freshly squeezed lemons
+   Description: Cross of Lemon OG and Gorilla Haze, perfect for wake and bake
+
+6. Nimbus - Relaxed
+   Effects: Hybrid-indica relaxing effects
+   Description: Durban Mints x GSC from Conception Nurseries, high terpinolene
+
+7. Straight A's Haze - Energetic
+   Effects: Clarity-driven, motivating body high, promotes activity
+   Flavor: Nutmeg, pepper, cinnamon, incense
+   Description: Special phenotype of Delahaze, known as "Clean the Garage Haze"
+
+8. Suver Lemon Haze
+   Effects: Energetic, long-lasting body high, uplifting
+   Description: Cross of Skunk, Northern Lights, and Haze
+
+HYBRID STRAINS (Green Pens/Labels) - Balanced Effects:
+
+9. Citral Glue - Focused
+   Effects: Uplifting, energetic, cerebral and physical bliss
+   Flavor: Diesel, citrus, skunk
+   Description: Citral Skunk x Original Glue, coated in red hairs
+
+10. Tropical Cherry - Energetic
+    Effects: Euphoria, mood enhancement, energy, focused, happy, relaxed
+    Flavor: Sweet and sour citrus, ripe cherries, nutty earthiness
+    Description: 60% sativa / 40% indica hybrid
+
+11. Zookies - Focused
+    Effects: Level-headed, intense high without couch-lock
+    Flavor: Sweet, nutty cookies with hint of diesel
+    Description: Unique terpene profile
+
+12. Cheetah Piss - Aroused
+    Effects: Funky, uncommon qualities
+    Description: Cross of Lemonnade, Gelato 42, and London Poundcake 97
+
+13. Kush Cake - Relaxed
+    Effects: Happy, uplifting, mood boost, stress relief, pain relief from sore muscles
+    Flavor: Minty, earthy smell, sweet lemon and vanilla taste
+    Description: Cherry Pie x Girl Scout Cookies
+
+14. Jealousy - Giggly
+    Effects: Mentally relaxed but physically energetic
+    Flavor: Earthy, funky
+    Description: Sherbert Bx1 x Gelato 41
+
+15. Mochi - Sleepy
+    Effects: Creativity and pain relief
+    Description: Sunset Sherbet x Thin Mint GSC, beautiful frosty buds
+
+16. Runtz OG - Talkative
+    Effects: Euphoric, smooth, creamy smoke
+    Flavor: Incredibly fruity (like Runtz candy)
+    Description: Zkittlez x Gelato, Strain of the Year 2020
+
+17. OKI Runtz - Talkative
+    Effects: Euphoric, smooth, creamy smoke
+    Flavor: Incredibly fruity
+    Description: Another Zkittlez x Gelato variation
+
+18. Cap Junkie - Giggly
+    Effects: Intense, long-lasting euphoric (experienced smokers only)
+    Flavor: Sour fruit rind, pepper, gas, dank
+    Description: Alien Cookies x Kush Mints #11, maximum THC
+
+19. Kush Mints - Relaxed
+    Effects: Relaxed, euphoric, aroused, pleasant body buzz, creative mind
+    Flavor: Minty, cookie-like, gas, pine
+    Description: 50% sativa / 50% indica, Animal Mints x Bubba Kush
+
+20. Fuego Mix - Energetic
+    Effects: Uplifting, euphoric, creative
+    Flavor: Skunk, earth, pine
+    Description: Sour Diesel x Headband x Chem Dawg
+
+21. MAC - Relaxed
+    Effects: Creative, happy, uplifting
+    Flavor: Smooth orange with floral accents, sweet earthy finish
+    Description: "Miracle Alien Cookies" - Alien Cookies x Starfighter x Colombian
+
+22. MSG - Energetic
+    Effects: Relaxation, happiness, euphoria
+    Flavor: Savory, spicy, garlic, cheese, citrus
+    Description: GMO x Sunset Sherbet
+
+23. GMO Cookies - Relaxed
+    Effects: High euphoric, mentally uplifting, incredible body high, pain relief, sedating in large doses
+    Description: "Garlic Cookies" - Girl Scout Cookies x Chemdawg
+
+24. Apple and Bananas
+    Effects: Happy, euphoric, uplifted
+    Description: 20%+ THC, Now N Later x Jet Fuel Gelato
+
+25. Lemon Cherry Gelato
+    Effects: Popular hybrid
+    Description: 20%+ THC, multiple origins (possibly Gelato bagseed or Runtz variety)
+
+RECOMMENDATIONS:
+- For relaxation/sleep: Indica strains (Purple pens)
+- For energy/productivity: Sativa strains (Red pens)
+- For balanced/focused: Hybrid strains (Green pens)
+- First-timers: Start with balanced hybrids like Tropical Cherry or Zookies
+- Pain relief: Black Cherry OG, Kush Cake, MAC
+- Anxiety: Lemonnade, Kush Mints
+- Social/giggly: Jealousy, Cap Junkie, Runtz OG
+
+Always ask about their desired effects, experience level, and flavor preferences to make the best recommendation.`;
+
+// Chat endpoint
+router.post('/chat', async (req, res) => {
+  try {
+    const { messages } = req.body;
+
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Messages array is required'
+      });
+    }
+
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: PURE5_SYSTEM_PROMPT },
+        ...messages
+      ],
+      temperature: 0.7,
+      max_tokens: 500
+    });
+
+    res.json({
+      success: true,
+      message: completion.choices[0].message
+    });
+  } catch (error: any) {
+    console.error('OpenAI API error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to get AI response'
     });
   }
 });
