@@ -615,9 +615,30 @@ export default function Settings() {
           </div>
           <div className="p-4 space-y-4">
             <div className="flex items-center justify-between">
-              <Label htmlFor="push-notifications" className="text-gray-700 dark:text-gray-300">
-                {t('settings.pushNotifications')}
-              </Label>
+              <div className="flex-1">
+                <Label htmlFor="push-notifications" className="text-gray-700 dark:text-gray-300 block mb-1">
+                  {t('settings.pushNotifications')}
+                </Label>
+                {localSettings.pushNotifications && NotificationService.hasPermission() && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={async () => {
+                      await NotificationService.showNotification('🔔 Test Notification', {
+                        body: 'Push notifications are working! You\'ll receive alerts for transactions.',
+                        tag: 'test',
+                      });
+                      toast({
+                        title: 'Test Sent!',
+                        description: 'Check for the notification above',
+                      });
+                    }}
+                    className="mt-2 text-xs bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30 hover:bg-purple-500/20"
+                  >
+                    Send Test Notification
+                  </Button>
+                )}
+              </div>
               <Switch
                 id="push-notifications"
                 checked={localSettings.pushNotifications}
