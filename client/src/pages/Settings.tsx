@@ -141,8 +141,14 @@ export default function Settings() {
     const updates = { preferredLanguage: language };
     setLocalSettings(prev => ({ ...prev, ...updates }));
     updateProfileMutation.mutate(updates);
-    // Change i18n language
+    // Change i18n language and save to localStorage for persistence
     i18n.changeLanguage(language);
+    localStorage.setItem('i18nextLng', language);
+    
+    toast({
+      title: t('settings.updateSuccess'),
+      description: `Language changed to ${language === 'en' ? 'English' : language === 'es' ? 'Español' : 'Français'}`,
+    });
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -506,16 +512,20 @@ export default function Settings() {
           </div>
           <div className="p-4">
             <Select
-              value={localSettings.preferredLanguage}
+              value={i18n.language || localSettings.preferredLanguage}
               onValueChange={handleLanguageChange}
             >
-              <SelectTrigger className="w-full bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 text-black dark:text-white rounded-[20px] focus:ring-2 focus:ring-cyan-400 transition-all duration-200 focus:scale-[1.02]">
-                <SelectValue />
+              <SelectTrigger className="w-full bg-gray-100 dark:bg-black/40 backdrop-blur-sm border-2 border-purple-500/30 text-gray-800 dark:text-white rounded-[20px] focus:ring-2 focus:ring-cyan-400 transition-all duration-200 focus:scale-[1.02]">
+                <SelectValue placeholder="Select Language">
+                  {i18n.language === 'en' && 'English 🇺🇸'}
+                  {i18n.language === 'es' && 'Español 🇪🇸'}
+                  {i18n.language === 'fr' && 'Français 🇫🇷'}
+                </SelectValue>
               </SelectTrigger>
-              <SelectContent className="bg-dark-accent border-gray-600">
-                <SelectItem value="en">English</SelectItem>
-                <SelectItem value="es">Español</SelectItem>
-                <SelectItem value="fr">Français</SelectItem>
+              <SelectContent className="bg-gray-100 dark:bg-gray-900 border-gray-300 dark:border-gray-700">
+                <SelectItem value="en" className="text-gray-800 dark:text-white">English 🇺🇸</SelectItem>
+                <SelectItem value="es" className="text-gray-800 dark:text-white">Español 🇪🇸</SelectItem>
+                <SelectItem value="fr" className="text-gray-800 dark:text-white">Français 🇫🇷</SelectItem>
               </SelectContent>
             </Select>
           </div>

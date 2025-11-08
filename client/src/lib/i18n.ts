@@ -257,6 +257,7 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
+    lng: localStorage.getItem('i18nextLng') || 'en',
     interpolation: {
       escapeValue: false
     },
