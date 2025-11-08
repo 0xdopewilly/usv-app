@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
 import PriceUpdateIndicator from '@/components/PriceUpdateIndicator';
 import { useAuth } from '@/lib/auth';
+import { useTranslation } from 'react-i18next';
 // Keep original Solana logo
 const solanaLogoSrc = '/solana-logo.png';
 // New USV Logo
@@ -21,6 +22,7 @@ interface ChartDataPoint {
 export default function Home() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [solanaChartData, setSolanaChartData] = useState<ChartDataPoint[]>([]);
   const [prices, setPrices] = useState<AllPricesResponse | null>(null);
@@ -144,7 +146,7 @@ export default function Home() {
               transition={{ delay: 0.2, duration: 0.5 }}
             >
               <p className="text-gray-600 dark:text-white/90 text-sm">
-                Welcome back,
+                {t('home.welcome')},
               </p>
               <p className="text-gray-900 dark:text-white font-semibold text-base">{user?.fullName?.split(' ')[0] || 'Amanda'}</p>
             </motion.div>

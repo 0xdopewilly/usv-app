@@ -2,16 +2,18 @@ import { useLocation } from 'wouter';
 import { Home, QrCode, Clock, Settings, TrendingUp, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export default function BottomNavigation() {
   const [location, setLocation] = useLocation();
+  const { t } = useTranslation();
 
   const navItems = [
-    { path: '/', icon: Home, label: 'Home' },
-    { path: '/wallet', icon: Wallet, label: 'Wallet' },
-    { path: '/qr-scan', icon: QrCode, label: 'Scan', isCenter: true },
-    { path: '/transaction-history', icon: Clock, label: 'History' },
-    { path: '/settings', icon: Settings, label: 'Settings' },
+    { path: '/', icon: Home, label: t('nav.home') },
+    { path: '/wallet', icon: Wallet, label: t('nav.wallet') },
+    { path: '/qr-scan', icon: QrCode, label: t('nav.scan'), isCenter: true },
+    { path: '/transaction-history', icon: Clock, label: t('nav.history') },
+    { path: '/settings', icon: Settings, label: t('nav.settings') },
   ];
 
   const shouldShowNavigation = navItems.some(item => location === item.path);

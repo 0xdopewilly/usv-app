@@ -621,38 +621,39 @@ export default function Settings() {
             <h3 className="font-semibold text-black dark:text-white">{t('settings.preferences')}</h3>
           </div>
           <div className="p-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <Label htmlFor="push-notifications" className="text-gray-700 dark:text-gray-300 block mb-1">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="push-notifications" className="text-gray-700 dark:text-gray-300">
                   {t('settings.pushNotifications')}
                 </Label>
-                {localSettings.pushNotifications && NotificationService.hasPermission() && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={async () => {
-                      await NotificationService.showNotification('🔔 Test Notification', {
-                        body: 'Push notifications are working! You\'ll receive alerts for transactions.',
-                        tag: 'test',
-                      });
-                      toast({
-                        title: 'Test Sent!',
-                        description: 'Check for the notification above',
-                      });
-                    }}
-                    className="mt-2 text-xs bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30 hover:bg-purple-500/20"
-                  >
-                    Send Test Notification
-                  </Button>
-                )}
+                <Switch
+                  id="push-notifications"
+                  checked={localSettings.pushNotifications}
+                  onCheckedChange={(checked) => handleToggle('pushNotifications', checked)}
+                  className="data-[state=checked]:bg-cyan-400"
+                  data-testid="switch-push-notifications"
+                />
               </div>
-              <Switch
-                id="push-notifications"
-                checked={localSettings.pushNotifications}
-                onCheckedChange={(checked) => handleToggle('pushNotifications', checked)}
-                className="data-[state=checked]:bg-cyan-400"
-                data-testid="switch-push-notifications"
-              />
+              {localSettings.pushNotifications && NotificationService.hasPermission() && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={async () => {
+                    await NotificationService.showNotification('🔔 Test Notification', {
+                      body: 'Push notifications are working! You\'ll receive alerts for transactions.',
+                      tag: 'test',
+                    });
+                    toast({
+                      title: 'Test Sent!',
+                      description: 'Check for the notification above',
+                    });
+                  }}
+                  className="w-full text-xs bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30 hover:bg-purple-500/20"
+                  data-testid="button-test-notification"
+                >
+                  Send Test Notification
+                </Button>
+              )}
             </div>
             <div className="flex items-center justify-between">
               <Label htmlFor="email-notifications" className="text-gray-700 dark:text-gray-300">

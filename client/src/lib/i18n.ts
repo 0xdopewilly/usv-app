@@ -8,6 +8,9 @@ const resources = {
       // Navigation
       nav: {
         home: 'Home',
+        wallet: 'Wallet',
+        scan: 'Scan',
+        history: 'History',
         earn: 'Earn',
         send: 'Send',
         nfts: 'NFTs',
@@ -90,6 +93,9 @@ const resources = {
       // Navigation
       nav: {
         home: 'Inicio',
+        wallet: 'Billetera',
+        scan: 'Escanear',
+        history: 'Historial',
         earn: 'Ganar',
         send: 'Enviar',
         nfts: 'NFTs',
@@ -172,6 +178,9 @@ const resources = {
       // Navigation
       nav: {
         home: 'Accueil',
+        wallet: 'Portefeuille',
+        scan: 'Scanner',
+        history: 'Historique',
         earn: 'Gagner',
         send: 'Envoyer',
         nfts: 'NFTs',
