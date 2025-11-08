@@ -393,7 +393,7 @@ export default function Home() {
         transition={{ delay: 0.8, duration: 0.6 }}
         className="px-6"
       >
-        <h2 className="text-black dark:text-white text-lg font-semibold mb-4">Your Asset</h2>
+        <h2 className="text-black dark:text-white text-lg font-semibold mb-4">{t('home.yourAsset')}</h2>
         
         <div className="space-y-3">
           {/* USV Token Row */}
