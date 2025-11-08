@@ -448,11 +448,11 @@ export default function Settings() {
                 <div className="flex items-center space-x-4">
                   <div className="text-center">
                     <p className="text-black dark:text-white font-bold text-sm">{user?.balance?.toFixed(0) || '4,216'}</p>
-                    <p className="text-gray-400 text-xs">USV Balance</p>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs">USV Balance</p>
                   </div>
                   <div className="text-center">
                     <p className="text-black dark:text-white font-bold text-sm">{user?.stakedBalance?.toFixed(0) || '850'}</p>
-                    <p className="text-gray-400 text-xs">Staked</p>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs">Staked</p>
                   </div>
                 </div>
               </div>
@@ -478,7 +478,7 @@ export default function Settings() {
                   {uploadProfilePictureMutation.isPending ? 'Uploading...' : 'Change Profile Picture'}
                 </Button>
               </motion.div>
-              <p className="text-gray-400 text-xs text-center">JPG, PNG or GIF (max 5MB)</p>
+              <p className="text-gray-600 dark:text-gray-400 text-xs text-center">JPG, PNG or GIF (max 5MB)</p>
             </div>
             
             {/* Hidden File Input */}
@@ -586,8 +586,8 @@ export default function Settings() {
               className="w-full p-4 text-left flex items-center justify-between hover:bg-transparent"
               data-testid="button-address-book"
             >
-              <span className="text-gray-300">{t('settings.manageAddresses')}</span>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
+              <span className="text-gray-700 dark:text-gray-300">{t('settings.manageAddresses')}</span>
+              <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </Button>
           </motion.div>
         </Card>
@@ -605,7 +605,7 @@ export default function Settings() {
           </div>
           <div className="p-4 space-y-4">
             <div className="flex items-center justify-between">
-              <Label htmlFor="push-notifications" className="text-gray-300">
+              <Label htmlFor="push-notifications" className="text-gray-700 dark:text-gray-300">
                 {t('settings.pushNotifications')}
               </Label>
               <Switch
@@ -617,7 +617,7 @@ export default function Settings() {
               />
             </div>
             <div className="flex items-center justify-between">
-              <Label htmlFor="email-notifications" className="text-gray-300">
+              <Label htmlFor="email-notifications" className="text-gray-700 dark:text-gray-300">
                 {t('settings.emailNotifications')}
               </Label>
               <Switch
@@ -655,7 +655,7 @@ export default function Settings() {
                 <Button
                   variant="ghost"
                   onClick={handle2FAClick}
-                  className="w-full text-left py-2 text-gray-300 flex items-center justify-between hover:bg-transparent"
+                  className="w-full text-left py-2 text-gray-700 dark:text-gray-300 flex items-center justify-between hover:bg-transparent"
                   data-testid="button-2fa-setup"
                 >
                   <div className="flex items-center justify-between w-full">
@@ -664,7 +664,7 @@ export default function Settings() {
                       {user?.twoFactorEnabled && (
                         <span className="text-xs text-green-400">Enabled</span>
                       )}
-                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                      <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                     </div>
                   </div>
                 </Button>
@@ -682,7 +682,7 @@ export default function Settings() {
                 <Button
                   variant="ghost"
                   onClick={handlePasscodeSetup}
-                  className="w-full text-left py-2 text-gray-300 flex items-center justify-between hover:bg-transparent"
+                  className="w-full text-left py-2 text-gray-700 dark:text-gray-300 flex items-center justify-between hover:bg-transparent"
                   data-testid="button-setup-passcode"
                 >
                   <div className="flex items-center justify-between w-full">
@@ -693,7 +693,7 @@ export default function Settings() {
                       ) : (
                         <span className="text-xs text-purple-400">Recommended</span>
                       )}
-                      <ChevronRight className="w-5 h-5 text-gray-400" />
+                      <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                     </div>
                   </div>
                 </Button>
@@ -711,21 +711,21 @@ export default function Settings() {
             <Button
               variant="ghost"
               onClick={handleExportData}
-              className="w-full text-left py-2 text-gray-300 hover:bg-dark-accent"
+              className="w-full text-left py-2 text-gray-700 dark:text-gray-300 hover:bg-dark-accent"
               data-testid="button-export-data"
             >
               Export My Data
             </Button>
             <Button
               variant="ghost"
-              className="w-full text-left py-2 text-gray-300 hover:bg-dark-accent"
+              className="w-full text-left py-2 text-gray-700 dark:text-gray-300 hover:bg-dark-accent"
               data-testid="button-privacy-policy"
             >
               Privacy Policy
             </Button>
             <Button
               variant="ghost"
-              className="w-full text-left py-2 text-gray-300 hover:bg-dark-accent"
+              className="w-full text-left py-2 text-gray-700 dark:text-gray-300 hover:bg-dark-accent"
               data-testid="button-terms-of-service"
             >
               Terms of Service
@@ -759,7 +759,7 @@ export default function Settings() {
             <DialogTitle>
               {twoFAStep === 'disable' ? 'Disable Two-Factor Authentication' : 'Enable Two-Factor Authentication'}
             </DialogTitle>
-            <DialogDescription className="text-gray-400">
+            <DialogDescription className="text-gray-600 dark:text-gray-400">
               {twoFAStep === 'setup' && 'Setting up 2FA...'}
               {twoFAStep === 'verify' && 'Scan the QR code with your authenticator app'}
               {twoFAStep === 'disable' && 'Enter your 2FA code to disable'}
@@ -778,11 +778,11 @@ export default function Settings() {
                 <img src={qrCodeUrl} alt="2FA QR Code" className="w-48 h-48" data-testid="img-2fa-qr" />
               </div>
               <div className="bg-gray-800 rounded-lg p-3">
-                <p className="text-xs text-gray-400 mb-1">Secret Key (Manual Entry)</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Secret Key (Manual Entry)</p>
                 <p className="text-sm text-black dark:text-white font-mono break-all">{twoFASecret}</p>
               </div>
               <div>
-                <Label htmlFor="verify-code" className="text-gray-300">Enter 6-Digit Code</Label>
+                <Label htmlFor="verify-code" className="text-gray-700 dark:text-gray-300">Enter 6-Digit Code</Label>
                 <Input
                   id="verify-code"
                   value={verificationCode}
@@ -798,7 +798,7 @@ export default function Settings() {
           
           {twoFAStep === 'disable' && (
             <div>
-              <Label htmlFor="disable-code" className="text-gray-300">Enter 6-Digit Code</Label>
+              <Label htmlFor="disable-code" className="text-gray-700 dark:text-gray-300">Enter 6-Digit Code</Label>
               <Input
                 id="disable-code"
                 value={verificationCode}
@@ -818,7 +818,7 @@ export default function Settings() {
                 setVerificationCode('');
               }}
               variant="outline"
-              className="border-gray-700 text-gray-300"
+              className="border-gray-700 text-gray-700 dark:text-gray-300"
               data-testid="button-2fa-cancel"
             >
               Cancel
@@ -875,7 +875,7 @@ export default function Settings() {
               <Key className="w-6 h-6 text-purple-500" />
               Your Private Key
             </DialogTitle>
-            <DialogDescription className="text-gray-400">
+            <DialogDescription className="text-gray-600 dark:text-gray-400">
               ⚠️ Never share this with anyone. Store it securely offline.
             </DialogDescription>
           </DialogHeader>
@@ -883,7 +883,7 @@ export default function Settings() {
           <div className="space-y-4 py-4">
             {/* Wallet Address */}
             <div>
-              <Label className="text-gray-400 text-xs mb-2 block">Wallet Address</Label>
+              <Label className="text-gray-600 dark:text-gray-400 text-xs mb-2 block">Wallet Address</Label>
               <div className="relative bg-gray-800/50 rounded-[20px] p-4 border border-gray-700">
                 <p className="text-black dark:text-white font-mono text-sm break-all pr-10">{exportedWalletAddress}</p>
                 <Button
@@ -900,7 +900,7 @@ export default function Settings() {
             
             {/* Private Key */}
             <div>
-              <Label className="text-gray-400 text-xs mb-2 block">Private Key (Base58)</Label>
+              <Label className="text-gray-600 dark:text-gray-400 text-xs mb-2 block">Private Key (Base58)</Label>
               <div className="relative bg-gray-800/50 rounded-[20px] p-4 border border-gray-700">
                 <p className="text-black dark:text-white font-mono text-sm break-all pr-10">{exportedPrivateKey}</p>
                 <Button
