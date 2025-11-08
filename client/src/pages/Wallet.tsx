@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Copy, TrendingUp, TrendingDown, Eye, EyeOff, Wallet as WalletIcon, ExternalLink, Send } from 'lucide-react';
+import { ArrowLeft, Copy, TrendingUp, TrendingDown, Eye, EyeOff, Wallet as WalletIcon, ExternalLink, Send, ArrowUpRight, ArrowDownLeft, Clock } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BottomNavigation from '@/components/BottomNavigation';
 import { realTimePriceService, AllPricesResponse } from '@/lib/realTimePrices';
 import { useAuth } from '@/lib/auth';
@@ -399,26 +400,38 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Stake and Pods Buttons */}
-        <div className="flex space-x-4 mb-6">
-          <Button
-            variant="outline"
-            className="flex-1 border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
-            data-testid="button-stake"
-          >
-            Stake
-          </Button>
-          <Button
-            className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
-            data-testid="button-pods"
-          >
-            Pods
-          </Button>
-        </div>
+        {/* Tabs for Assets and History */}
+        <Tabs defaultValue="assets" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 bg-gray-900/50 mb-6">
+            <TabsTrigger value="assets" className="data-[state=active]:bg-pink-500 data-[state=active]:text-white">
+              {t('wallet.assets')}
+            </TabsTrigger>
+            <TabsTrigger value="history" className="data-[state=active]:bg-pink-500 data-[state=active]:text-white">
+              {t('history.title')}
+            </TabsTrigger>
+          </TabsList>
 
-        {/* FIXED: Assets Section with CLICKABLE ASSETS and SEND functionality */}
-        <div className="mb-6">
-          <h3 className="text-white text-lg font-semibold mb-4">{t('wallet.assets')}</h3>
+          <TabsContent value="assets" className="mt-0">
+            {/* Stake and Pods Buttons */}
+            <div className="flex space-x-4 mb-6">
+              <Button
+                variant="outline"
+                className="flex-1 border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
+                data-testid="button-stake"
+              >
+                Stake
+              </Button>
+              <Button
+                className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
+                data-testid="button-pods"
+              >
+                Pods
+              </Button>
+            </div>
+
+            {/* Assets Section */}
+            <div className="mb-6">
+              <h3 className="text-white text-lg font-semibold mb-4">{t('wallet.assets')}</h3>
           <div className="space-y-3">
             {/* USV Token Asset - CLICKABLE with SEND button */}
             <motion.div
@@ -537,72 +550,220 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Show Your Auto-Generated Wallet Info (for email/Apple users) */}
-        {user?.walletAddress && (
-          <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/10 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
-                  <WalletIcon className="w-5 h-5 text-white" />
+            {/* Show Your Auto-Generated Wallet Info (for email/Apple users) */}
+            {user?.walletAddress && (
+              <Card className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-purple-500/10 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                      <WalletIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-white font-semibold">Your USV Wallet</h3>
+                      <p className="text-gray-400 text-xs">Auto-generated Solana wallet</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-green-400 text-xs">Active</span>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-white font-semibold">Your USV Wallet</h3>
-                  <p className="text-gray-400 text-xs">Auto-generated Solana wallet</p>
+                
+                <div className="bg-black/30 rounded-xl p-4 mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="text-xs text-gray-400">Live Mainnet Balance</p>
+                    <p className="text-white font-semibold" data-testid="text-usv-wallet-balance">
+                      {currentSolBalance.toFixed(4)} SOL
+                    </p>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <p className="text-white font-mono text-sm" data-testid="text-usv-wallet-address">
+                      {user.walletAddress.slice(0, 8)}...{user.walletAddress.slice(-8)}
+                    </p>
+                    <motion.div
+                      whileHover={{ 
+                        scale: 1.1,
+                        backgroundColor: "rgba(59, 130, 246, 0.2)",
+                        boxShadow: "0 4px 15px rgba(59, 130, 246, 0.3)"
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                    >
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyAddress(user.walletAddress || '', 'USV Wallet')}
+                        className="text-blue-400 hover:bg-blue-500/20 p-1"
+                        data-testid="button-copy-usv-wallet-address"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                    </motion.div>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-green-400 text-xs">Active</span>
-              </div>
-            </div>
-            
-            <div className="bg-black/30 rounded-xl p-4 mb-4">
-              <div className="flex justify-between items-center mb-2">
-                <p className="text-xs text-gray-400">Live Mainnet Balance</p>
-                <p className="text-white font-semibold" data-testid="text-usv-wallet-balance">
-                  {currentSolBalance.toFixed(4)} SOL
-                </p>
-              </div>
-              <div className="flex items-center justify-between">
-                <p className="text-white font-mono text-sm" data-testid="text-usv-wallet-address">
-                  {user.walletAddress.slice(0, 8)}...{user.walletAddress.slice(-8)}
-                </p>
-                <motion.div
-                  whileHover={{ 
-                    scale: 1.1,
-                    backgroundColor: "rgba(59, 130, 246, 0.2)",
-                    boxShadow: "0 4px 15px rgba(59, 130, 246, 0.3)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                >
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => copyAddress(user.walletAddress || '', 'USV Wallet')}
-                    className="text-blue-400 hover:bg-blue-500/20 p-1"
-                    data-testid="button-copy-usv-wallet-address"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </Button>
-                </motion.div>
-              </div>
-            </div>
-            
-            <div className="text-center py-4">
-              <div className="text-green-400 text-sm mb-2">✅ Your wallet is ready!</div>
-              <p className="text-gray-400 text-xs">
-                This wallet was auto-generated when you signed up. Send SOL to this address to see real-time balance updates.
-              </p>
-            </div>
-          </Card>
-        )}
+                
+                <div className="text-center py-4">
+                  <div className="text-green-400 text-sm mb-2">✅ Your wallet is ready!</div>
+                  <p className="text-gray-400 text-xs">
+                    This wallet was auto-generated when you signed up. Send SOL to this address to see real-time balance updates.
+                  </p>
+                </div>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="history" className="mt-0">
+            <TransactionHistoryContent />
+          </TabsContent>
+        </Tabs>
         
         {/* REMOVED: No Phantom wallet section for email users */}
       </motion.div>
 
       {/* REMOVED: No Phantom install prompts for email users */}
+    </div>
+  );
+}
+
+// Transaction History Component for the History Tab
+function TransactionHistoryContent() {
+  const { user } = useAuth();
+  const { t } = useTranslation();
+  const { toast } = useToast();
+
+  interface Transaction {
+    id: string;
+    type: 'send' | 'receive' | 'claim' | 'stake' | 'unstake';
+    amount: number;
+    token: string;
+    status: 'completed' | 'pending' | 'failed';
+    toAddress?: string;
+    fromAddress?: string;
+    txHash?: string;
+    createdAt: string;
+  }
+
+  const { data: transactions = [], isLoading } = useQuery({
+    queryKey: ['/api/transactions'],
+    queryFn: async () => {
+      const response = await fetch('/api/transactions', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch transactions');
+      return response.json();
+    },
+    enabled: !!user,
+    refetchInterval: 30000,
+  });
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    
+    if (hours < 24) return 'Today';
+    if (hours < 48) return 'Yesterday';
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const formatTime = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  };
+
+  const getTransactionIcon = (type: string) => {
+    switch (type) {
+      case 'receive':
+      case 'claim':
+        return <ArrowDownLeft className="w-5 h-5 text-green-400" />;
+      case 'send':
+        return <ArrowUpRight className="w-5 h-5 text-red-400" />;
+      case 'stake':
+      case 'unstake':
+        return <Clock className="w-5 h-5 text-blue-400" />;
+      default:
+        return <Clock className="w-5 h-5 text-gray-400" />;
+    }
+  };
+
+  const getTransactionColor = (type: string) => {
+    switch (type) {
+      case 'receive':
+      case 'claim':
+        return 'text-green-400';
+      case 'send':
+        return 'text-red-400';
+      default:
+        return 'text-blue-400';
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+      </div>
+    );
+  }
+
+  if (transactions.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center py-12"
+      >
+        <Clock className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+        <p className="text-gray-400 text-lg mb-2">{t('history.noTransactions')}</p>
+        <p className="text-gray-500 text-sm">{t('history.noTransactionsDescription')}</p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {transactions.map((transaction: Transaction, index: number) => (
+        <motion.div
+          key={transaction.id}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: index * 0.05 }}
+          className="bg-gray-900/50 rounded-xl p-4 hover:bg-gray-800/50 transition-colors cursor-pointer"
+          onClick={() => {
+            if (transaction.txHash) {
+              window.open(`https://solscan.io/tx/${transaction.txHash}`, '_blank');
+            }
+          }}
+          data-testid={`transaction-${transaction.id}`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gray-800/50 rounded-full flex items-center justify-center">
+                {getTransactionIcon(transaction.type)}
+              </div>
+              <div>
+                <p className="text-white font-medium capitalize">{transaction.type}</p>
+                <p className="text-gray-400 text-sm">
+                  {formatDate(transaction.createdAt)} • {formatTime(transaction.createdAt)}
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className={`font-bold ${getTransactionColor(transaction.type)}`}>
+                {transaction.type === 'send' ? '-' : '+'}{transaction.amount.toFixed(4)} {transaction.token}
+              </p>
+              <p className="text-gray-400 text-xs capitalize">{transaction.status}</p>
+            </div>
+          </div>
+        </motion.div>
+      ))}
     </div>
   );
 }
