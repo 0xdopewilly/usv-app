@@ -372,7 +372,7 @@ export default function Wallet() {
 
         {/* Copy USV Address Section */}
         <div className="bg-gray-900/50 rounded-xl p-4 mb-6">
-          <p className="text-gray-400 text-sm mb-2">Copy USV address</p>
+          <p className="text-gray-400 text-sm mb-2">{t('wallet.yourWalletAddress')}</p>
           <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
             <p className="text-white font-mono text-sm" data-testid="text-usv-address">
               {user?.walletAddress || 'No wallet address'}
