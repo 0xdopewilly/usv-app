@@ -30,13 +30,61 @@ const resources = {
       },
       // Home
       home: {
-        welcome: 'Welcome',
+        welcome: 'Welcome back',
         balance: 'Balance',
+        portfolioValue: 'Portfolio Value',
+        yourAsset: 'Your Asset',
+        assets: 'Assets',
+        price: 'Price',
+        lastUpdated: 'Last updated',
         send: 'Send',
         receive: 'Receive',
         stake: 'Stake',
         transactions: 'Transaction History',
         recentActivity: 'Recent Activity'
+      },
+      // Wallet
+      wallet: {
+        title: 'Wallet',
+        receive: 'Receive',
+        send: 'Send',
+        refresh: 'Refresh',
+        assets: 'Assets',
+        yourWalletAddress: 'Your USV wallet address',
+        usvTokens: 'USV Tokens',
+        solBalance: 'SOL Balance',
+        copy: 'Copy',
+        copied: 'Copied!',
+        connectPhantom: 'Connect Phantom Wallet',
+        disconnectPhantom: 'Disconnect Phantom',
+        noWalletFound: 'No Phantom wallet found',
+        installPhantom: 'Please install Phantom wallet',
+        timeframe: {
+          '1h': '1H',
+          '24h': '24H',
+          '7d': '7D',
+          '30d': '30D'
+        }
+      },
+      // Transaction History
+      history: {
+        title: 'Transaction History',
+        noTransactions: 'No transactions yet',
+        noTransactionsDescription: 'Your transaction history will appear here',
+        filters: 'Filters',
+        allTransactions: 'All Transactions',
+        today: 'TODAY',
+        yesterday: 'YESTERDAY',
+        daysAgo: 'DAYS AGO',
+        received: 'Received',
+        sent: 'Sent',
+        claimed: 'Claimed',
+        staked: 'Staked',
+        status: {
+          completed: 'Completed',
+          pending: 'Pending',
+          failed: 'Failed'
+        }
       },
       // Send
       send: {
@@ -129,11 +177,59 @@ const resources = {
       home: {
         welcome: 'Bienvenido',
         balance: 'Saldo',
+        portfolioValue: 'Valor del Portafolio',
+        yourAsset: 'Tus Activos',
+        assets: 'Activos',
+        price: 'Precio',
+        lastUpdated: 'Última actualización',
         send: 'Enviar',
         receive: 'Recibir',
         stake: 'Apostar',
         transactions: 'Historial de Transacciones',
         recentActivity: 'Actividad Reciente'
+      },
+      // Wallet
+      wallet: {
+        title: 'Billetera',
+        receive: 'Recibir',
+        send: 'Enviar',
+        refresh: 'Actualizar',
+        assets: 'Activos',
+        yourWalletAddress: 'Tu dirección de billetera USV',
+        usvTokens: 'Tokens USV',
+        solBalance: 'Saldo SOL',
+        copy: 'Copiar',
+        copied: '¡Copiado!',
+        connectPhantom: 'Conectar Billetera Phantom',
+        disconnectPhantom: 'Desconectar Phantom',
+        noWalletFound: 'No se encontró billetera Phantom',
+        installPhantom: 'Por favor instala la billetera Phantom',
+        timeframe: {
+          '1h': '1H',
+          '24h': '24H',
+          '7d': '7D',
+          '30d': '30D'
+        }
+      },
+      // Transaction History
+      history: {
+        title: 'Historial de Transacciones',
+        noTransactions: 'No hay transacciones aún',
+        noTransactionsDescription: 'Tu historial de transacciones aparecerá aquí',
+        filters: 'Filtros',
+        allTransactions: 'Todas las Transacciones',
+        today: 'HOY',
+        yesterday: 'AYER',
+        daysAgo: 'HACE DÍAS',
+        received: 'Recibido',
+        sent: 'Enviado',
+        claimed: 'Reclamado',
+        staked: 'Apostado',
+        status: {
+          completed: 'Completado',
+          pending: 'Pendiente',
+          failed: 'Fallido'
+        }
       },
       // Send
       send: {
@@ -226,11 +322,59 @@ const resources = {
       home: {
         welcome: 'Bienvenue',
         balance: 'Solde',
+        portfolioValue: 'Valeur du Portefeuille',
+        yourAsset: 'Vos Actifs',
+        assets: 'Actifs',
+        price: 'Prix',
+        lastUpdated: 'Dernière mise à jour',
         send: 'Envoyer',
         receive: 'Recevoir',
         stake: 'Staker',
         transactions: 'Historique des Transactions',
         recentActivity: 'Activité Récente'
+      },
+      // Wallet
+      wallet: {
+        title: 'Portefeuille',
+        receive: 'Recevoir',
+        send: 'Envoyer',
+        refresh: 'Actualiser',
+        assets: 'Actifs',
+        yourWalletAddress: 'Votre adresse de portefeuille USV',
+        usvTokens: 'Jetons USV',
+        solBalance: 'Solde SOL',
+        copy: 'Copier',
+        copied: 'Copié!',
+        connectPhantom: 'Connecter Phantom Wallet',
+        disconnectPhantom: 'Déconnecter Phantom',
+        noWalletFound: 'Aucun portefeuille Phantom trouvé',
+        installPhantom: 'Veuillez installer le portefeuille Phantom',
+        timeframe: {
+          '1h': '1H',
+          '24h': '24H',
+          '7d': '7J',
+          '30d': '30J'
+        }
+      },
+      // Transaction History
+      history: {
+        title: 'Historique des Transactions',
+        noTransactions: 'Aucune transaction pour le moment',
+        noTransactionsDescription: 'Votre historique de transactions apparaîtra ici',
+        filters: 'Filtres',
+        allTransactions: 'Toutes les Transactions',
+        today: 'AUJOURD\'HUI',
+        yesterday: 'HIER',
+        daysAgo: 'IL Y A DES JOURS',
+        received: 'Reçu',
+        sent: 'Envoyé',
+        claimed: 'Réclamé',
+        staked: 'Staké',
+        status: {
+          completed: 'Complété',
+          pending: 'En attente',
+          failed: 'Échoué'
+        }
       },
       // Send
       send: {

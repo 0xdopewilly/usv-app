@@ -11,6 +11,7 @@ import { useAuth } from '@/lib/auth';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import NotificationService from '@/lib/notifications';
+import { useTranslation } from 'react-i18next';
 
 // Date utility functions
 const formatDate = (date: Date) => {
@@ -92,6 +93,7 @@ export default function TransactionHistory() {
   const [searchQuery, setSearchQuery] = useState('');
   const { user, refreshToken } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   // Force unregister service worker on component mount
@@ -246,7 +248,7 @@ export default function TransactionHistory() {
           onClick={() => setLocation('/')}
           data-testid="button-back"
         />
-        <h1 className="text-black dark:text-white text-xl font-semibold">Transaction History</h1>
+        <h1 className="text-black dark:text-white text-xl font-semibold">{t('history.title')}</h1>
         <Button
           size="sm"
           variant="ghost"
@@ -306,8 +308,8 @@ export default function TransactionHistory() {
             className="text-center py-12"
           >
             <Clock className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-400 text-lg mb-2">No transactions yet</p>
-            <p className="text-gray-500 text-sm">Your transaction history will appear here</p>
+            <p className="text-gray-400 text-lg mb-2">{t('history.noTransactions')}</p>
+            <p className="text-gray-500 text-sm">{t('history.noTransactionsDescription')}</p>
           </motion.div>
         ) : (
           <motion.div

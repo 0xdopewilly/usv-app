@@ -11,6 +11,7 @@ import { useAuth } from '@/lib/auth';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import { solanaService, phantomWallet, isPhantomInstalled } from '@/lib/solana';
+import { useTranslation } from 'react-i18next';
 
 // New USV Logo
 import usvLogo from '@assets/image_1757431326277.png';
@@ -26,6 +27,7 @@ export default function Wallet() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [hideBalance, setHideBalance] = useState(false);
   const [prices, setPrices] = useState<AllPricesResponse | null>(null);
   const [usvChartData, setUsvChartData] = useState(generatePriceChart(0));
@@ -307,7 +309,7 @@ export default function Wallet() {
                 className="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
                 data-testid="button-receive"
               >
-                Receive
+                {t('wallet.receive')}
               </Button>
             </motion.div>
             <motion.div
@@ -326,7 +328,7 @@ export default function Wallet() {
                 className="w-full border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
                 data-testid="button-send"
               >
-                Send
+                {t('wallet.send')}
               </Button>
             </motion.div>
           </div>
@@ -416,7 +418,7 @@ export default function Wallet() {
 
         {/* FIXED: Assets Section with CLICKABLE ASSETS and SEND functionality */}
         <div className="mb-6">
-          <h3 className="text-white text-lg font-semibold mb-4">Assets</h3>
+          <h3 className="text-white text-lg font-semibold mb-4">{t('wallet.assets')}</h3>
           <div className="space-y-3">
             {/* USV Token Asset - CLICKABLE with SEND button */}
             <motion.div
@@ -456,7 +458,7 @@ export default function Wallet() {
                     className="bg-pink-500 hover:bg-pink-600 text-white text-xs px-3 py-1 mt-1"
                     data-testid="button-send-usv"
                   >
-                    Send USV
+                    {t('wallet.send')} USV
                   </Button>
                 </motion.div>
               </div>
@@ -527,7 +529,7 @@ export default function Wallet() {
                     }`}
                     data-testid="button-send-sol"
                   >
-                    Send SOL
+                    {t('wallet.send')} SOL
                   </Button>
                 </motion.div>
               </div>
