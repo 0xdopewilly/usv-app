@@ -244,7 +244,7 @@ export default function Wallet() {
       >
         {/* Main Balance Display */}
         <div className="text-center mb-6">
-          <div className="flex items-center justify-center space-x-3 mb-4">
+          <div className="flex items-center justify-center space-x-3 mb-6">
             <img src="/usv-logo.png" alt="USV" className="w-12 h-12 rounded-xl object-contain" />
             <h2 className="text-white text-4xl font-bold" data-testid="text-app-balance">
               {hideBalance ? '••••••' : `$${totalBalance.toFixed(3)}`}
@@ -253,40 +253,15 @@ export default function Wallet() {
               <div className="text-gray-400 text-xs">💰 Real-time mainnet balance</div>
               <div className="text-electric-blue text-xs">{currentSolBalance.toFixed(4)} SOL</div>
             </div>
-            <motion.div
-              whileHover={{ 
-                scale: 1.1,
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                boxShadow: "0 4px 15px rgba(255, 255, 255, 0.2)"
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setHideBalance(!hideBalance)}
+              className="text-gray-400 hover:text-white p-1"
+              data-testid="button-toggle-balance"
             >
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setHideBalance(!hideBalance)}
-                className="text-gray-400 hover:text-white p-1"
-                data-testid="button-toggle-balance"
-              >
-                {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </Button>
-            </motion.div>
-          </div>
-          
-          <div className="flex items-center justify-center space-x-2 mb-6">
-            <span className={`text-sm flex items-center ${
-              (prices?.USV?.change24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-            }`}>
-              {(prices?.USV?.change24h || 0) >= 0 ? (
-                <TrendingUp className="w-3 h-3 mr-1" />
-              ) : (
-                <TrendingDown className="w-3 h-3 mr-1" />
-              )}
-              +{Math.abs(prices?.USV?.change24h || 9.18).toFixed(2)}%
-            </span>
-            <span className="text-gray-400">•</span>
-            <span className="text-gray-300">${prices?.USV?.price?.toFixed(2) || '1.24'}</span>
+              {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </Button>
           </div>
 
           {/* Action Buttons - Side by Side */}
