@@ -289,115 +289,29 @@ export default function Wallet() {
             <span className="text-gray-300">${prices?.USV?.price?.toFixed(2) || '1.24'}</span>
           </div>
 
-          {/* FIXED: Receive and Send Buttons (was showing "Sent" before) */}
+          {/* Receive and Send Buttons */}
           <div className="flex space-x-4 mb-6">
-            <motion.div
-              whileHover={{ 
-                scale: 1.02,
-                boxShadow: "0 8px 25px rgba(236, 72, 153, 0.4), 0 4px 15px rgba(236, 72, 153, 0.3)"
+            <Button
+              onClick={() => {
+                copyAddress(user?.walletAddress || '', 'USV wallet');
+                toast({
+                  title: "Receive Address Copied!",
+                  description: "Share this address to receive USV tokens and SOL",
+                });
               }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              className="flex-1"
+              className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
+              data-testid="button-receive"
             >
-              <Button
-                onClick={() => {
-                  copyAddress(user?.walletAddress || '', 'USV wallet');
-                  toast({
-                    title: "Receive Address Copied!",
-                    description: "Share this address to receive USV tokens and SOL",
-                  });
-                }}
-                className="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
-                data-testid="button-receive"
-              >
-                {t('wallet.receive')}
-              </Button>
-            </motion.div>
-            <motion.div
-              whileHover={{ 
-                scale: 1.02,
-                borderColor: "rgba(255, 255, 255, 0.4)",
-                boxShadow: "0 4px 15px rgba(255, 255, 255, 0.1)"
-              }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              className="flex-1"
+              {t('wallet.receive')}
+            </Button>
+            <Button
+              onClick={() => setLocation('/send')}
+              variant="outline"
+              className="flex-1 border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
+              data-testid="button-send"
             >
-              <Button
-                onClick={() => setLocation('/send')}
-                variant="outline"
-                className="w-full border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
-                data-testid="button-send"
-              >
-                {t('wallet.send')}
-              </Button>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Price Chart Section */}
-        <Card className="bg-gray-900/50 border-gray-700/50 p-6 mb-6">
-          <div className="flex space-x-2 mb-4">
-            {timeframes.map((timeframe) => (
-              <Button
-                key={timeframe}
-                variant={selectedTimeframe === timeframe ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setSelectedTimeframe(timeframe)}
-                className={`flex-1 text-xs ${
-                  selectedTimeframe === timeframe 
-                    ? 'bg-gray-700 hover:bg-gray-600 text-white' 
-                    : 'text-gray-400 hover:text-white hover:bg-gray-800'
-                }`}
-                data-testid={`button-timeframe-${timeframe}`}
-              >
-                {timeframe}
-              </Button>
-            ))}
-          </div>
-
-          <div className="h-32 mb-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={usvChartData}>
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#ec4899" 
-                  strokeWidth={2} 
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-
-        {/* Copy USV Address Section */}
-        <div className="bg-gray-900/50 rounded-xl p-4 mb-6">
-          <p className="text-gray-400 text-sm mb-2">{t('wallet.yourWalletAddress')}</p>
-          <div className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3">
-            <p className="text-white font-mono text-sm" data-testid="text-usv-address">
-              {user?.walletAddress || 'No wallet address'}
-            </p>
-            <motion.div
-              whileHover={{ 
-                scale: 1.1,
-                backgroundColor: "rgba(34, 211, 238, 0.2)",
-                boxShadow: "0 4px 15px rgba(34, 211, 238, 0.3)"
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            >
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => copyAddress(user?.walletAddress || '', 'USV wallet')}
-                className="text-gray-400 hover:text-white p-2"
-                data-testid="button-copy-usv-address"
-              >
-                <Copy className="w-4 h-4" />
-              </Button>
-            </motion.div>
+              {t('wallet.send')}
+            </Button>
           </div>
         </div>
 
@@ -430,26 +344,8 @@ export default function Wallet() {
         {/* ASSETS VIEW */}
         {activeTab === 'assets' && (
           <div>
-            {/* Stake and Pods Buttons */}
-            <div className="flex space-x-4 mb-6">
-              <Button
-                variant="outline"
-                className="flex-1 border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
-                data-testid="button-stake"
-              >
-                Stake
-              </Button>
-              <Button
-                className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
-                data-testid="button-pods"
-              >
-                Pods
-              </Button>
-            </div>
-
             {/* Assets Section */}
             <div className="mb-6">
-              <h3 className="text-white text-lg font-semibold mb-4">{t('wallet.assets')}</h3>
           <div className="space-y-3">
             {/* USV Token Asset - CLICKABLE with SEND button */}
             <motion.div
