@@ -33,6 +33,7 @@ export default function Wallet() {
   const [prices, setPrices] = useState<AllPricesResponse | null>(null);
   const [usvChartData, setUsvChartData] = useState(generatePriceChart(0));
   const [selectedTimeframe, setSelectedTimeframe] = useState('1d');
+  const [activeTab, setActiveTab] = useState<'assets' | 'history'>('assets');
   
   // Real Solana Integration States
   const [phantomConnected, setPhantomConnected] = useState(false);
@@ -400,26 +401,35 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* TABS FOR ASSETS AND HISTORY */}
-        <Tabs defaultValue="assets" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-800 border-2 border-pink-500 mb-6 p-1.5 rounded-xl h-14">
-            <TabsTrigger 
-              value="assets" 
-              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-white font-bold text-base rounded-lg transition-all h-full"
-              data-testid="tab-assets"
-            >
-              💰 ASSETS
-            </TabsTrigger>
-            <TabsTrigger 
-              value="history" 
-              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-white font-bold text-base rounded-lg transition-all h-full"
-              data-testid="tab-history"
-            >
-              📜 HISTORY
-            </TabsTrigger>
-          </TabsList>
+        {/* TABS FOR ASSETS AND HISTORY - SIMPLE TOGGLE */}
+        <div className="flex space-x-2 mb-6 bg-gray-800 p-2 rounded-xl border-2 border-pink-500">
+          <Button
+            onClick={() => setActiveTab('assets')}
+            className={`flex-1 h-12 font-bold text-base rounded-lg transition-all ${
+              activeTab === 'assets'
+                ? 'bg-pink-500 text-white hover:bg-pink-600'
+                : 'bg-transparent text-white hover:bg-gray-700'
+            }`}
+            data-testid="tab-assets"
+          >
+            💰 ASSETS
+          </Button>
+          <Button
+            onClick={() => setActiveTab('history')}
+            className={`flex-1 h-12 font-bold text-base rounded-lg transition-all ${
+              activeTab === 'history'
+                ? 'bg-pink-500 text-white hover:bg-pink-600'
+                : 'bg-transparent text-white hover:bg-gray-700'
+            }`}
+            data-testid="tab-history"
+          >
+            📜 HISTORY
+          </Button>
+        </div>
 
-          <TabsContent value="assets" className="mt-0">
+        {/* ASSETS VIEW */}
+        {activeTab === 'assets' && (
+          <div>
             {/* Stake and Pods Buttons */}
             <div className="flex space-x-4 mb-6">
               <Button
@@ -619,12 +629,15 @@ export default function Wallet() {
                 </div>
               </Card>
             )}
-          </TabsContent>
+          </div>
+        )}
 
-          <TabsContent value="history" className="mt-0">
+        {/* HISTORY VIEW */}
+        {activeTab === 'history' && (
+          <div>
             <TransactionHistoryContent />
-          </TabsContent>
-        </Tabs>
+          </div>
+        )}
         
         {/* REMOVED: No Phantom wallet section for email users */}
       </motion.div>
