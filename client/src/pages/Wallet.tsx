@@ -335,8 +335,28 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Price Chart Section */}
-        <Card className="bg-gray-900/50 border-gray-700/50 p-6 mb-6">
+        {/* TABS FOR ASSETS AND HISTORY - MOVED HERE FOR VISIBILITY */}
+        <Tabs defaultValue="assets" className="w-full mb-6">
+          <TabsList className="grid w-full grid-cols-2 bg-gray-800 border-2 border-pink-500/30 mb-4 p-1.5 rounded-xl h-12">
+            <TabsTrigger 
+              value="assets" 
+              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-gray-300 font-semibold rounded-lg transition-all h-full"
+              data-testid="tab-assets"
+            >
+              💰 {t('wallet.assets')}
+            </TabsTrigger>
+            <TabsTrigger 
+              value="history" 
+              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-gray-300 font-semibold rounded-lg transition-all h-full"
+              data-testid="tab-history"
+            >
+              📜 {t('history.title')}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="assets" className="mt-0">
+            {/* Price Chart Section */}
+            <Card className="bg-gray-900/50 border-gray-700/50 p-6 mb-6">
           <div className="flex space-x-2 mb-4">
             {timeframes.map((timeframe) => (
               <Button
@@ -400,28 +420,8 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Tabs for Assets and History */}
-        <Tabs defaultValue="assets" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-800 border border-gray-700 mb-6 p-1 rounded-xl">
-            <TabsTrigger 
-              value="assets" 
-              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-gray-400 rounded-lg transition-all"
-              data-testid="tab-assets"
-            >
-              {t('wallet.assets')}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="history" 
-              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-gray-400 rounded-lg transition-all"
-              data-testid="tab-history"
-            >
-              {t('history.title')}
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="assets" className="mt-0">
-            {/* Stake and Pods Buttons */}
-            <div className="flex space-x-4 mb-6">
+        {/* Stake and Pods Buttons */}
+        <div className="flex space-x-4 mb-6">
               <Button
                 variant="outline"
                 className="flex-1 border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
