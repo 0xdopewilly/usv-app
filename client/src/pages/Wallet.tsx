@@ -420,8 +420,28 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Stake and Pods Buttons */}
-        <div className="flex space-x-4 mb-6">
+        {/* TABS FOR ASSETS AND HISTORY */}
+        <Tabs defaultValue="assets" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 bg-gray-800 border-2 border-pink-500 mb-6 p-1.5 rounded-xl h-14">
+            <TabsTrigger 
+              value="assets" 
+              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-white font-bold text-base rounded-lg transition-all h-full"
+              data-testid="tab-assets"
+            >
+              💰 ASSETS
+            </TabsTrigger>
+            <TabsTrigger 
+              value="history" 
+              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-white font-bold text-base rounded-lg transition-all h-full"
+              data-testid="tab-history"
+            >
+              📜 HISTORY
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="assets" className="mt-0">
+            {/* Stake and Pods Buttons */}
+            <div className="flex space-x-4 mb-6">
               <Button
                 variant="outline"
                 className="flex-1 border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
