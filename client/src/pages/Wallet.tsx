@@ -299,7 +299,7 @@ export default function Wallet() {
                   description: "Share this address to receive USV tokens and SOL",
                 });
               }}
-              className="flex-1 min-w-[70px] h-20 bg-gradient-to-br from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white rounded-2xl font-medium shadow-lg flex flex-col items-center justify-center gap-1"
+              className="flex-1 min-w-[70px] h-20 bg-gray-800/50 hover:bg-gray-700/70 text-gray-300 hover:text-white rounded-2xl font-medium shadow-lg flex flex-col items-center justify-center gap-1 border-2 border-pink-500/30 hover:border-pink-500/60 transition-all"
               data-testid="button-receive"
             >
               <ArrowDownToLine className="w-5 h-5" />
@@ -307,7 +307,7 @@ export default function Wallet() {
             </Button>
             <Button
               onClick={() => setLocation('/send')}
-              className="flex-1 min-w-[70px] h-20 bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-2xl font-medium shadow-lg flex flex-col items-center justify-center gap-1"
+              className="flex-1 min-w-[70px] h-20 bg-gray-800/50 hover:bg-gray-700/70 text-gray-300 hover:text-white rounded-2xl font-medium shadow-lg flex flex-col items-center justify-center gap-1 border-2 border-purple-500/30 hover:border-purple-500/60 transition-all"
               data-testid="button-send"
             >
               <Send className="w-5 h-5" />
@@ -317,8 +317,8 @@ export default function Wallet() {
               onClick={() => setActiveTab('assets')}
               className={`flex-1 min-w-[70px] h-20 rounded-2xl font-medium shadow-lg flex flex-col items-center justify-center gap-1 transition-all ${
                 activeTab === 'assets'
-                  ? 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white'
-                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white'
+                  ? 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-2 border-blue-400'
+                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white border-2 border-transparent'
               }`}
               data-testid="tab-assets"
             >
@@ -329,8 +329,8 @@ export default function Wallet() {
               onClick={() => setActiveTab('history')}
               className={`flex-1 min-w-[70px] h-20 rounded-2xl font-medium shadow-lg flex flex-col items-center justify-center gap-1 transition-all ${
                 activeTab === 'history'
-                  ? 'bg-gradient-to-br from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white'
-                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white'
+                  ? 'bg-gradient-to-br from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white border-2 border-cyan-400'
+                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white border-2 border-transparent'
               }`}
               data-testid="tab-history"
             >
