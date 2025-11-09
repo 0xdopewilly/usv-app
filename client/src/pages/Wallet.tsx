@@ -401,14 +401,18 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* TABS FOR ASSETS AND HISTORY - SIMPLE TOGGLE */}
-        <div className="flex space-x-2 mb-6 bg-gray-800 p-2 rounded-xl border-2 border-pink-500">
+        {/* TABS FOR ASSETS AND HISTORY v2.0 */}
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex space-x-2 mb-6 bg-gray-800 p-2 rounded-xl border-4 border-pink-500 shadow-lg shadow-pink-500/50"
+        >
           <Button
             onClick={() => setActiveTab('assets')}
-            className={`flex-1 h-12 font-bold text-base rounded-lg transition-all ${
+            className={`flex-1 h-14 font-bold text-lg rounded-lg transition-all ${
               activeTab === 'assets'
-                ? 'bg-pink-500 text-white hover:bg-pink-600'
-                : 'bg-transparent text-white hover:bg-gray-700'
+                ? 'bg-pink-500 text-white hover:bg-pink-600 scale-105'
+                : 'bg-gray-700 text-white hover:bg-gray-600'
             }`}
             data-testid="tab-assets"
           >
@@ -416,16 +420,16 @@ export default function Wallet() {
           </Button>
           <Button
             onClick={() => setActiveTab('history')}
-            className={`flex-1 h-12 font-bold text-base rounded-lg transition-all ${
+            className={`flex-1 h-14 font-bold text-lg rounded-lg transition-all ${
               activeTab === 'history'
-                ? 'bg-pink-500 text-white hover:bg-pink-600'
-                : 'bg-transparent text-white hover:bg-gray-700'
+                ? 'bg-pink-500 text-white hover:bg-pink-600 scale-105'
+                : 'bg-gray-700 text-white hover:bg-gray-600'
             }`}
             data-testid="tab-history"
           >
             📜 HISTORY
           </Button>
-        </div>
+        </motion.div>
 
         {/* ASSETS VIEW */}
         {activeTab === 'assets' && (
