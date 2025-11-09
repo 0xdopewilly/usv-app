@@ -12,7 +12,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import AuthPage from "@/pages/AuthPage";
 import { PasscodeLock } from "@/components/PasscodeLock";
 import Home from "@/pages/Home";
-import SimpleWallet from "@/pages/SimpleWallet";
+import Wallet from "@/pages/Wallet";
 import SimpleSend from "./pages/SimpleSend";
 import TokenSelection from "./pages/TokenSelection";
 import SendTokens from "./pages/Send";
@@ -93,7 +93,7 @@ function AppRouter() {
           </Route>
           <Route path="/wallet">
             <PageTransition pageKey="wallet">
-              <SimpleWallet />
+              <Wallet />
             </PageTransition>
           </Route>
           <Route path="/send">
