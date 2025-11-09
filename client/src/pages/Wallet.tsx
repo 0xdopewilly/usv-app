@@ -402,11 +402,19 @@ export default function Wallet() {
 
         {/* Tabs for Assets and History */}
         <Tabs defaultValue="assets" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-900/50 mb-6">
-            <TabsTrigger value="assets" className="data-[state=active]:bg-pink-500 data-[state=active]:text-white">
+          <TabsList className="grid w-full grid-cols-2 bg-gray-800 border border-gray-700 mb-6 p-1 rounded-xl">
+            <TabsTrigger 
+              value="assets" 
+              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-gray-400 rounded-lg transition-all"
+              data-testid="tab-assets"
+            >
               {t('wallet.assets')}
             </TabsTrigger>
-            <TabsTrigger value="history" className="data-[state=active]:bg-pink-500 data-[state=active]:text-white">
+            <TabsTrigger 
+              value="history" 
+              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-gray-400 rounded-lg transition-all"
+              data-testid="tab-history"
+            >
               {t('history.title')}
             </TabsTrigger>
           </TabsList>
