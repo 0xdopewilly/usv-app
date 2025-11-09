@@ -335,28 +335,8 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* TABS FOR ASSETS AND HISTORY - MOVED HERE FOR VISIBILITY */}
-        <Tabs defaultValue="assets" className="w-full mb-6">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-800 border-2 border-pink-500/30 mb-4 p-1.5 rounded-xl h-12">
-            <TabsTrigger 
-              value="assets" 
-              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-gray-300 font-semibold rounded-lg transition-all h-full"
-              data-testid="tab-assets"
-            >
-              💰 {t('wallet.assets')}
-            </TabsTrigger>
-            <TabsTrigger 
-              value="history" 
-              className="data-[state=active]:bg-pink-500 data-[state=active]:text-white text-gray-300 font-semibold rounded-lg transition-all h-full"
-              data-testid="tab-history"
-            >
-              📜 {t('history.title')}
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="assets" className="mt-0">
-            {/* Price Chart Section */}
-            <Card className="bg-gray-900/50 border-gray-700/50 p-6 mb-6">
+        {/* Price Chart Section */}
+        <Card className="bg-gray-900/50 border-gray-700/50 p-6 mb-6">
           <div className="flex space-x-2 mb-4">
             {timeframes.map((timeframe) => (
               <Button
