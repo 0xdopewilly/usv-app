@@ -244,13 +244,12 @@ export default function Wallet() {
       >
         {/* Main Balance Display */}
         <div className="text-center mb-6">
-          <div className="flex items-center justify-center space-x-3 mb-6">
+          <div className="flex items-center justify-center space-x-3 mb-4">
             <img src="/usv-logo.png" alt="USV" className="w-12 h-12 rounded-xl object-contain" />
             <h2 className="text-white text-4xl font-bold" data-testid="text-app-balance">
               {hideBalance ? '••••••' : `$${totalBalance.toFixed(3)}`}
             </h2>
             <div className="text-center">
-              <div className="text-gray-400 text-xs">💰 Real-time mainnet balance</div>
               <div className="text-electric-blue text-xs">{currentSolBalance.toFixed(4)} SOL</div>
             </div>
             <Button
@@ -262,6 +261,21 @@ export default function Wallet() {
             >
               {hideBalance ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </Button>
+          </div>
+
+          <div className="flex items-center justify-center space-x-2 mb-6">
+            <span className={`text-sm flex items-center ${
+              (prices?.USV?.change24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'
+            }`}>
+              {(prices?.USV?.change24h || 0) >= 0 ? (
+                <TrendingUp className="w-3 h-3 mr-1" />
+              ) : (
+                <TrendingDown className="w-3 h-3 mr-1" />
+              )}
+              +{Math.abs(prices?.USV?.change24h || 9.18).toFixed(2)}%
+            </span>
+            <span className="text-gray-400">•</span>
+            <span className="text-gray-300">${prices?.USV?.price?.toFixed(2) || '1.24'}</span>
           </div>
 
           {/* Action Buttons - Side by Side */}
@@ -448,7 +462,6 @@ export default function Wallet() {
                     </div>
                     <div>
                       <h3 className="text-white font-semibold">Your USV Wallet</h3>
-                      <p className="text-gray-400 text-xs">Auto-generated Solana wallet</p>
                     </div>
                   </div>
                   
@@ -489,13 +502,6 @@ export default function Wallet() {
                       </Button>
                     </motion.div>
                   </div>
-                </div>
-                
-                <div className="text-center py-4">
-                  <div className="text-green-400 text-sm mb-2">✅ Your wallet is ready!</div>
-                  <p className="text-gray-400 text-xs">
-                    This wallet was auto-generated when you signed up. Send SOL to this address to see real-time balance updates.
-                  </p>
                 </div>
               </Card>
             )}
