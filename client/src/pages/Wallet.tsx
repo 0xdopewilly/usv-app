@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Copy, TrendingUp, TrendingDown, Eye, EyeOff, Wallet as WalletIcon, ExternalLink, Send, ArrowUpRight, ArrowDownLeft, Clock } from 'lucide-react';
+import { ArrowLeft, Copy, TrendingUp, TrendingDown, Eye, EyeOff, Wallet as WalletIcon, ExternalLink, Send, ArrowUpRight, ArrowDownToLine, ArrowDownLeft, Clock, Coins } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
@@ -289,8 +289,8 @@ export default function Wallet() {
             <span className="text-gray-300">${prices?.USV?.price?.toFixed(2) || '1.24'}</span>
           </div>
 
-          {/* Action Buttons Grid */}
-          <div className="grid grid-cols-2 gap-3 mb-8">
+          {/* Action Buttons - Side by Side */}
+          <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
             <Button
               onClick={() => {
                 copyAddress(user?.walletAddress || '', 'USV wallet');
@@ -299,40 +299,43 @@ export default function Wallet() {
                   description: "Share this address to receive USV tokens and SOL",
                 });
               }}
-              className="h-12 bg-pink-500 hover:bg-pink-600 text-white rounded-xl font-semibold"
+              className="flex-1 min-w-[70px] h-20 bg-gradient-to-br from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white rounded-2xl font-medium shadow-lg flex flex-col items-center justify-center gap-1"
               data-testid="button-receive"
             >
-              {t('wallet.receive')}
+              <ArrowDownToLine className="w-5 h-5" />
+              <span className="text-xs">{t('wallet.receive')}</span>
             </Button>
             <Button
               onClick={() => setLocation('/send')}
-              variant="outline"
-              className="h-12 border-gray-600 text-white hover:bg-gray-800 rounded-xl font-semibold"
+              className="flex-1 min-w-[70px] h-20 bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-2xl font-medium shadow-lg flex flex-col items-center justify-center gap-1"
               data-testid="button-send"
             >
-              {t('wallet.send')}
+              <Send className="w-5 h-5" />
+              <span className="text-xs">{t('wallet.send')}</span>
             </Button>
             <Button
               onClick={() => setActiveTab('assets')}
-              className={`h-12 rounded-xl font-semibold transition-all ${
+              className={`flex-1 min-w-[70px] h-20 rounded-2xl font-medium shadow-lg flex flex-col items-center justify-center gap-1 transition-all ${
                 activeTab === 'assets'
-                  ? 'bg-pink-500 text-white hover:bg-pink-600'
-                  : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700'
+                  ? 'bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white'
+                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white'
               }`}
               data-testid="tab-assets"
             >
-              Assets
+              <Coins className="w-5 h-5" />
+              <span className="text-xs">Assets</span>
             </Button>
             <Button
               onClick={() => setActiveTab('history')}
-              className={`h-12 rounded-xl font-semibold transition-all ${
+              className={`flex-1 min-w-[70px] h-20 rounded-2xl font-medium shadow-lg flex flex-col items-center justify-center gap-1 transition-all ${
                 activeTab === 'history'
-                  ? 'bg-pink-500 text-white hover:bg-pink-600'
-                  : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700'
+                  ? 'bg-gradient-to-br from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white'
+                  : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white'
               }`}
               data-testid="tab-history"
             >
-              History
+              <Clock className="w-5 h-5" />
+              <span className="text-xs">History</span>
             </Button>
           </div>
         </div>
