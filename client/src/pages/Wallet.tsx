@@ -203,6 +203,34 @@ export default function Wallet() {
   return (
     <div className="min-h-screen bg-black relative pb-20">
       <BottomNavigation />
+
+      {/* HISTORY/ASSETS TABS - TOP OF PAGE */}
+      <div className="px-6 pt-4">
+        <div className="flex space-x-2 mb-4 bg-gradient-to-r from-pink-600 to-purple-600 p-3 rounded-2xl shadow-2xl">
+          <Button
+            onClick={() => setActiveTab('assets')}
+            className={`flex-1 h-16 font-black text-xl rounded-xl transition-all ${
+              activeTab === 'assets'
+                ? 'bg-white text-black hover:bg-gray-100 shadow-xl scale-105'
+                : 'bg-transparent text-white hover:bg-white/20 border-2 border-white/50'
+            }`}
+            data-testid="tab-assets-top"
+          >
+            💰 ASSETS
+          </Button>
+          <Button
+            onClick={() => setActiveTab('history')}
+            className={`flex-1 h-16 font-black text-xl rounded-xl transition-all ${
+              activeTab === 'history'
+                ? 'bg-white text-black hover:bg-gray-100 shadow-xl scale-105'
+                : 'bg-transparent text-white hover:bg-white/20 border-2 border-white/50'
+            }`}
+            data-testid="tab-history-top"
+          >
+            📜 HISTORY
+          </Button>
+        </div>
+      </div>
       
       {/* Header */}
       <motion.div 
