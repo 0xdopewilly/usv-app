@@ -289,8 +289,8 @@ export default function Wallet() {
             <span className="text-gray-300">${prices?.USV?.price?.toFixed(2) || '1.24'}</span>
           </div>
 
-          {/* Receive and Send Buttons */}
-          <div className="flex space-x-4 mb-6">
+          {/* Action Buttons Grid */}
+          <div className="grid grid-cols-2 gap-3 mb-8">
             <Button
               onClick={() => {
                 copyAddress(user?.walletAddress || '', 'USV wallet');
@@ -299,7 +299,7 @@ export default function Wallet() {
                   description: "Share this address to receive USV tokens and SOL",
                 });
               }}
-              className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-2xl font-semibold"
+              className="h-12 bg-pink-500 hover:bg-pink-600 text-white rounded-xl font-semibold"
               data-testid="button-receive"
             >
               {t('wallet.receive')}
@@ -307,38 +307,34 @@ export default function Wallet() {
             <Button
               onClick={() => setLocation('/send')}
               variant="outline"
-              className="flex-1 border-gray-600 text-white hover:bg-gray-800 py-3 rounded-2xl font-semibold"
+              className="h-12 border-gray-600 text-white hover:bg-gray-800 rounded-xl font-semibold"
               data-testid="button-send"
             >
               {t('wallet.send')}
             </Button>
+            <Button
+              onClick={() => setActiveTab('assets')}
+              className={`h-12 rounded-xl font-semibold transition-all ${
+                activeTab === 'assets'
+                  ? 'bg-pink-500 text-white hover:bg-pink-600'
+                  : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700'
+              }`}
+              data-testid="tab-assets"
+            >
+              Assets
+            </Button>
+            <Button
+              onClick={() => setActiveTab('history')}
+              className={`h-12 rounded-xl font-semibold transition-all ${
+                activeTab === 'history'
+                  ? 'bg-pink-500 text-white hover:bg-pink-600'
+                  : 'bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700'
+              }`}
+              data-testid="tab-history"
+            >
+              History
+            </Button>
           </div>
-        </div>
-
-        {/* Assets & History Tabs */}
-        <div className="flex space-x-2 mb-6 bg-gray-900/50 p-1 rounded-lg">
-          <Button
-            onClick={() => setActiveTab('assets')}
-            className={`flex-1 h-10 text-sm font-medium rounded-md transition-all ${
-              activeTab === 'assets'
-                ? 'bg-pink-500 text-white hover:bg-pink-600'
-                : 'bg-transparent text-gray-400 hover:text-white hover:bg-gray-800'
-            }`}
-            data-testid="tab-assets"
-          >
-            Assets
-          </Button>
-          <Button
-            onClick={() => setActiveTab('history')}
-            className={`flex-1 h-10 text-sm font-medium rounded-md transition-all ${
-              activeTab === 'history'
-                ? 'bg-pink-500 text-white hover:bg-pink-600'
-                : 'bg-transparent text-gray-400 hover:text-white hover:bg-gray-800'
-            }`}
-            data-testid="tab-history"
-          >
-            History
-          </Button>
         </div>
 
         {/* ASSETS VIEW */}
