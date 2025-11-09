@@ -203,34 +203,6 @@ export default function Wallet() {
   return (
     <div className="min-h-screen bg-black relative pb-20">
       <BottomNavigation />
-
-      {/* HISTORY/ASSETS TABS - TOP OF PAGE */}
-      <div className="px-6 pt-4">
-        <div className="flex space-x-2 mb-4 bg-gradient-to-r from-pink-600 to-purple-600 p-3 rounded-2xl shadow-2xl">
-          <Button
-            onClick={() => setActiveTab('assets')}
-            className={`flex-1 h-16 font-black text-xl rounded-xl transition-all ${
-              activeTab === 'assets'
-                ? 'bg-white text-black hover:bg-gray-100 shadow-xl scale-105'
-                : 'bg-transparent text-white hover:bg-white/20 border-2 border-white/50'
-            }`}
-            data-testid="tab-assets-top"
-          >
-            💰 ASSETS
-          </Button>
-          <Button
-            onClick={() => setActiveTab('history')}
-            className={`flex-1 h-16 font-black text-xl rounded-xl transition-all ${
-              activeTab === 'history'
-                ? 'bg-white text-black hover:bg-gray-100 shadow-xl scale-105'
-                : 'bg-transparent text-white hover:bg-white/20 border-2 border-white/50'
-            }`}
-            data-testid="tab-history-top"
-          >
-            📜 HISTORY
-          </Button>
-        </div>
-      </div>
       
       {/* Header */}
       <motion.div 
@@ -429,35 +401,31 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* TABS FOR ASSETS AND HISTORY v2.0 */}
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex space-x-2 mb-6 bg-gray-800 p-2 rounded-xl border-4 border-pink-500 shadow-lg shadow-pink-500/50"
-        >
+        {/* Assets & History Tabs */}
+        <div className="flex space-x-2 mb-6 bg-gray-900/50 p-1 rounded-lg">
           <Button
             onClick={() => setActiveTab('assets')}
-            className={`flex-1 h-14 font-bold text-lg rounded-lg transition-all ${
+            className={`flex-1 h-10 text-sm font-medium rounded-md transition-all ${
               activeTab === 'assets'
-                ? 'bg-pink-500 text-white hover:bg-pink-600 scale-105'
-                : 'bg-gray-700 text-white hover:bg-gray-600'
+                ? 'bg-pink-500 text-white hover:bg-pink-600'
+                : 'bg-transparent text-gray-400 hover:text-white hover:bg-gray-800'
             }`}
             data-testid="tab-assets"
           >
-            💰 ASSETS
+            Assets
           </Button>
           <Button
             onClick={() => setActiveTab('history')}
-            className={`flex-1 h-14 font-bold text-lg rounded-lg transition-all ${
+            className={`flex-1 h-10 text-sm font-medium rounded-md transition-all ${
               activeTab === 'history'
-                ? 'bg-pink-500 text-white hover:bg-pink-600 scale-105'
-                : 'bg-gray-700 text-white hover:bg-gray-600'
+                ? 'bg-pink-500 text-white hover:bg-pink-600'
+                : 'bg-transparent text-gray-400 hover:text-white hover:bg-gray-800'
             }`}
             data-testid="tab-history"
           >
-            📜 HISTORY
+            History
           </Button>
-        </motion.div>
+        </div>
 
         {/* ASSETS VIEW */}
         {activeTab === 'assets' && (
