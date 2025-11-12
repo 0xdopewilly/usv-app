@@ -21,7 +21,6 @@ import SavedAddresses from "./pages/SavedAddresses";
 import StoreLocator from "./pages/StoreLocator";
 import TransactionDetail from "./pages/TransactionDetail";
 import QRScan from "./pages/QRScan";
-import Chat from "./pages/Chat";
 import NotFound from "./pages/NotFound";
 
 // Optimized animation variants - GPU-accelerated properties
@@ -83,9 +82,8 @@ function AppRouter() {
   }
 
   return (
-    <Router>
-      <AnimatePresence mode="wait" initial={false}>
-        <Switch location={location}>
+    <AnimatePresence mode="wait" initial={false}>
+      <Switch location={location}>
           <Route path="/">
             <PageTransition pageKey="home">
               <Home />
@@ -131,45 +129,25 @@ function AppRouter() {
               <SavedAddresses />
             </PageTransition>
           </Route>
-          <Route path="/chat">
-            <PageTransition pageKey="chat">
-              <Chat />
-            </PageTransition>
-          </Route>
           <Route>
             <PageTransition pageKey="not-found">
               <NotFound />
             </PageTransition>
           </Route>
         </Switch>
-      </AnimatePresence>
-    </Router>
+    </AnimatePresence>
   );
 }
 
 function AuthenticatedLayout() {
   const { isAuthenticated } = useAuth();
-  const [location, setLocation] = useLocation();
   
   return (
     <PasscodeLock>
-      <AppRouter />
+      <Router>
+        <AppRouter />
+      </Router>
       {isAuthenticated && <BottomNavigation />}
-      {isAuthenticated && location !== '/chat' && (
-        <motion.button
-          onClick={() => setLocation('/chat')}
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          transition={{ type: "spring", stiffness: 260, damping: 20 }}
-          className="fixed bottom-24 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg flex items-center justify-center"
-          style={{ filter: 'drop-shadow(0 4px 12px rgba(236, 72, 153, 0.5))' }}
-          data-testid="button-chat-floating"
-        >
-          <MessageCircle className="w-6 h-6" />
-        </motion.button>
-      )}
       <Toaster />
     </PasscodeLock>
   );
