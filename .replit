@@ -64,16 +64,16 @@ localPort = 41379
 externalPort = 5000
 
 [[ports]]
+localPort = 44673
+externalPort = 6800
+
+[[ports]]
 localPort = 44889
 externalPort = 6000
 
 [[ports]]
 localPort = 44899
 externalPort = 3000
-
-[[ports]]
-localPort = 45603
-externalPort = 6800
 
 [agent]
 integrations = ["javascript_log_in_with_replit:1.0.0", "javascript_database:1.0.0", "javascript_slack:1.0.0"]
