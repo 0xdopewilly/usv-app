@@ -179,16 +179,26 @@ function ChatWidget() {
     }
   };
 
+  const isMobile = window.innerWidth < 768;
+
   return (
     <>
       {isOpen && (
-        <div style={{ position: 'fixed', bottom: '5rem', right: '1.5rem', zIndex: 9999, width: '384px', maxHeight: '600px' }}
+        <div 
+          style={{ 
+            position: 'fixed',
+            bottom: '5rem',
+            right: isMobile ? '0.5rem' : '1rem',
+            zIndex: 9999,
+            width: isMobile ? 'calc(100vw - 1rem)' : '384px',
+            maxHeight: isMobile ? '65vh' : '600px'
+          }}
           className="bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col">
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-pink-500 to-purple-600 rounded-t-lg">
             <div><h3 className="font-semibold text-white text-sm">PURE5 Expert</h3></div>
             <button onClick={() => setIsOpen(false)} className="text-white/80 hover:text-white p-1"><X className="w-5 h-5" /></button>
           </div>
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-800" style={{ maxHeight: '460px' }}>
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-gray-800">
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`inline-block p-3 rounded-lg max-w-[85%] ${msg.role === 'user' ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white' : 'bg-white dark:bg-gray-700 text-black dark:text-white'}`}>
@@ -213,7 +223,14 @@ function ChatWidget() {
           </div>
         </div>
       )}
-      <button onClick={() => setIsOpen(!isOpen)} style={{ position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 9999 }}
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        style={{ 
+          position: 'fixed',
+          bottom: '1.5rem',
+          right: isMobile ? '0.5rem' : '1rem',
+          zIndex: 9999
+        }}
         className="w-14 h-14 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg hover:scale-110 transition-transform flex items-center justify-center">
         {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
       </button>
