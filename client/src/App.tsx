@@ -187,11 +187,11 @@ function ChatWidget() {
         <div 
           style={{ 
             position: 'fixed',
-            bottom: '5rem',
+            bottom: '8rem',
             right: isMobile ? '0.5rem' : '1rem',
             zIndex: 9999,
             width: isMobile ? 'calc(100vw - 1rem)' : '384px',
-            maxHeight: isMobile ? '65vh' : '600px'
+            maxHeight: isMobile ? '60vh' : '600px'
           }}
           className="bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col">
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-pink-500 to-purple-600 rounded-t-lg">
@@ -227,7 +227,7 @@ function ChatWidget() {
         onClick={() => setIsOpen(!isOpen)}
         style={{ 
           position: 'fixed',
-          bottom: '1.5rem',
+          bottom: '6.5rem',
           right: isMobile ? '0.5rem' : '1rem',
           zIndex: 9999
         }}
