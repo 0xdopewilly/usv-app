@@ -1,0 +1,200 @@
+Copy and paste this entire message to your USV wallet app agent:
+
+INTEGRATION REQUEST: Add Store Locations Map Feature
+
+I need you to integrate a Store Locations map feature into the USV wallet app. We have a live backend API that provides all active store locations with GPS coordinates.
+
+Production API Endpoint:
+
+GET https://usv-qr-backend.replit.app/api/stores
+
+Authentication: None required - this is a public endpoint
+
+Live Example Response:
+
+{
+  "success": true,
+  "data": [
+    {
+      "id": "c7f498c9-51ea-4de0-82e8-f65939807a81",
+      "name": "Ibraheem Busari",
+      "slug": "dev_willy",
+      "addressLine1": "2, Abdullahi close, Iju-Ishaga, Lagos State",
+      "addressLine2": "Abdullahi St",
+      "city": "Lagos",
+      "stateRegion": "Lagos",
+      "postalCode": "100001",
+      "country": "Nigeria",
+      "latitude": 40.7128,
+      "longitude": -74.006,
+      "contactEmail": "ayooladopewilly@gmail.com",
+      "contactPhone": "7732193131301",
+      "websiteUrl": "",
+      "isActive": true,
+      "notes": "",
+      "createdAt": "2025-11-14T13:28:20.295Z",
+      "updatedAt": "2025-11-14T13:28:20.295Z"
+    }
+  ],
+  "count": 1
+}
+
+Important Technical Details:
+
+✅ latitude and longitude are numeric types (not strings) - ready for direct map rendering
+✅ Only active stores are returned (isActive: true)
+✅ Backend is live and running at https://usv-qr-backend.replit.app
+✅ Endpoint is optimized with 5-minute caching for performance
+✅ All stores include full address details and contact information
+Requirements:
+
+Add a "Store Locations" or "Maps" tab/page to the USV wallet app navigation
+
+Fetch store locations when page opens:
+
+const BACKEND_URL = 'https://usv-qr-backend.replit.app';
+async function fetchStores() {
+  const response = await fetch(`${BACKEND_URL}/api/stores`);
+  const result = await response.json();
+  return result.data; // Array of store objects
+}
+
+Display stores on an interactive map:
+
+Use React Native Maps, Google Maps, or Mapbox
+Place a marker for each store using latitude and longitude
+Label each marker with the store name
+Show store details when user taps a marker
+Store Detail View (on marker tap):
+
+Store name
+Full address (addressLine1, addressLine2, city, stateRegion, country)
+Contact phone (with tap-to-call action)
+Contact email (with tap-to-email action)
+Website URL (with open browser action, if available)
+Add refresh functionality:
+
+Pull-to-refresh to fetch latest stores
+Or auto-refresh every 5 minutes while Maps page is active
+Handle edge cases:
+
+Show loading spinner while fetching
+Show error message if network fails (with retry button)
+Show "No stores available yet" if list is empty
+Example Implementation:
+
+import React, { useState, useEffect } from 'react';
+import MapView, { Marker } from 'react-native-maps';
+import { RefreshControl, ScrollView } from 'react-native';
+const BACKEND_URL = 'https://usv-qr-backend.replit.app';
+export function StoreLocationsScreen() {
+  const [stores, setStores] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const fetchStores = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${BACKEND_URL}/api/stores`);
+      const result = await response.json();
+      
+      if (result.success) {
+        setStores(result.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch stores:', error);
+      // Show error toast
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+  useEffect(() => {
+    fetchStores();
+  }, []);
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchStores();
+  };
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+  if (stores.length === 0) {
+    return <EmptyState message="No store locations available" />;
+  }
+  return (
+    <MapView
+      style={{ flex: 1 }}
+      initialRegion={{
+        latitude: stores[0].latitude,
+        longitude: stores[0].longitude,
+        latitudeDelta: 10,
+        longitudeDelta: 10,
+      }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      {stores.map(store => (
+        <Marker
+          key={store.id}
+          coordinate={{
+            latitude: store.latitude,
+            longitude: store.longitude,
+          }}
+          title={store.name}
+          description={store.addressLine1}
+          onCalloutPress={() => openStoreDetails(store)}
+        />
+      ))}
+    </MapView>
+  );
+}
+function openStoreDetails(store) {
+  // Show bottom sheet or modal with:
+  // - Store name
+  // - Full address
+  // - Call button (if contactPhone exists)
+  // - Email button (if contactEmail exists)
+  // - Website button (if websiteUrl exists)
+}
+
+TypeScript Interface:
+
+interface StoreLocation {
+  id: string;
+  name: string;
+  slug: string;
+  addressLine1: string;
+  addressLine2: string | null;
+  city: string;
+  stateRegion: string;
+  postalCode: string;
+  country: string;
+  latitude: number;  // ⚠️ NUMERIC - not string
+  longitude: number; // ⚠️ NUMERIC - not string
+  contactEmail: string | null;
+  contactPhone: string | null;
+  websiteUrl: string | null;
+  isActive: boolean;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+Testing:
+
+You can test the live API right now:
+
+curl https://usv-qr-backend.replit.app/api/stores
+
+It currently returns 1 active store in Lagos, Nigeria. More stores will appear automatically as they're added in the admin backend.
+
+Expected User Experience:
+
+User opens "Store Locations" in USV wallet app
+Map loads showing all USV partner store locations
+User can tap any marker to see store details
+User can call, email, or visit website directly from store details
+User can pull-to-refresh to get latest stores
+Works offline (shows last fetched data)
+Please implement this and let me know when it's ready to test!
